@@ -194,34 +194,43 @@
        </div>
     </section>
 
+      <section id="demo" class="section demo-section">
+  <div class="section-heading">
+    <span>AI Trend Analysis</span>
+    <h2>AI 農產品趨勢分析中心</h2>
+    <p>輸入作物名稱，系統會整理近期行情、繪製價格趨勢圖，並產生市場判讀建議。</p>
+  </div>
 
-    <section id="demo" class="section demo-section">
-      <div class="section-heading">
-        <span>Demo</span>
-        <h2>教學示範：愛文芒果價格分析</h2>
-        <p>v1.0 先使用示範資料，後續可逐步串接即時農產品行情資料。</p>
+  <div class="market-query-box">
+    <label for="trendCropInput">輸入分析作物</label>
+    <input id="trendCropInput" type="text" placeholder="例如：芒果-愛文、苦瓜、甘藍">
+
+    <label for="trendMarketInput">市場名稱，可留空</label>
+    <input id="trendMarketInput" type="text" placeholder="例如：台北二、高雄市、西螺鎮">
+
+    <div class="button-row">
+      <button onclick="analyzeTrend()">開始趨勢分析</button>
+      <button class="clear-btn" onclick="clearTrendAnalysis()">清除分析</button>
+    </div>
+  </div>
+
+  <div id="trendStatus" class="market-status">尚未進行趨勢分析。</div>
+
+  <div class="demo-layout">
+    <div class="chart-card">
+      <h3 id="trendChartTitle">價格趨勢圖</h3>
+      <canvas id="priceChart"></canvas>
+    </div>
+
+    <div class="analysis-card">
+      <h3>🤖 AI市場分析示範</h3>
+      <div id="aiTrendText">
+        請輸入作物名稱後，系統會自動產生價格趨勢、漲跌幅、交易量與教學重點。
       </div>
-
-      <div class="demo-layout">
-        <div class="chart-card">
-          <h3>近7週價格走勢</h3>
-          <canvas id="priceChart"></canvas>
-        </div>
-
-        <div class="analysis-card">
-          <h3>🤖 AI市場分析示範</h3>
-          <p>
-            近7週愛文芒果價格呈現緩步上升，可能與採收期進入尾聲、供應量減少、
-            夏季水果需求增加有關。
-          </p>
-          <ul>
-            <li>價格由 55 元上升至 68 元。</li>
-            <li>若交易量下降但價格上升，可能代表供應減少。</li>
-            <li>可引導學生思考季節、天氣與市場需求的關係。</li>
-          </ul>
-        </div>
-      </div>
-    </section>
+    </div>
+  </div>
+</section>
+    
 
     <section class="section calculator">
       <div class="section-heading">
@@ -344,6 +353,6 @@
     <p>屬於 AI農業教育生態系平台｜AI Agri Education Ecosystem</p>
   </footer>
 
-  <script src="script.js?v=20260529b"></script>
+  <script src="script.js?v=20260529c"></script>
 </body>
 </html>

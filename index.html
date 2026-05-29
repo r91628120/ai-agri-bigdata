@@ -150,14 +150,19 @@
      </div>
 
       <div class="market-query-box">
-        <label>選擇作物</label>
-         <select id="cropSelect">
-          <option value="芒果-愛文">愛文芒果</option>
-          <option value="香蕉">香蕉</option>
-          <option value="鳳梨">鳳梨</option>
-          <option value="木瓜">木瓜</option>
-          <option value="甘藍">甘藍</option>
-       </select>
+        <label for="cropInput">輸入作物名稱</label>
+           <input
+               id="cropInput"
+               type="text"
+               placeholder="例如：芒果-愛文、香蕉、鳳梨、甘藍"
+      >
+
+         <div class="amis-link-box">
+            不確定作物名稱？
+            <a href="https://amis.afa.gov.tw/main/Main.aspx" target="_blank" rel="noopener">
+               前往農產品批發市場交易行情站查詢
+            </a>
+      </div>
 
        <label>市場名稱，可留空</label>
     <input id="marketInput" type="text" placeholder="例如：台北一、高雄市、西螺鎮">

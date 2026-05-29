@@ -149,13 +149,18 @@ function clearCalculator() {
 }
 
   async function loadAmisData() {
-  const crop = document.getElementById("cropSelect").value;
-  const market = document.getElementById("marketInput").value.trim();
-  const status = document.getElementById("marketStatus");
-  const tbody = document.getElementById("marketTableBody");
+    const crop = document.getElementById("cropInput").value.trim();
+    const market = document.getElementById("marketInput").value.trim();
+    const status = document.getElementById("marketStatus");
+    const tbody = document.getElementById("marketTableBody");
 
-  status.innerHTML = "資料讀取中，請稍候...";
-  tbody.innerHTML = "";
+    status.innerHTML = "資料讀取中，請稍候...";
+    tbody.innerHTML = "";
+
+    if (!crop) {
+      status.innerHTML = "⚠️ 請先輸入作物名稱，例如：芒果-愛文、香蕉、鳳梨。";
+    return;
+  }
 
   const apiUrl = new URL("https://data.moa.gov.tw/Service/OpenData/FromM/FarmTransData.aspx");
 

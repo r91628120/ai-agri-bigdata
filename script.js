@@ -143,14 +143,9 @@ async function loadAmisData() {
     return;
   }
 
-  let allData = [];
-
-try {
-  for (let skip = 0; skip < 3000; skip += 500) {
+  try {
     const apiUrl = new URL("https://data.moa.gov.tw/Service/OpenData/FromM/FarmTransData.aspx");
-
     apiUrl.searchParams.set("$top", "500");
-    apiUrl.searchParams.set("$skip", skip);
     apiUrl.searchParams.set("Crop", crop);
 
     if (market) {
@@ -158,16 +153,7 @@ try {
     }
 
     const response = await fetch(apiUrl.toString());
-    const pageData = await response.json();
-
-    if (!Array.isArray(pageData) || pageData.length === 0) break;
-
-    allData = allData.concat(pageData);
-
-    if (pageData.length < 500) break;
-   }
-
-    const data = allData;
+    const data = await response.json();
 
     const filteredData = data.filter(item => {
       const cropName = item["作物名稱"] || item.Crop || "";
@@ -186,15 +172,15 @@ try {
       const row = document.createElement("tr");
 
       row.innerHTML = `
-          <td>${item["交易日期"] || item.TransDate || "-"}</td>
-          <td>${item["市場名稱"] || item.Market || "-"}</td>
-          <td>${item["作物名稱"] || item.Crop || "-"}</td>
-          <td>${item["上價"] || item.Upper_Price || "-"} 元/公斤</td>
-          <td>${item["中價"] || item.Middle_Price || "-"} 元/公斤</td>
-          <td>${item["下價"] || item.Lower_Price || "-"} 元/公斤</td>
-          <td>${item["平均價"] || item.Avg_Price || "-"} 元/公斤</td>
-          <td>${item["交易量"] || item.Trans_Quantity || "-"} 公斤</td>
-     `;
+        <td>${item["交易日期"] || item.TransDate || "-"}</td>
+        <td>${item["市場名稱"] || item.Market || "-"}</td>
+        <td>${item["作物名稱"] || item.Crop || "-"}</td>
+        <td>${item["上價"] || item.Upper_Price || "-"} 元/公斤</td>
+        <td>${item["中價"] || item.Middle_Price || "-"} 元/公斤</td>
+        <td>${item["下價"] || item.Lower_Price || "-"} 元/公斤</td>
+        <td>${item["平均價"] || item.Avg_Price || "-"} 元/公斤</td>
+        <td>${item["交易量"] || item.Trans_Quantity || "-"} 公斤</td>
+      `;
 
       tbody.appendChild(row);
     });
@@ -205,7 +191,7 @@ try {
   }
 }
 
- async function analyzeTrend() {
+   async function analyzeTrend() {
   const crop = document.getElementById("trendCropInput").value.trim();
   const market = document.getElementById("trendMarketInput").value.trim();
   const status = document.getElementById("trendStatus");
@@ -220,19 +206,31 @@ try {
     return;
   }
 
-  const apiUrl = new URL("https://data.moa.gov.tw/Service/OpenData/FromM/FarmTransData.aspx");
-  apiUrl.searchParams.set("$top", "300");
-  apiUrl.searchParams.set("Crop", crop);
-
-  if (market) {
-    apiUrl.searchParams.set("Market", market);
-  }
+  let allData = [];
 
   try {
-    const response = await fetch(apiUrl.toString());
-    const data = await response.json();
+    for (let skip = 0; skip < 5000; skip += 500) {
+      const apiUrl = new URL("https://data.moa.gov.tw/Service/OpenData/FromM/FarmTransData.aspx");
 
-    const filteredData = data.filter(item => {
+      apiUrl.searchParams.set("$top", "500");
+      apiUrl.searchParams.set("$skip", skip);
+      apiUrl.searchParams.set("Crop", crop);
+
+      if (market) {
+        apiUrl.searchParams.set("Market", market);
+      }
+
+      const response = await fetch(apiUrl.toString());
+      const pageData = await response.json();
+
+      if (!Array.isArray(pageData) || pageData.length === 0) break;
+
+      allData = allData.concat(pageData);
+
+      if (pageData.length < 500) break;
+    }
+
+    const filteredData = allData.filter(item => {
       const cropName = item["作物名稱"] || item.Crop || "";
       const marketName = item["市場名稱"] || item.Market || "";
       return cropName.includes(crop) && (!market || marketName.includes(market));
@@ -267,17 +265,18 @@ try {
     });
 
     let trendData = Object.keys(dailyMap)
-     .sort()
-     .map(date => ({
-       date,
-       avgPrice: dailyMap[date].totalPrice / dailyMap[date].count,
-       quantity: dailyMap[date].totalQuantity
-    }));
+      .sort()
+      .map(date => ({
+        date,
+        avgPrice: dailyMap[date].totalPrice / dailyMap[date].count,
+        quantity: dailyMap[date].totalQuantity
+      }));
 
-       trendData = trendData.slice(-trendPeriod);
+    trendData = trendData.slice(-trendPeriod);
 
     if (trendData.length < 2) {
-      status.innerHTML = `「${crop}」資料筆數不足，暫時無法形成趨勢圖。`;
+      status.innerHTML = `「${crop}」目前僅取得 ${trendData.length} 日資料，暫時無法形成趨勢圖。`;
+      aiText.innerHTML = "建議改用更完整作物名稱，或稍後再查詢。";
       return;
     }
 
@@ -285,7 +284,8 @@ try {
     const prices = trendData.map(item => Number(item.avgPrice.toFixed(1)));
     const quantities = trendData.map(item => Number(item.quantity || 0));
 
-          renderPriceChart(labels, prices, quantities, crop);
+    renderPriceChart(labels, prices, quantities, crop);
+
     const firstPrice = prices[0];
     const lastPrice = prices[prices.length - 1];
     const change = lastPrice - firstPrice;
@@ -311,17 +311,17 @@ try {
     let modeTitle = "價格趨勢";
 
     if (chartMode === "quantity") {
-         modeTitle = "交易量趨勢";
+      modeTitle = "交易量趨勢";
     }
 
     if (chartMode === "dual") {
-         modeTitle = "價格與交易量雙軸圖";
-   }
+      modeTitle = "價格與交易量雙軸圖";
+    }
 
-chartTitle.innerHTML =
-  `${crop} 近${trendPeriod}天${modeTitle}`;
+    chartTitle.innerHTML = `${crop} 近${trendPeriod}天${modeTitle}`;
+
     status.innerHTML =
-    `已完成近 ${trendData.length} 日「${crop}」價格趨勢分析。（目前可取得 ${trendData.length} 日資料）`;
+      `已完成近 ${trendData.length} 日「${crop}」價格趨勢分析。（目前可取得 ${trendData.length} 日資料）`;
 
     aiText.innerHTML = `
       <p><strong>${trendIcon} 市場趨勢：</strong>${trendText}</p>
@@ -346,6 +346,7 @@ chartTitle.innerHTML =
     aiText.innerHTML = "請稍後再試。";
   }
 }
+
 
 function clearTrendAnalysis() {
   document.getElementById("trendCropInput").value = "";

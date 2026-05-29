@@ -143,17 +143,31 @@ async function loadAmisData() {
     return;
   }
 
-  const apiUrl = new URL("https://data.moa.gov.tw/Service/OpenData/FromM/FarmTransData.aspx");
-  apiUrl.searchParams.set("$top", "200");
-  apiUrl.searchParams.set("Crop", crop);
+  let allData = [];
 
-  if (market) {
-    apiUrl.searchParams.set("Market", market);
-  }
+try {
+  for (let skip = 0; skip < 3000; skip += 500) {
+    const apiUrl = new URL("https://data.moa.gov.tw/Service/OpenData/FromM/FarmTransData.aspx");
 
-  try {
+    apiUrl.searchParams.set("$top", "500");
+    apiUrl.searchParams.set("$skip", skip);
+    apiUrl.searchParams.set("Crop", crop);
+
+    if (market) {
+      apiUrl.searchParams.set("Market", market);
+    }
+
     const response = await fetch(apiUrl.toString());
-    const data = await response.json();
+    const pageData = await response.json();
+
+    if (!Array.isArray(pageData) || pageData.length === 0) break;
+
+    allData = allData.concat(pageData);
+
+    if (pageData.length < 500) break;
+   }
+
+    const data = allData;
 
     const filteredData = data.filter(item => {
       const cropName = item["作物名稱"] || item.Crop || "";
@@ -307,7 +321,7 @@ async function loadAmisData() {
 chartTitle.innerHTML =
   `${crop} 近${trendPeriod}天${modeTitle}`;
     status.innerHTML =
-       `已完成近 ${trendData.length} 日「${crop}」價格趨勢分析。`;
+    `已完成近 ${trendData.length} 日「${crop}」價格趨勢分析。（目前可取得 ${trendData.length} 日資料）`;
 
     aiText.innerHTML = `
       <p><strong>${trendIcon} 市場趨勢：</strong>${trendText}</p>

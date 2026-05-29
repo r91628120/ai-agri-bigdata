@@ -142,6 +142,48 @@
       </div>
     </section>
 
+     <section id="market-live" class="section">
+      <div class="section-heading">
+        <span>Live Market Data</span>
+         <h2>農產品即時行情查詢</h2>
+        <p>資料來源：農業部農產品交易行情 OpenData。</p>
+     </div>
+
+      <div class="market-query-box">
+        <label>選擇作物</label>
+         <select id="cropSelect">
+          <option value="芒果-愛文">愛文芒果</option>
+          <option value="香蕉">香蕉</option>
+          <option value="鳳梨">鳳梨</option>
+          <option value="木瓜">木瓜</option>
+          <option value="甘藍">甘藍</option>
+       </select>
+
+       <label>市場名稱，可留空</label>
+    <input id="marketInput" type="text" placeholder="例如：台北一、高雄市、西螺鎮">
+
+    <button onclick="loadAmisData()">查詢行情</button>
+       </div>
+
+          <div id="marketStatus" class="market-status">尚未查詢資料。</div>
+
+          <div class="market-table-wrap">
+            <table class="market-table">
+           <thead>
+              <tr>
+                  <th>日期</th>
+                  <th>市場</th>
+                  <th>作物</th>
+                  <th>平均價</th>
+                  <th>交易量</th>
+              </tr>
+           </thead>
+         <tbody id="marketTableBody"></tbody>
+        </table>
+       </div>
+    </section>
+
+
     <section id="demo" class="section demo-section">
       <div class="section-heading">
         <span>Demo</span>

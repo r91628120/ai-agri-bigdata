@@ -147,3 +147,52 @@ function clearCalculator() {
   document.getElementById("result").innerHTML =
     "請輸入資料後按下「開始分析」。";
 }
+
+  async function loadAmisData() {
+  const crop = document.getElementById("cropSelect").value;
+  const market = document.getElementById("marketInput").value.trim();
+  const status = document.getElementById("marketStatus");
+  const tbody = document.getElementById("marketTableBody");
+
+  status.innerHTML = "資料讀取中，請稍候...";
+  tbody.innerHTML = "";
+
+  const apiUrl = new URL("https://data.moa.gov.tw/Service/OpenData/FromM/FarmTransData.aspx");
+
+  apiUrl.searchParams.set("$top", "50");
+  apiUrl.searchParams.set("Crop", crop);
+
+  if (market) {
+    apiUrl.searchParams.set("Market", market);
+  }
+
+  try {
+    const response = await fetch(apiUrl.toString());
+    const data = await response.json();
+
+    if (!Array.isArray(data) || data.length === 0) {
+      status.innerHTML = "查無資料，請更換作物名稱或市場名稱。";
+      return;
+    }
+
+    status.innerHTML = `已取得 ${data.length} 筆資料。`;
+
+    data.slice(0, 20).forEach(item => {
+      const row = document.createElement("tr");
+
+      row.innerHTML = `
+        <td>${item.TransDate || "-"}</td>
+        <td>${item.Market || "-"}</td>
+        <td>${item.Crop || "-"}</td>
+        <td>${item.Avg_Price || "-"} 元/公斤</td>
+        <td>${item.Trans_Quantity || "-"} 公斤</td>
+      `;
+
+      tbody.appendChild(row);
+    });
+
+  } catch (error) {
+    console.error(error);
+    status.innerHTML = "資料讀取失敗，可能是 API 或瀏覽器跨域限制，之後可改用 Google Apps Script 作為中介。";
+  }
+}

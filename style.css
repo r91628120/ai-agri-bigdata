@@ -578,3 +578,70 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+/* AMIS 即時行情查詢區 */
+
+.market-query-box {
+  max-width: 900px;
+  background: rgba(255,255,255,.92);
+  border: 1px solid rgba(0,120,80,.12);
+  border-radius: 26px;
+  padding: 28px;
+  box-shadow: 0 12px 32px rgba(0,80,50,.08);
+  display: grid;
+  gap: 12px;
+}
+
+.market-query-box label {
+  font-weight: 800;
+  color: #064b35;
+}
+
+.market-query-box select,
+.market-query-box input {
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(0,120,80,.18);
+  font-size: 1rem;
+}
+
+.market-query-box button {
+  border: none;
+  background: linear-gradient(135deg, #007e55, #00b878);
+  color: white;
+  padding: 15px 22px;
+  border-radius: 16px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.market-status {
+  margin: 18px 0;
+  font-weight: 800;
+  color: #064b35;
+}
+
+.market-table-wrap {
+  overflow-x: auto;
+}
+
+.market-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 12px 32px rgba(0,80,50,.08);
+}
+
+.market-table th,
+.market-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #e5f2eb;
+  text-align: left;
+}
+
+.market-table th {
+  background: #e7f8ef;
+  color: #064b35;
+}

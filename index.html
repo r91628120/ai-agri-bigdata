@@ -167,7 +167,10 @@
        <label>市場名稱，可留空</label>
     <input id="marketInput" type="text" placeholder="例如：台北一、高雄市、西螺鎮">
 
-    <button onclick="loadAmisData()">查詢行情</button>
+      <div class="button-row">
+          <button onclick="loadAmisData()">查詢行情</button>
+          <button class="clear-btn" onclick="clearAmisData()">清除查詢</button>
+      </div>
        </div>
 
           <div id="marketStatus" class="market-status">尚未查詢資料。</div>

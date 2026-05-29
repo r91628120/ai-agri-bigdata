@@ -149,18 +149,67 @@ function clearCalculator() {
 }
 
   async function loadAmisData() {
-    const crop = document.getElementById("cropInput").value.trim();
-    const market = document.getElementById("marketInput").value.trim();
-    const status = document.getElementById("marketStatus");
-    const tbody = document.getElementById("marketTableBody");
+  const crop = document.getElementById("cropInput").value.trim();
+  const market = document.getElementById("marketInput").value.trim();
+  const status = document.getElementById("marketStatus");
+  const tbody = document.getElementById("marketTableBody");
 
-    status.innerHTML = "資料讀取中，請稍候...";
-    tbody.innerHTML = "";
+  status.innerHTML = "資料讀取中，請稍候...";
+  tbody.innerHTML = "";
 
-    if (!crop) {
-      status.innerHTML = "⚠️ 請先輸入作物名稱，例如：芒果-愛文、香蕉、鳳梨。";
+  if (!crop) {
+    status.innerHTML = "⚠️ 請先輸入作物名稱，例如：甘藍、甘藍-初秋、芒果-愛文。";
     return;
   }
+
+  const apiUrl = new URL("https://data.moa.gov.tw/Service/OpenData/FromM/FarmTransData.aspx");
+  apiUrl.searchParams.set("$top", "200");
+  apiUrl.searchParams.set("Crop", crop);
+
+  if (market) {
+    apiUrl.searchParams.set("Market", market);
+  }
+
+  try {
+    const response = await fetch(apiUrl.toString());
+    const data = await response.json();
+
+    const filteredData = data.filter(item => {
+      const cropName = item["作物名稱"] || "";
+      const marketName = item["市場名稱"] || "";
+
+      const cropMatch = cropName.includes(crop);
+      const marketMatch = !market || marketName.includes(market);
+
+      return cropMatch && marketMatch;
+    });
+
+    if (!Array.isArray(filteredData) || filteredData.length === 0) {
+      status.innerHTML = `查無「${crop}」資料，請改用更完整名稱，例如：甘藍-初秋。`;
+      return;
+    }
+
+    status.innerHTML = `已取得 ${filteredData.length} 筆「${crop}」行情資料。`;
+
+    filteredData.slice(0, 30).forEach(item => {
+      const row = document.createElement("tr");
+
+      row.innerHTML = `
+        <td>${item["交易日期"] || "-"}</td>
+        <td>${item["市場名稱"] || "-"}</td>
+        <td>${item["作物名稱"] || "-"}</td>
+        <td>${item["平均價"] || "-"} 元/公斤</td>
+        <td>${item["交易量"] || "-"} 公斤</td>
+      `;
+
+      tbody.appendChild(row);
+    });
+
+  } catch (error) {
+    console.error(error);
+    status.innerHTML = "資料讀取失敗，可能是 API 暫時無法連線或瀏覽器跨域限制。";
+  }
+}
 
   const apiUrl = new URL("https://data.moa.gov.tw/Service/OpenData/FromM/FarmTransData.aspx");
 

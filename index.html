@@ -198,7 +198,10 @@
   <div class="section-heading">
     <span>AI Trend Analysis</span>
     <h2>AI 農產品趨勢分析中心</h2>
-    <p>輸入作物名稱，系統會整理近期行情、繪製價格趨勢圖，並產生市場判讀建議。</p>
+    <p>
+      輸入作物名稱，系統會整理近期行情、繪製價格趨勢圖，並產生市場判讀建議。
+      透過近7天、30天、90天價格變化，學習折線圖判讀、供需變化與市場波動。
+    </p>
   </div>
 
   <div class="market-query-box">
@@ -207,6 +210,53 @@
 
     <label for="trendMarketInput">市場名稱，可留空</label>
     <input id="trendMarketInput" type="text" placeholder="例如：台北二、高雄市、西螺鎮">
+
+     <label>分析期間</label>
+
+  <div class="period-selector">
+     <button
+        type="button"
+        id="period7"
+        class="period-btn active"
+        onclick="setTrendPeriod(7)">
+       近7天
+     </button>
+
+     <button
+       type="button"
+       id="period30"
+       class="period-btn"
+       onclick="setTrendPeriod(30)">
+       近30天
+     </button>
+
+     <button
+       type="button"
+       id="period90"
+       class="period-btn"
+       onclick="setTrendPeriod(90)">
+       近90天
+     </button>
+  </div>
+
+     <label>圖表模式</label>
+
+       <div class="period-selector">
+         <button type="button" id="modePrice" class="period-btn active" onclick="setChartMode('price')">
+           📈 價格趨勢
+         </button>
+
+         <button type="button" id="modeQuantity" class="period-btn" onclick="setChartMode('quantity')">
+           📦 交易量趨勢
+         </button>
+
+         <button type="button" id="modeDual" class="period-btn" onclick="setChartMode('dual')">
+           📊 雙軸圖
+         </button>
+       </div>
+
+
+
 
     <div class="button-row">
       <button onclick="analyzeTrend()">開始趨勢分析</button>
@@ -353,6 +403,6 @@
     <p>屬於 AI農業教育生態系平台｜AI Agri Education Ecosystem</p>
   </footer>
 
-  <script src="script.js?v=20260529d"></script>
+  <script src="script.js?v=20260529e"></script>
 </body>
 </html>

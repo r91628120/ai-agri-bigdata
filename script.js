@@ -1,6 +1,9 @@
 let priceChartInstance = null;
+let trendPeriod = 7;
+let chartMode = "price";
 
-function renderPriceChart(labels, prices, cropName) {
+
+function renderPriceChart(labels, prices, quantities, cropName) {
   const canvas = document.getElementById("priceChart");
   if (!canvas || typeof Chart === "undefined") return;
 
@@ -8,24 +11,119 @@ function renderPriceChart(labels, prices, cropName) {
     priceChartInstance.destroy();
   }
 
-  priceChartInstance = new Chart(canvas, {
-    type: "line",
-    data: {
-      labels: labels,
-      datasets: [{
+  let datasets = [];
+  let scales = {};
+
+  if (chartMode === "price") {
+    datasets = [{
+      label: `${cropName} 平均價（元/公斤）`,
+      data: prices,
+      borderWidth: 3,
+      tension: 0.35,
+      fill: true
+    }];
+  }
+
+  if (chartMode === "quantity") {
+    datasets = [{
+      label: `${cropName} 交易量（公斤）`,
+      data: quantities,
+      borderWidth: 3,
+      tension: 0.35,
+      fill: true
+    }];
+  }
+
+  if (chartMode === "dual") {
+    datasets = [
+      {
         label: `${cropName} 平均價（元/公斤）`,
         data: prices,
         borderWidth: 3,
         tension: 0.35,
-        fill: true
-      }]
+        yAxisID: "y"
+      },
+      {
+        label: `${cropName} 交易量（公斤）`,
+        data: quantities,
+        borderWidth: 3,
+        tension: 0.35,
+        yAxisID: "y1"
+      }
+    ];
+
+    scales = {
+      y: {
+        type: "linear",
+        position: "left",
+        title: {
+          display: true,
+          text: "平均價（元/公斤）"
+        }
+      },
+      y1: {
+        type: "linear",
+        position: "right",
+        grid: {
+          drawOnChartArea: false
+        },
+        title: {
+          display: true,
+          text: "交易量（公斤）"
+        }
+      }
+    };
+  }
+
+  priceChartInstance = new Chart(canvas, {
+    type: "line",
+    data: {
+      labels,
+      datasets
     },
     options: {
       responsive: true,
-      maintainAspectRatio: false
+      maintainAspectRatio: false,
+      scales
     }
   });
 }
+
+   function setTrendPeriod(days) {
+
+  trendPeriod = days;
+
+  document
+    .querySelectorAll(".period-btn")
+    .forEach(btn => btn.classList.remove("active"));
+
+  document
+    .getElementById(`period${days}`)
+    .classList.add("active");
+
+}
+
+ function setChartMode(mode) {
+  chartMode = mode;
+
+  document
+    .querySelectorAll("#modePrice, #modeQuantity, #modeDual")
+    .forEach(btn => btn.classList.remove("active"));
+
+  if (mode === "price") {
+    document.getElementById("modePrice").classList.add("active");
+  }
+
+  if (mode === "quantity") {
+    document.getElementById("modeQuantity").classList.add("active");
+  }
+
+  if (mode === "dual") {
+    document.getElementById("modeDual").classList.add("active");
+  }
+} 
+
+
 
 // ===============================
 // 📈 農產品即時行情查詢
@@ -154,13 +252,15 @@ async function loadAmisData() {
       dailyMap[date].totalQuantity += quantity;
     });
 
-    const trendData = Object.keys(dailyMap)
-      .sort()
-      .map(date => ({
-        date,
-        avgPrice: dailyMap[date].totalPrice / dailyMap[date].count,
-        quantity: dailyMap[date].totalQuantity
-      }));
+    let trendData = Object.keys(dailyMap)
+     .sort()
+     .map(date => ({
+       date,
+       avgPrice: dailyMap[date].totalPrice / dailyMap[date].count,
+       quantity: dailyMap[date].totalQuantity
+    }));
+
+       trendData = trendData.slice(-trendPeriod);
 
     if (trendData.length < 2) {
       status.innerHTML = `「${crop}」資料筆數不足，暫時無法形成趨勢圖。`;
@@ -169,9 +269,9 @@ async function loadAmisData() {
 
     const labels = trendData.map(item => item.date);
     const prices = trendData.map(item => Number(item.avgPrice.toFixed(1)));
+    const quantities = trendData.map(item => Number(item.quantity || 0));
 
-    renderPriceChart(labels, prices, crop);
-
+          renderPriceChart(labels, prices, quantities, crop);
     const firstPrice = prices[0];
     const lastPrice = prices[prices.length - 1];
     const change = lastPrice - firstPrice;
@@ -194,8 +294,20 @@ async function loadAmisData() {
       trendText = "價格呈現下降趨勢";
     }
 
-    chartTitle.innerHTML = `${crop} 近期價格趨勢`;
-    status.innerHTML = `已完成 ${trendData.length} 日「${crop}」趨勢分析。`;
+    let modeTitle = "價格趨勢";
+
+    if (chartMode === "quantity") {
+         modeTitle = "交易量趨勢";
+    }
+
+    if (chartMode === "dual") {
+         modeTitle = "價格與交易量雙軸圖";
+   }
+
+chartTitle.innerHTML =
+  `${crop} 近${trendPeriod}天${modeTitle}`;
+    status.innerHTML =
+       `已完成近 ${trendData.length} 日「${crop}」價格趨勢分析。`;
 
     aiText.innerHTML = `
       <p><strong>${trendIcon} 市場趨勢：</strong>${trendText}</p>

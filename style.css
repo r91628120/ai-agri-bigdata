@@ -660,3 +660,23 @@ body {
   text-decoration: underline;
 }
 
+.period-selector{
+  display:flex;
+  gap:10px;
+  margin-bottom:18px;
+}
+
+.period-btn{
+  border:none;
+  padding:10px 18px;
+  border-radius:999px;
+  cursor:pointer;
+  background:#e8f2ee;
+  color:#14532d;
+  font-weight:600;
+}
+
+.period-btn.active{
+  background:#10b981;
+  color:#fff;
+}

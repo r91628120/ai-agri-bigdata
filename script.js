@@ -71,12 +71,15 @@ async function loadAmisData() {
       const row = document.createElement("tr");
 
       row.innerHTML = `
-        <td>${item["交易日期"] || item.TransDate || "-"}</td>
-        <td>${item["市場名稱"] || item.Market || "-"}</td>
-        <td>${item["作物名稱"] || item.Crop || "-"}</td>
-        <td>${item["平均價"] || item.Avg_Price || "-"} 元/公斤</td>
-        <td>${item["交易量"] || item.Trans_Quantity || "-"} 公斤</td>
-      `;
+          <td>${item["交易日期"] || item.TransDate || "-"}</td>
+          <td>${item["市場名稱"] || item.Market || "-"}</td>
+          <td>${item["作物名稱"] || item.Crop || "-"}</td>
+          <td>${item["上價"] || item.Upper_Price || "-"} 元/公斤</td>
+          <td>${item["中價"] || item.Middle_Price || "-"} 元/公斤</td>
+          <td>${item["下價"] || item.Lower_Price || "-"} 元/公斤</td>
+          <td>${item["平均價"] || item.Avg_Price || "-"} 元/公斤</td>
+          <td>${item["交易量"] || item.Trans_Quantity || "-"} 公斤</td>
+     `;
 
       tbody.appendChild(row);
     });

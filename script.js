@@ -191,6 +191,14 @@ async function loadAmisData() {
   }
 }
 
+  function formatRocDate(date) {
+    const rocYear = date.getFullYear() - 1911;
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+     return `${rocYear}.${month}.${day}`;
+}
+
+
    async function analyzeTrend() {
   const crop = document.getElementById("trendCropInput").value.trim();
   const market = document.getElementById("trendMarketInput").value.trim();
@@ -212,9 +220,15 @@ async function loadAmisData() {
     for (let skip = 0; skip < 5000; skip += 500) {
       const apiUrl = new URL("https://data.moa.gov.tw/Service/OpenData/FromM/FarmTransData.aspx");
 
-      apiUrl.searchParams.set("$top", "500");
-      apiUrl.searchParams.set("$skip", skip);
-      apiUrl.searchParams.set("Crop", crop);
+      const endDate = new Date();
+      const startDate = new Date();
+            startDate.setDate(endDate.getDate() - (trendPeriod - 1));
+
+            apiUrl.searchParams.set("$top", "500");
+            apiUrl.searchParams.set("$skip", skip);
+            apiUrl.searchParams.set("StartDate", formatRocDate(startDate));
+            apiUrl.searchParams.set("EndDate", formatRocDate(endDate));
+            apiUrl.searchParams.set("Crop", crop);
 
       if (market) {
         apiUrl.searchParams.set("Market", market);

@@ -1,1 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <title>AI農產品大數據教學平台｜AI Agri Big Data</title>
+  <meta name="description" content="AI農產品大數據教學平台，結合農產品市場行情、價格趨勢分析、AI市場解讀、青農經營模擬與教師教學資源，打造台灣農業大數據教學平台。" />
+  <meta name="keywords" content="AI農業,農產品大數據,農業教育,農產品價格,青農,農業經營,市場行情,農業大數據教學" />
+
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+  <header class="site-header">
+    <a href="#home" class="brand">
+      <span class="brand-icon">🌱</span>
+      <span>
+        <strong>AI農產品大數據教學平台</strong>
+        <small>AI Agri Big Data Education</small>
+      </span>
+    </a>
+
+    <nav class="nav">
+      <a href="#features">平台特色</a>
+      <a href="#tools">六大功能</a>
+      <a href="#demo">教學示範</a>
+      <a href="#users">適用對象</a>
+      <a href="#roadmap">未來發展</a>
+    </nav>
+  </header>
+
+  <main>
+    <section id="home" class="hero">
+      <div class="hero-content">
+        <div class="eyebrow">AI × 農業 × 大數據 × 教育</div>
+
+        <h1>
+          看懂市場數據，<br />
+          培養未來青農決策力
+        </h1>
+
+        <p>
+          結合農產品市場行情、價格趨勢分析、AI智慧解讀與農場經營管理，
+          打造適合高中職、大專院校、青農、農民與教師使用的農業大數據教學平台。
+        </p>
+
+        <div class="hero-actions">
+          <a href="#tools" class="btn primary">開始探索平台</a>
+          <a href="#demo" class="btn secondary">查看教學示範</a>
+        </div>
+      </div>
+
+      <div class="hero-panel">
+        <div class="panel-grid">
+          <div class="mini-card">📈<span>行情</span></div>
+          <div class="mini-card">📊<span>趨勢</span></div>
+          <div class="mini-card">🤖<span>AI分析</span></div>
+          <div class="mini-card">🌱<span>經營</span></div>
+        </div>
+        <div class="panel-footer">
+          <small>平台定位</small>
+          <strong>台灣第一個 AI 農業大數據教學平台</strong>
+        </div>
+      </div>
+    </section>
+
+    <section id="features" class="section">
+      <div class="section-heading">
+        <span>Platform Vision</span>
+        <h2>不是單純查價格，而是學會做農業決策</h2>
+        <p>
+          本平台將農產品行情資料轉化為教學案例，讓學生與農民能從數字背後理解供需、價格、風險與經營判斷。
+        </p>
+      </div>
+
+      <div class="feature-strip">
+        <div>
+          <strong>01</strong>
+          <h3>真實市場資料</h3>
+          <p>以農產品批發市場行情為學習基礎。</p>
+        </div>
+        <div>
+          <strong>02</strong>
+          <h3>圖表視覺化</h3>
+          <p>用折線圖、趨勢圖理解價格變化。</p>
+        </div>
+        <div>
+          <strong>03</strong>
+          <h3>AI教學解讀</h3>
+          <p>把複雜數據轉換成學生聽得懂的說明。</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="tools" class="section soft">
+      <div class="section-heading">
+        <span>Core Modules</span>
+        <h2>六大核心功能</h2>
+      </div>
+
+      <div class="cards">
+        <article class="card">
+          <div class="icon">📈</div>
+          <h3>市場行情中心</h3>
+          <p>查詢蔬菜、水果、花卉等農產品價格與交易資訊，作為課堂資料判讀練習。</p>
+        </article>
+
+        <article class="card">
+          <div class="icon">📊</div>
+          <h3>價格趨勢分析</h3>
+          <p>透過近7天、30天、90天價格變化，學習折線圖判讀、供需變化與市場波動。</p>
+        </article>
+
+        <article class="card">
+          <div class="icon">🤖</div>
+          <h3>AI市場分析師</h3>
+          <p>協助解釋價格上漲、下跌與交易量變化，培養農業大數據判讀能力。</p>
+        </article>
+
+        <article class="card">
+          <div class="icon">🌱</div>
+          <h3>青農經營模擬器</h3>
+          <p>輸入面積、產量、成本與價格，模擬收入、毛利與損益平衡點。</p>
+        </article>
+
+        <article class="card">
+          <div class="icon">🎯</div>
+          <h3>農業決策挑戰</h3>
+          <p>透過颱風、採收期、價格波動等情境，練習農民現場會遇到的經營判斷。</p>
+        </article>
+
+        <article class="card">
+          <div class="icon">👨‍🏫</div>
+          <h3>教師教學資源</h3>
+          <p>提供學習單、教案、討論題目與評量活動，協助教師快速導入課程。</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="demo" class="section demo-section">
+      <div class="section-heading">
+        <span>Demo</span>
+        <h2>教學示範：愛文芒果價格分析</h2>
+        <p>v1.0 先使用示範資料，後續可逐步串接即時農產品行情資料。</p>
+      </div>
+
+      <div class="demo-layout">
+        <div class="chart-card">
+          <h3>近7週價格走勢</h3>
+          <canvas id="priceChart"></canvas>
+        </div>
+
+        <div class="analysis-card">
+          <h3>🤖 AI市場分析示範</h3>
+          <p>
+            近7週愛文芒果價格呈現緩步上升，可能與採收期進入尾聲、供應量減少、
+            夏季水果需求增加有關。
+          </p>
+          <ul>
+            <li>價格由 55 元上升至 68 元。</li>
+            <li>若交易量下降但價格上升，可能代表供應減少。</li>
+            <li>可引導學生思考季節、天氣與市場需求的關係。</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section calculator">
+      <div class="section-heading">
+        <span>Business Simulation</span>
+        <h2>青農經營模擬器</h2>
+        <p>輸入價格、產量與成本，快速建立農業經營管理概念。</p>
+      </div>
+
+      <div class="calc-box">
+        <input type="number" id="priceInput" placeholder="每公斤價格，例如 68" />
+        <input type="number" id="yieldInput" placeholder="預估產量，例如 5000" />
+        <input type="number" id="costInput" placeholder="總成本，例如 200000" />
+        <button onclick="calculateProfit()">開始分析</button>
+        <div id="result">請輸入資料後按下「開始分析」。</div>
+      </div>
+    </section>
+
+    <section id="users" class="section soft">
+      <div class="section-heading">
+        <span>Users</span>
+        <h2>適用對象</h2>
+      </div>
+
+      <div class="user-grid">
+        <div class="user-card">
+          <h3>高中職學生</h3>
+          <p>適合農場經營科、園藝科、農業群課程導入。</p>
+        </div>
+        <div class="user-card">
+          <h3>大專院校</h3>
+          <p>適合農企業管理、農業經濟、智慧農業與資料分析課程。</p>
+        </div>
+        <div class="user-card">
+          <h3>青農與農民</h3>
+          <p>協助理解價格趨勢、經營風險與市場判斷。</p>
+        </div>
+        <div class="user-card">
+          <h3>農業教師</h3>
+          <p>快速轉化為學習單、專題討論與課堂活動。</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="roadmap" class="section roadmap">
+      <div class="section-heading">
+        <span>Roadmap</span>
+        <h2>未來發展</h2>
+      </div>
+
+      <div class="timeline">
+        <div>
+          <strong>v1.0</strong>
+          <p>建立平台首頁、示範圖表、經營模擬器與教學定位。</p>
+        </div>
+        <div>
+          <strong>v2.0</strong>
+          <p>串接 AMIS 農產品批發市場交易行情資料。</p>
+        </div>
+        <div>
+          <strong>v3.0</strong>
+          <p>導入 GPT 助理，建立 AI農產品分析師與AI農場經營顧問。</p>
+        </div>
+        <div>
+          <strong>v4.0</strong>
+          <p>加入教師模式，自動產生學習單、評量題與教案大綱。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="final-cta">
+      <h2>打造 AI × 農業 × 大數據 × 教育的新世代平台</h2>
+      <p>
+        讓學生不只會種植，也能看懂市場、分析趨勢、理解經營，成為更有決策力的未來農業人才。
+      </p>
+      <a href="#home" class="btn primary">回到平台首頁</a>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>AI農產品大數據教學平台 v1.0</p>
+    <p>屬於 AI農業教育生態系平台｜AI Agri Education Ecosystem</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

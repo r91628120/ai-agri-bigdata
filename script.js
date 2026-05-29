@@ -263,103 +263,80 @@ function calculateProfit() {
   const balancePrice = cost / yieldKg;
   const profitRate = (profit / income) * 100;
 
-   let advice = "";
-let icon = "";
+  let advice = "";
+  let icon = "";
 
-if (profit > 0) {
+  if (profit > 0) {
+    icon = "🟢";
 
-  icon = "🟢";
+    if (profitRate >= 30) {
+      advice = `
+        <strong>獲利狀況良好</strong><br>
+        目前毛利率達 ${profitRate.toFixed(1)}%，已具有不錯的經營效益。<br>
+        若市場價格穩定，可考慮擴大種植面積或增加產量。
+      `;
+    } else {
+      advice = `
+        <strong>有獲利，但仍需注意成本控制</strong><br>
+        雖然目前為正毛利，但若遇到價格下跌或產量減少，獲利可能快速縮水。
+      `;
+    }
 
-  if (profitRate >= 30) {
+  } else if (profit === 0) {
+    icon = "🟡";
     advice = `
-      <strong>獲利狀況良好</strong><br>
-      目前毛利率達 ${profitRate.toFixed(1)}%，
-      已具有不錯的經營效益。<br>
-      若市場價格穩定，可考慮擴大種植面積或增加產量。
+      <strong>損益平衡</strong><br>
+      目前收入剛好等於成本，幾乎沒有實際獲利空間。
     `;
   } else {
+    icon = "🔴";
     advice = `
-      <strong>有獲利，但仍需注意成本控制</strong><br>
-      雖然目前為正毛利，
-      但若遇到價格下跌或產量減少，
-      獲利可能快速縮水。
+      <strong>虧損風險</strong><br>
+      目前售價或產量不足以支撐成本，建議提高售價、增加產量，或重新檢視成本結構。
     `;
   }
 
-} else if (profit === 0) {
+  let riskText = "";
+  let riskColor = "";
 
-  icon = "🟡";
+  if (profitRate >= 30) {
+    riskText = "低風險";
+    riskColor = "#1f9d55";
+  } else if (profitRate >= 10) {
+    riskText = "中風險";
+    riskColor = "#f59e0b";
+  } else {
+    riskText = "高風險";
+    riskColor = "#dc2626";
+  }
 
-  advice = `
-    <strong>損益平衡</strong><br>
-    目前收入剛好等於成本，
-    幾乎沒有實際獲利空間。
-  `;
+  result.innerHTML = `
+    <h3>📊 經營分析結果</h3>
 
-} else {
+    <p>💰 預估收入：<strong>${income.toLocaleString()} 元</strong></p>
+    <p>💸 總成本：<strong>${cost.toLocaleString()} 元</strong></p>
+    <p>🌱 預估毛利：<strong>${profit.toLocaleString()} 元</strong></p>
+    <p>📈 損益平衡價格：<strong>${balancePrice.toFixed(1)} 元/公斤</strong></p>
+    <p>📊 毛利率：<strong>${profitRate.toFixed(1)}%</strong></p>
 
-  icon = "🔴";
+    <p>
+      ⚠️ 經營風險：
+      <strong style="color:${riskColor}">${riskText}</strong>
+    </p>
 
-  advice = `
-    <strong>虧損風險</strong><br>
-    目前售價或產量不足以支撐成本，
-    建議提高售價、增加產量，
-    或重新檢視成本結構。
-  `;
-}
+    <hr>
 
-let riskText = "";
-let riskColor = "";
-
-if (profitRate >= 30) {
-  riskText = "低風險";
-  riskColor = "#1f9d55";
-}
-else if (profitRate >= 10) {
-  riskText = "中風險";
-  riskColor = "#f59e0b";
-}
-else {
-  riskText = "高風險";
-  riskColor = "#dc2626";
-}
-
-<p>
-⚠️ 經營風險：
-<strong style="color:${riskColor}">
-${riskText}
-</strong>
-</p>
-
-
-
-  rresult.innerHTML = `
-  <h3>📊 經營分析結果</h3>
-
-  <p>💰 預估收入：<strong>${income.toLocaleString()} 元</strong></p>
-
-  <p>💸 總成本：<strong>${cost.toLocaleString()} 元</strong></p>
-
-  <p>🌱 預估毛利：<strong>${profit.toLocaleString()} 元</strong></p>
-
-  <p>📈 損益平衡價格：<strong>${balancePrice.toFixed(1)} 元/公斤</strong></p>
-
-  <p>📊 毛利率：<strong>${profitRate.toFixed(1)}%</strong></p>
-
-  <hr>
-
-  <div class="ai-advice-box">
+    <div class="ai-advice-box">
       <h4>${icon} AI經營判讀</h4>
       <p>${advice}</p>
-  </div>
+    </div>
 
-  <div class="tip-box">
+    <div class="tip-box">
       📚 教學思考：<br>
-      如果市場價格下降10元，
-      是否仍然能獲利？<br>
+      如果市場價格下降 10 元，是否仍然能獲利？<br>
       試著重新輸入售價觀察變化。
-  </div>
- `;
+    </div>
+  `;
 }
 
 function clearCalculator() {

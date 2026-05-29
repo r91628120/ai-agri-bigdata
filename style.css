@@ -303,7 +303,7 @@ body {
   display: grid;
   grid-template-columns: 1.1fr 0.9fr;
   gap: 24px;
-  align-items: stretch;
+  align-items: start;
 }
 
 .chart-card h3,
@@ -312,9 +312,26 @@ body {
   margin-bottom: 16px;
 }
 
-#priceChart {
-  width: 100%;
-  min-height: 340px;
+.chart-card {
+  height: 460px;
+  overflow: hidden;
+}
+
+ .chart-card {
+  height: 420px;
+}
+
+.chart-card canvas {
+  width: 100% !important;
+  height: 320px !important;
+} 
+
+.chart-card{
+  height:380px;
+}
+
+#priceChart{
+  height:260px !important;
 }
 
 .analysis-card ul {

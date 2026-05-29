@@ -138,3 +138,12 @@ document.addEventListener("DOMContentLoaded", () => {
     <p>© ${new Date().getFullYear()} AI Agri Big Data Education Platform</p>
   `;
 });
+
+function clearCalculator() {
+  document.getElementById("priceInput").value = "";
+  document.getElementById("yieldInput").value = "";
+  document.getElementById("costInput").value = "";
+
+  document.getElementById("result").innerHTML =
+    "請輸入資料後按下「開始分析」。";
+}

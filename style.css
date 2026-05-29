@@ -504,3 +504,77 @@ body {
     min-height: 108px;
   }
 }
+
+/* 青農經營模擬器升級版 */
+
+.calc-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 420px;
+  gap: 24px;
+  align-items: start;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input-group label {
+  font-weight: 800;
+  color: #064b35;
+}
+
+.button-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.clear-btn {
+  background: #eef3ef !important;
+  color: #064b35 !important;
+  border: 1px solid rgba(0, 120, 80, 0.16) !important;
+}
+
+.calc-help {
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(0, 120, 80, 0.12);
+  border-radius: 26px;
+  padding: 28px;
+  box-shadow: 0 12px 32px rgba(0, 80, 50, 0.08);
+}
+
+.calc-help h3 {
+  color: #064b35;
+  margin-bottom: 12px;
+}
+
+.calc-help ul {
+  padding-left: 22px;
+  margin-top: 14px;
+}
+
+.calc-help li {
+  margin-bottom: 8px;
+  color: #365f55;
+}
+
+.tip-box {
+  margin-top: 18px;
+  padding: 16px;
+  border-radius: 16px;
+  background: #eefaf4;
+  color: #064b35;
+  font-weight: 800;
+}
+
+@media (max-width: 980px) {
+  .calc-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .button-row {
+    grid-template-columns: 1fr;
+  }
+}

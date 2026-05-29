@@ -177,13 +177,52 @@
         <p>輸入價格、產量與成本，快速建立農業經營管理概念。</p>
       </div>
 
-      <div class="calc-box">
-        <input type="number" id="priceInput" placeholder="每公斤價格，例如 68" />
-        <input type="number" id="yieldInput" placeholder="預估產量，例如 5000" />
-        <input type="number" id="costInput" placeholder="總成本，例如 200000" />
-        <button onclick="calculateProfit()">開始分析</button>
-        <div id="result">請輸入資料後按下「開始分析」。</div>
-      </div>
+      <div class="calc-layout">
+
+  <div class="calc-box">
+
+    <div class="input-group">
+      <label for="priceInput">每公斤售價（元）</label>
+      <input type="number" id="priceInput" placeholder="例如：68">
+    </div>
+
+    <div class="input-group">
+      <label for="yieldInput">預估產量（公斤）</label>
+      <input type="number" id="yieldInput" placeholder="例如：10000">
+    </div>
+
+    <div class="input-group">
+      <label for="costInput">總成本（元）</label>
+      <input type="number" id="costInput" placeholder="例如：20000">
+    </div>
+
+    <div class="button-row">
+      <button onclick="calculateProfit()">開始分析</button>
+      <button class="clear-btn" onclick="clearCalculator()">清除資料</button>
+    </div>
+
+    <div id="result">請輸入資料後按下「開始分析」。</div>
+  </div>
+
+  <div class="calc-help">
+    <h3>📘 如何使用青農經營模擬器？</h3>
+    <p>本工具可協助學生理解農產品價格、生產成本與收益之間的關係。</p>
+
+    <ul>
+      <li>每公斤售價：農產品預估銷售價格。</li>
+      <li>預估產量：本次採收或預估販售總公斤數。</li>
+      <li>總成本：肥料、人工、農藥、包裝、運輸等成本。</li>
+      <li>預估收入 = 售價 × 產量。</li>
+      <li>預估毛利 = 預估收入 − 總成本。</li>
+      <li>損益平衡價格 = 總成本 ÷ 產量。</li>
+    </ul>
+
+    <div class="tip-box">
+      💡 教學建議：可讓學生調整不同價格、產量與成本，觀察農場經營是否獲利。
+    </div>
+  </div>
+
+</div>
     </section>
 
     <section id="users" class="section soft">

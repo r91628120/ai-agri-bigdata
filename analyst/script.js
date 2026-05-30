@@ -140,82 +140,193 @@ async function analyzeMarket() {
     }
 
     let supplyDemandText = "";
+    let supplyStatus = "";
+
     let farmerAdvice = "";
+    let decisionSuggestion = "";
+
     let studentQuestion = "";
+
     let riskLevel = "低";
+    let riskScore = 30;
 
     if (changeRate > 5 && quantityChangeRate < -5) {
-      supplyDemandText = "價格上升、交易量下降，可能代表市場供應減少，價格受到支撐。";
-      farmerAdvice = "可觀察是否進入採收尾聲，若品質穩定，可考慮分批出貨，提高平均售價。";
-      studentQuestion = "為什麼交易量下降時，價格可能反而上升？";
-      riskLevel = "中";
-    } else if (changeRate < -5 && quantityChangeRate > 5) {
-      supplyDemandText = "價格下降、交易量上升，可能代表大量上市，市場供給增加造成價格壓力。";
-      farmerAdvice = "建議評估分級銷售、加工利用或轉往其他通路，避免集中出貨造成價格下跌。";
-      studentQuestion = "大量上市時，農民可以用哪些方式降低價格下跌風險？";
-      riskLevel = "高";
-    } else if (changeRate > 5 && quantityChangeRate > 5) {
-      supplyDemandText = "價格與交易量同步上升，可能代表市場需求增加，買氣較強。";
-      farmerAdvice = "可注意市場是否持續有需求，若品質佳，可加強品牌包裝與通路銷售。";
-      studentQuestion = "價格和交易量都上升時，可能代表市場發生什麼變化？";
+
+       supplyStatus = "供給減少 ＞ 需求穩定";
+
+       supplyDemandText =
+          "價格上升、交易量下降，代表市場供給減少，價格受到支撐。";
+
+       farmerAdvice =
+         "可觀察是否進入採收尾聲，若品質穩定，可考慮分批出貨，提高平均售價。";
+
+       decisionSuggestion =
+         "建議採取分批出貨策略。";
+
+       studentQuestion =
+         "為什麼交易量下降時，價格可能反而上升？";
+
+        riskLevel = "中";
+        riskScore = 55;
+      }
+      else if (changeRate < -5 && quantityChangeRate > 5) {
+
+        supplyStatus = "供給增加 ＞ 市場需求";
+
+        supplyDemandText =
+         "價格下降、交易量上升，可能代表大量上市造成價格壓力。";
+
+        farmerAdvice =
+          "建議評估分級銷售、加工利用或轉往其他通路。";
+
+        decisionSuggestion =
+          "避免集中出貨，可考慮加工或冷藏。";
+
+        studentQuestion =
+           "大量上市時，農民如何降低價格風險？";
+
+        riskLevel = "高";
+        riskScore = 85;
+     }
+     else if (changeRate > 5 && quantityChangeRate > 5) {
+
+        supplyStatus = "需求增加";
+
+        supplyDemandText =
+          "價格與交易量同步上升，可能代表市場需求增加。";
+
+       farmerAdvice =
+          "可觀察是否持續缺貨，提高產品附加價值。";
+
+      decisionSuggestion =
+         "適合加強品牌行銷與通路經營。";
+
+      studentQuestion =
+         "價格與交易量同步增加代表什麼？";
+
       riskLevel = "低";
-    } else if (changeRate < -5 && quantityChangeRate < -5) {
-      supplyDemandText = "價格與交易量同步下降，可能代表市場需求減弱或交易熱度降低。";
-      farmerAdvice = "建議保守評估出貨時機，避免過度期待價格短期反彈。";
-      studentQuestion = "價格與交易量都下降時，是否一定代表供給變少？";
-      riskLevel = "中";
-    } else {
-      supplyDemandText = "價格與交易量變化不明顯，市場短期可能處於整理或觀望狀態。";
-      farmerAdvice = "可持續觀察後續行情，不宜只用單日價格做出重大決策。";
-      studentQuestion = "如果價格變化不大，還可以觀察哪些市場訊號？";
-      riskLevel = "低";
+      riskScore = 35;
     }
+    else if (changeRate < -5 && quantityChangeRate < -5) {
 
-    chartTitle.innerHTML = `${crop} 近${selectedPeriod}天價格與交易量分析`;
+      supplyStatus = "需求下降";
 
-    status.innerHTML =
-      `已完成近 ${trendData.length} 日「${crop}」市場分析。`;
+      supplyDemandText =
+         "價格與交易量同步下降，市場熱度減弱。";
+
+      farmerAdvice =
+        "保守規劃出貨時程。";
+
+      decisionSuggestion =
+        "建議觀察市場後再決定是否大量出貨。";
+
+      studentQuestion =
+        "需求下降可能來自哪些原因？";
+
+      riskLevel = "中";
+      riskScore = 60;
+    }
+    else {
+
+      supplyStatus = "供需大致平衡";
+
+      supplyDemandText =
+        "市場目前處於整理階段。";
+
+      farmerAdvice =
+         "持續觀察後續行情。";
+
+      decisionSuggestion =
+         "維持正常出貨即可。";
+
+      studentQuestion =
+        "除了價格之外還有哪些市場訊號？";
+
+      riskLevel = "低";
+      riskScore = 25;
+   }
 
   analysisText.innerHTML = `
-      <div class="module-grid">
+
+     <div class="module-grid">
 
     <div class="analysis-module">
-      <h3>① AI市場判讀</h3>
-      <p><strong>${trendIcon} 市場趨勢：</strong>${trendText}</p>
-      <ul>
-        <li>起始平均價：${firstPrice.toFixed(1)} 元/公斤</li>
-        <li>最新平均價：${lastPrice.toFixed(1)} 元/公斤</li>
-        <li>價格變化：${change.toFixed(1)} 元，約 ${changeRate.toFixed(1)}%</li>
-        <li>交易量變化：約 ${quantityChangeRate.toFixed(1)}%</li>
-      </ul>
-      <p>${supplyDemandText}</p>
+      <h3>① 市場判讀模組</h3>
+
+        <p><strong>${trendIcon} 市場趨勢：</strong>${trendText}</p>
+
+          <ul>
+            <li>起始平均價：${firstPrice.toFixed(1)} 元/公斤</li>
+            <li>最新平均價：${lastPrice.toFixed(1)} 元/公斤</li>
+            <li>價格變化：${change.toFixed(1)} 元</li>
+            <li>價格漲跌幅：${changeRate.toFixed(1)}%</li>
+           <li>交易量變化：${quantityChangeRate.toFixed(1)}%</li>
+          </ul>
+
     </div>
 
     <div class="analysis-module">
-      <h3>② 市場風險等級</h3>
-      <p class="risk-badge">風險等級：${riskLevel}</p>
-      <p>
-        可依價格波動與交易量變化，判斷市場是否穩定。
-        若價格快速下跌或交易量劇烈增加，代表市場可能有較高波動風險。
-      </p>
+       <h3>② 供需分析模組</h3>
+
+        <p><strong>AI供需判斷：</strong></p>
+
+        <p>${supplyStatus}</p>
+
+        <p>${supplyDemandText}</p>
+
     </div>
 
     <div class="analysis-module">
-      <h3>③ 農民經營建議</h3>
-      <p>${farmerAdvice}</p>
+       <h3>③ 風險預警模組</h3>
+
+         <p class="risk-badge">
+           風險等級：${riskLevel}
+         </p>
+
+          <br><br>
+
+         <p>
+           市場風險指數：
+           <strong>${riskScore}/100</strong>
+         </p>
+
+         <p>
+           指數越高代表價格波動與市場風險越高。
+         </p>
+
     </div>
 
     <div class="analysis-module">
-      <h3>④ 教師討論題</h3>
-      <p>${studentQuestion}</p>
-      <ul>
-        <li>如果你是農民，會選擇立即出貨還是分批出貨？</li>
-        <li>價格與交易量同時變化時，可能代表什麼市場訊號？</li>
-      </ul>
-     </div>
+      <h3>④ 農民決策模組</h3>
+
+        <p>${farmerAdvice}</p>
+
+         <hr>
+
+        <p>
+          <strong>AI決策建議：</strong>
+           ${decisionSuggestion}
+        </p>
 
     </div>
-    `;
+
+    <div class="analysis-module">
+
+       <h3>🎓 教師討論區</h3>
+
+        <p>${studentQuestion}</p>
+
+          <ul>
+           <li>如果你是農民，你會如何決策？</li>
+           <li>市場價格與交易量變化代表什麼訊號？</li>
+           <li>如何降低價格下跌風險？</li>
+          </ul>
+
+    </div>
+
+    </div>
+     `;
+     
   } catch (error) {
     console.error(error);
     status.innerHTML = "資料讀取失敗，可能是 API 暫時無法連線或瀏覽器限制。";

@@ -1,1 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <title>AI市場分析師｜AI農產品大數據教學平台</title>
+  <meta name="description" content="AI市場分析師，協助判讀農產品價格、交易量、供需變化與市場風險，適合農業教學、青農與農民使用。">
+
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <span class="brand-icon">🌱</span>
+      <span>
+        <strong>AI市場分析師</strong>
+        <small>AI Market Analyst</small>
+      </span>
+    </a>
+
+    <nav class="nav">
+      <a href="../index.html">回首頁</a>
+      <a href="#analyze">開始分析</a>
+      <a href="#guide">教學說明</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div>
+        <div class="eyebrow">AI × 市場行情 × 農業決策</div>
+        <h1>AI市場分析師</h1>
+        <p>
+          輸入作物名稱與市場名稱，系統會串接農產品交易行情資料，
+          分析價格變化、交易量變化、供需訊號與市場風險。
+        </p>
+      </div>
+    </section>
+
+    <section id="analyze" class="section">
+      <div class="query-card">
+        <label for="cropInput">輸入作物名稱</label>
+        <input id="cropInput" type="text" placeholder="例如：苦瓜、甘藍、芒果-愛文">
+
+        <label for="marketInput">市場名稱，可留空</label>
+        <input id="marketInput" type="text" placeholder="例如：台北二、高雄市、西螺鎮">
+
+        <label>分析期間</label>
+        <div class="period-row">
+          <button id="period7" class="period-btn active" onclick="setPeriod(7)">近7天</button>
+          <button id="period30" class="period-btn" onclick="setPeriod(30)">近30天</button>
+          <button id="period90" class="period-btn" onclick="setPeriod(90)">近90天</button>
+        </div>
+
+        <div class="button-row">
+          <button onclick="analyzeMarket()">開始市場分析</button>
+          <button class="clear-btn" onclick="clearAnalysis()">清除分析</button>
+        </div>
+      </div>
+
+      <div id="status" class="status">尚未進行市場分析。</div>
+
+      <div class="result-layout">
+        <div class="chart-card">
+          <h2 id="chartTitle">價格與交易量趨勢圖</h2>
+          <canvas id="marketChart"></canvas>
+        </div>
+
+        <div class="analysis-card">
+          <h2>🤖 AI市場分析報告</h2>
+          <div id="analysisText">
+            請輸入作物名稱後，系統會自動產生市場趨勢、供需判讀、農民建議與教學提問。
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="guide" class="section guide">
+      <h2>📘 教學說明</h2>
+      <p>
+        本工具可協助學生理解「價格」與「交易量」之間的關係。
+        當價格上升但交易量下降，可能代表供應減少；
+        當價格下降但交易量上升，可能代表大量上市造成價格壓力。
+      </p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    AI市場分析師 v1.0｜AI農產品大數據教學平台
+  </footer>
+
+  <script src="script.js?v=20260531a"></script>
+</body>
+</html>

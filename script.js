@@ -1,218 +1,41 @@
-let priceChartInstance = null;
-let trendPeriod = 7;
-let chartMode = "price";
+let selectedPeriod = 7;
+let chartInstance = null;
 
+function setPeriod(days) {
+  selectedPeriod = days;
 
-function renderPriceChart(labels, prices, quantities, cropName) {
-  const canvas = document.getElementById("priceChart");
-  if (!canvas || typeof Chart === "undefined") return;
-
-  if (priceChartInstance) {
-    priceChartInstance.destroy();
-  }
-
-  let datasets = [];
-  let scales = {};
-
-  if (chartMode === "price") {
-    datasets = [{
-      label: `${cropName} 平均價（元/公斤）`,
-      data: prices,
-      borderWidth: 3,
-      tension: 0.35,
-      fill: true
-    }];
-  }
-
-  if (chartMode === "quantity") {
-    datasets = [{
-      label: `${cropName} 交易量（公斤）`,
-      data: quantities,
-      borderWidth: 3,
-      tension: 0.35,
-      fill: true
-    }];
-  }
-
-  if (chartMode === "dual") {
-    datasets = [
-      {
-        label: `${cropName} 平均價（元/公斤）`,
-        data: prices,
-        borderWidth: 3,
-        tension: 0.35,
-        yAxisID: "y"
-      },
-      {
-        label: `${cropName} 交易量（公斤）`,
-        data: quantities,
-        borderWidth: 3,
-        tension: 0.35,
-        yAxisID: "y1"
-      }
-    ];
-
-    scales = {
-      y: {
-        type: "linear",
-        position: "left",
-        title: {
-          display: true,
-          text: "平均價（元/公斤）"
-        }
-      },
-      y1: {
-        type: "linear",
-        position: "right",
-        grid: {
-          drawOnChartArea: false
-        },
-        title: {
-          display: true,
-          text: "交易量（公斤）"
-        }
-      }
-    };
-  }
-
-  priceChartInstance = new Chart(canvas, {
-    type: "line",
-    data: {
-      labels,
-      datasets
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      scales
-    }
+  document.querySelectorAll(".period-btn").forEach(btn => {
+    btn.classList.remove("active");
   });
+
+  document.getElementById(`period${days}`).classList.add("active");
 }
 
-   function setTrendPeriod(days) {
-
-  trendPeriod = days;
-
-  document
-    .querySelectorAll(".period-btn")
-    .forEach(btn => btn.classList.remove("active"));
-
-  document
-    .getElementById(`period${days}`)
-    .classList.add("active");
-
+function formatRocDate(date) {
+  const rocYear = date.getFullYear() - 1911;
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${rocYear}.${month}.${day}`;
 }
 
- function setChartMode(mode) {
-  chartMode = mode;
-
-  document
-    .querySelectorAll("#modePrice, #modeQuantity, #modeDual")
-    .forEach(btn => btn.classList.remove("active"));
-
-  if (mode === "price") {
-    document.getElementById("modePrice").classList.add("active");
-  }
-
-  if (mode === "quantity") {
-    document.getElementById("modeQuantity").classList.add("active");
-  }
-
-  if (mode === "dual") {
-    document.getElementById("modeDual").classList.add("active");
-  }
-} 
-
-
-
-// ===============================
-// 📈 農產品即時行情查詢
-// ===============================
-
-async function loadAmisData() {
+async function analyzeMarket() {
   const crop = document.getElementById("cropInput").value.trim();
   const market = document.getElementById("marketInput").value.trim();
-  const status = document.getElementById("marketStatus");
-  const tbody = document.getElementById("marketTableBody");
+  const status = document.getElementById("status");
+  const analysisText = document.getElementById("analysisText");
+  const chartTitle = document.getElementById("chartTitle");
 
-  status.innerHTML = "資料讀取中，請稍候...";
-  tbody.innerHTML = "";
+  status.innerHTML = "資料分析中，請稍候...";
+  analysisText.innerHTML = "正在讀取農產品行情資料...";
 
   if (!crop) {
-    status.innerHTML = "⚠️ 請先輸入作物名稱，例如：甘藍、甘藍-初秋、芒果-愛文。";
+    status.innerHTML = "⚠️ 請先輸入作物名稱，例如：苦瓜、甘藍、芒果-愛文。";
     return;
   }
 
-  try {
-    const apiUrl = new URL("https://data.moa.gov.tw/Service/OpenData/FromM/FarmTransData.aspx");
-    apiUrl.searchParams.set("$top", "500");
-    apiUrl.searchParams.set("Crop", crop);
-
-    if (market) {
-      apiUrl.searchParams.set("Market", market);
-    }
-
-    const response = await fetch(apiUrl.toString());
-    const data = await response.json();
-
-    const filteredData = data.filter(item => {
-      const cropName = item["作物名稱"] || item.Crop || "";
-      const marketName = item["市場名稱"] || item.Market || "";
-      return cropName.includes(crop) && (!market || marketName.includes(market));
-    });
-
-    if (filteredData.length === 0) {
-      status.innerHTML = `查無「${crop}」資料，請改用更完整名稱，例如：甘藍-初秋、芒果-愛文。`;
-      return;
-    }
-
-    status.innerHTML = `已取得 ${filteredData.length} 筆「${crop}」行情資料。`;
-
-    filteredData.slice(0, 30).forEach(item => {
-      const row = document.createElement("tr");
-
-      row.innerHTML = `
-        <td>${item["交易日期"] || item.TransDate || "-"}</td>
-        <td>${item["市場名稱"] || item.Market || "-"}</td>
-        <td>${item["作物名稱"] || item.Crop || "-"}</td>
-        <td>${item["上價"] || item.Upper_Price || "-"} 元/公斤</td>
-        <td>${item["中價"] || item.Middle_Price || "-"} 元/公斤</td>
-        <td>${item["下價"] || item.Lower_Price || "-"} 元/公斤</td>
-        <td>${item["平均價"] || item.Avg_Price || "-"} 元/公斤</td>
-        <td>${item["交易量"] || item.Trans_Quantity || "-"} 公斤</td>
-      `;
-
-      tbody.appendChild(row);
-    });
-
-  } catch (error) {
-    console.error(error);
-    status.innerHTML = "資料讀取失敗，可能是 API 暫時無法連線或瀏覽器限制。";
-  }
-}
-
-  function formatRocDate(date) {
-    const rocYear = date.getFullYear() - 1911;
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-     return `${rocYear}.${month}.${day}`;
-}
-
-
-   async function analyzeTrend() {
-  const crop = document.getElementById("trendCropInput").value.trim();
-  const market = document.getElementById("trendMarketInput").value.trim();
-  const status = document.getElementById("trendStatus");
-  const aiText = document.getElementById("aiTrendText");
-  const chartTitle = document.getElementById("trendChartTitle");
-
-  status.innerHTML = "趨勢資料分析中，請稍候...";
-  aiText.innerHTML = "資料讀取中...";
-
-  if (!crop) {
-    status.innerHTML = "⚠️ 請先輸入作物名稱，例如：芒果-愛文、苦瓜、甘藍。";
-    return;
-  }
+  const endDate = new Date();
+  const startDate = new Date();
+  startDate.setDate(endDate.getDate() - (selectedPeriod - 1));
 
   let allData = [];
 
@@ -220,15 +43,11 @@ async function loadAmisData() {
     for (let skip = 0; skip < 5000; skip += 500) {
       const apiUrl = new URL("https://data.moa.gov.tw/Service/OpenData/FromM/FarmTransData.aspx");
 
-      const endDate = new Date();
-      const startDate = new Date();
-            startDate.setDate(endDate.getDate() - (trendPeriod - 1));
-
-            apiUrl.searchParams.set("$top", "500");
-            apiUrl.searchParams.set("$skip", skip);
-            apiUrl.searchParams.set("StartDate", formatRocDate(startDate));
-            apiUrl.searchParams.set("EndDate", formatRocDate(endDate));
-            apiUrl.searchParams.set("Crop", crop);
+      apiUrl.searchParams.set("$top", "500");
+      apiUrl.searchParams.set("$skip", skip);
+      apiUrl.searchParams.set("StartDate", formatRocDate(startDate));
+      apiUrl.searchParams.set("EndDate", formatRocDate(endDate));
+      apiUrl.searchParams.set("Crop", crop);
 
       if (market) {
         apiUrl.searchParams.set("Market", market);
@@ -247,12 +66,13 @@ async function loadAmisData() {
     const filteredData = allData.filter(item => {
       const cropName = item["作物名稱"] || item.Crop || "";
       const marketName = item["市場名稱"] || item.Market || "";
+
       return cropName.includes(crop) && (!market || marketName.includes(market));
     });
 
     if (filteredData.length === 0) {
-      status.innerHTML = `查無「${crop}」趨勢資料，請改用更完整名稱，例如：芒果-愛文。`;
-      aiText.innerHTML = "尚無可分析資料。";
+      status.innerHTML = `查無「${crop}」資料，請改用完整作物名稱，例如：芒果-愛文。`;
+      analysisText.innerHTML = "尚無可分析資料。";
       return;
     }
 
@@ -278,7 +98,7 @@ async function loadAmisData() {
       dailyMap[date].totalQuantity += quantity;
     });
 
-    let trendData = Object.keys(dailyMap)
+    const trendData = Object.keys(dailyMap)
       .sort()
       .map(date => ({
         date,
@@ -286,11 +106,8 @@ async function loadAmisData() {
         quantity: dailyMap[date].totalQuantity
       }));
 
-    trendData = trendData.slice(-trendPeriod);
-
     if (trendData.length < 2) {
-      status.innerHTML = `「${crop}」目前僅取得 ${trendData.length} 日資料，暫時無法形成趨勢圖。`;
-      aiText.innerHTML = "建議改用更完整作物名稱，或稍後再查詢。";
+      status.innerHTML = `目前僅取得 ${trendData.length} 日資料，暫時無法形成趨勢分析。`;
       return;
     }
 
@@ -298,7 +115,7 @@ async function loadAmisData() {
     const prices = trendData.map(item => Number(item.avgPrice.toFixed(1)));
     const quantities = trendData.map(item => Number(item.quantity || 0));
 
-    renderPriceChart(labels, prices, quantities, crop);
+    renderChart(labels, prices, quantities, crop);
 
     const firstPrice = prices[0];
     const lastPrice = prices[prices.length - 1];
@@ -322,205 +139,267 @@ async function loadAmisData() {
       trendText = "價格呈現下降趨勢";
     }
 
-    let modeTitle = "價格趨勢";
-
-    if (chartMode === "quantity") {
-      modeTitle = "交易量趨勢";
-    }
-
-    if (chartMode === "dual") {
-      modeTitle = "價格與交易量雙軸圖";
-    }
-
-    chartTitle.innerHTML = `${crop} 近${trendPeriod}天${modeTitle}`;
-
-    status.innerHTML =
-      `已完成近 ${trendData.length} 日「${crop}」價格趨勢分析。（目前可取得 ${trendData.length} 日資料）`;
-
     let supplyDemandText = "";
-let farmerAdvice = "";
-let studentQuestion = "";
-let riskLevel = "低";
+    let supplyStatus = "";
 
-if (changeRate > 5 && quantityChangeRate < -5) {
-  supplyDemandText = "價格上升、交易量下降，可能代表市場供應減少，價格受到支撐。";
-  farmerAdvice = "可觀察是否進入採收尾聲，若品質穩定，可考慮分批出貨，提高平均售價。";
-  studentQuestion = "為什麼交易量下降時，價格可能反而上升？";
-  riskLevel = "中";
-} else if (changeRate < -5 && quantityChangeRate > 5) {
-  supplyDemandText = "價格下降、交易量上升，可能代表大量上市，市場供給增加造成價格壓力。";
-  farmerAdvice = "建議評估分級銷售、加工利用或轉往其他通路，避免集中出貨造成價格下跌。";
-  studentQuestion = "大量上市時，農民可以用哪些方式降低價格下跌風險？";
-  riskLevel = "高";
-} else if (changeRate > 5 && quantityChangeRate > 5) {
-  supplyDemandText = "價格與交易量同步上升，可能代表市場需求增加，買氣較強。";
-  farmerAdvice = "可注意市場是否持續有需求，若品質佳，可加強品牌包裝與通路銷售。";
-  studentQuestion = "價格和交易量都上升時，可能代表市場發生什麼變化？";
-  riskLevel = "低";
-} else if (changeRate < -5 && quantityChangeRate < -5) {
-  supplyDemandText = "價格與交易量同步下降，可能代表市場需求減弱或交易熱度降低。";
-  farmerAdvice = "建議保守評估出貨時機，避免過度期待價格短期反彈。";
-  studentQuestion = "價格與交易量都下降時，是否一定代表供給變少？";
-  riskLevel = "中";
-} else {
-  supplyDemandText = "價格與交易量變化不明顯，市場短期可能處於整理或觀望狀態。";
-  farmerAdvice = "可持續觀察後續行情，不宜只用單日價格做出重大決策。";
-  studentQuestion = "如果價格變化不大，還可以觀察哪些市場訊號？";
-  riskLevel = "低";
-}
+    let farmerAdvice = "";
+    let decisionSuggestion = "";
 
-aiText.innerHTML = `
-  <p><strong>${trendIcon} 市場趨勢：</strong>${trendText}</p>
+    let studentQuestion = "";
 
-  <ul>
-    <li>起始平均價：${firstPrice.toFixed(1)} 元/公斤</li>
-    <li>最新平均價：${lastPrice.toFixed(1)} 元/公斤</li>
-    <li>價格變化：${change.toFixed(1)} 元，約 ${changeRate.toFixed(1)}%</li>
-    <li>交易量變化：約 ${quantityChangeRate.toFixed(1)}%</li>
-    <li>市場風險等級：<strong>${riskLevel}</strong></li>
-  </ul>
+    let riskLevel = "低";
+    let riskScore = 30;
 
-  <hr>
+    if (changeRate > 5 && quantityChangeRate < -5) {
 
-  <p><strong>🤖 AI市場分析師判讀：</strong></p>
-  <p>${supplyDemandText}</p>
+       supplyStatus = "供給減少 ＞ 需求穩定";
 
-  <p><strong>🌾 農民經營建議：</strong></p>
-  <p>${farmerAdvice}</p>
+       supplyDemandText =
+          "價格上升、交易量下降，代表市場供給減少，價格受到支撐。";
 
-  <p><strong>🎓 教學提問：</strong></p>
-  <p>${studentQuestion}</p>
-`;
+       farmerAdvice =
+         "可觀察是否進入採收尾聲，若品質穩定，可考慮分批出貨，提高平均售價。";
 
+       decisionSuggestion =
+         "建議採取分批出貨策略。";
+
+       studentQuestion =
+         "為什麼交易量下降時，價格可能反而上升？";
+
+        riskLevel = "中";
+        riskScore = 55;
+      }
+      else if (changeRate < -5 && quantityChangeRate > 5) {
+
+        supplyStatus = "供給增加 ＞ 市場需求";
+
+        supplyDemandText =
+         "價格下降、交易量上升，可能代表大量上市造成價格壓力。";
+
+        farmerAdvice =
+          "建議評估分級銷售、加工利用或轉往其他通路。";
+
+        decisionSuggestion =
+          "避免集中出貨，可考慮加工或冷藏。";
+
+        studentQuestion =
+           "大量上市時，農民如何降低價格風險？";
+
+        riskLevel = "高";
+        riskScore = 85;
+     }
+     else if (changeRate > 5 && quantityChangeRate > 5) {
+
+        supplyStatus = "需求增加";
+
+        supplyDemandText =
+          "價格與交易量同步上升，可能代表市場需求增加。";
+
+       farmerAdvice =
+          "可觀察是否持續缺貨，提高產品附加價值。";
+
+      decisionSuggestion =
+         "適合加強品牌行銷與通路經營。";
+
+      studentQuestion =
+         "價格與交易量同步增加代表什麼？";
+
+      riskLevel = "低";
+      riskScore = 35;
+    }
+    else if (changeRate < -5 && quantityChangeRate < -5) {
+
+      supplyStatus = "需求下降";
+
+      supplyDemandText =
+         "價格與交易量同步下降，市場熱度減弱。";
+
+      farmerAdvice =
+        "保守規劃出貨時程。";
+
+      decisionSuggestion =
+        "建議觀察市場後再決定是否大量出貨。";
+
+      studentQuestion =
+        "需求下降可能來自哪些原因？";
+
+      riskLevel = "中";
+      riskScore = 60;
+    }
+    else {
+
+      supplyStatus = "供需大致平衡";
+
+      supplyDemandText =
+        "市場目前處於整理階段。";
+
+      farmerAdvice =
+         "持續觀察後續行情。";
+
+      decisionSuggestion =
+         "維持正常出貨即可。";
+
+      studentQuestion =
+        "除了價格之外還有哪些市場訊號？";
+
+      riskLevel = "低";
+      riskScore = 25;
+   }
+
+  analysisText.innerHTML = `
+
+     <div class="module-grid">
+
+    <div class="analysis-module">
+      <h3>① 市場判讀模組</h3>
+
+        <p><strong>${trendIcon} 市場趨勢：</strong>${trendText}</p>
+
+          <ul>
+            <li>起始平均價：${firstPrice.toFixed(1)} 元/公斤</li>
+            <li>最新平均價：${lastPrice.toFixed(1)} 元/公斤</li>
+            <li>價格變化：${change.toFixed(1)} 元</li>
+            <li>價格漲跌幅：${changeRate.toFixed(1)}%</li>
+           <li>交易量變化：${quantityChangeRate.toFixed(1)}%</li>
+          </ul>
+
+    </div>
+
+    <div class="analysis-module">
+       <h3>② 供需分析模組</h3>
+
+        <p><strong>AI供需判斷：</strong></p>
+
+        <p>${supplyStatus}</p>
+
+        <p>${supplyDemandText}</p>
+
+    </div>
+
+    <div class="analysis-module">
+       <h3>③ 風險預警模組</h3>
+
+         <p class="risk-badge">
+           風險等級：${riskLevel}
+         </p>
+
+          <br><br>
+
+         <p>
+           市場風險指數：
+           <strong>${riskScore}/100</strong>
+         </p>
+
+         <p>
+           指數越高代表價格波動與市場風險越高。
+         </p>
+
+    </div>
+
+    <div class="analysis-module">
+      <h3>④ 農民決策模組</h3>
+
+        <p>${farmerAdvice}</p>
+
+         <hr>
+
+        <p>
+          <strong>AI決策建議：</strong>
+           ${decisionSuggestion}
+        </p>
+
+    </div>
+
+    <div class="analysis-module">
+
+       <h3>🎓 教師討論區</h3>
+
+        <p>${studentQuestion}</p>
+
+          <ul>
+           <li>如果你是農民，你會如何決策？</li>
+           <li>市場價格與交易量變化代表什麼訊號？</li>
+           <li>如何降低價格下跌風險？</li>
+          </ul>
+
+    </div>
+
+    </div>
+     `;
+     
   } catch (error) {
     console.error(error);
-    status.innerHTML = "趨勢分析失敗，可能是 API 暫時無法連線或瀏覽器限制。";
-    aiText.innerHTML = "請稍後再試。";
+    status.innerHTML = "資料讀取失敗，可能是 API 暫時無法連線或瀏覽器限制。";
+    analysisText.innerHTML = "請稍後再試。";
   }
 }
 
+function renderChart(labels, prices, quantities, crop) {
+  const canvas = document.getElementById("marketChart");
 
-function clearTrendAnalysis() {
-  document.getElementById("trendCropInput").value = "";
-  document.getElementById("trendMarketInput").value = "";
-  document.getElementById("trendStatus").innerHTML = "尚未進行趨勢分析。";
-  document.getElementById("trendChartTitle").innerHTML = "價格趨勢圖";
-  document.getElementById("aiTrendText").innerHTML =
-    "請輸入作物名稱後，系統會自動產生價格趨勢、漲跌幅、交易量與教學重點。";
-
-  if (priceChartInstance) {
-    priceChartInstance.destroy();
-    priceChartInstance = null;
+  if (chartInstance) {
+    chartInstance.destroy();
   }
-}  
 
+  chartInstance = new Chart(canvas, {
+    type: "line",
+    data: {
+      labels,
+      datasets: [
+        {
+          label: `${crop} 平均價（元/公斤）`,
+          data: prices,
+          borderWidth: 3,
+          tension: 0.35,
+          yAxisID: "y"
+        },
+        {
+          label: `${crop} 交易量（公斤）`,
+          data: quantities,
+          borderWidth: 3,
+          tension: 0.35,
+          yAxisID: "y1"
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          type: "linear",
+          position: "left",
+          title: {
+            display: true,
+            text: "平均價（元/公斤）"
+          }
+        },
+        y1: {
+          type: "linear",
+          position: "right",
+          grid: {
+            drawOnChartArea: false
+          },
+          title: {
+            display: true,
+            text: "交易量（公斤）"
+          }
+        }
+      }
+    }
+  });
+}
 
-function clearAmisData() {
+function clearAnalysis() {
   document.getElementById("cropInput").value = "";
   document.getElementById("marketInput").value = "";
-  document.getElementById("marketStatus").innerHTML = "尚未查詢資料。";
-  document.getElementById("marketTableBody").innerHTML = "";
-}
+  document.getElementById("status").innerHTML = "尚未進行市場分析。";
+  document.getElementById("chartTitle").innerHTML = "價格與交易量趨勢圖";
+  document.getElementById("analysisText").innerHTML =
+    "請輸入作物名稱後，系統會自動產生市場趨勢、供需判讀、農民建議與教學提問。";
 
-// ===============================
-// 🌱 青農經營模擬器
-// ===============================
-
-function calculateProfit() {
-  const price = Number(document.getElementById("priceInput").value);
-  const yieldKg = Number(document.getElementById("yieldInput").value);
-  const cost = Number(document.getElementById("costInput").value);
-  const result = document.getElementById("result");
-
-  if (!price || !yieldKg || !cost) {
-    result.innerHTML = "⚠️ 請完整輸入每公斤價格、預估產量與總成本。";
-    return;
+  if (chartInstance) {
+    chartInstance.destroy();
+    chartInstance = null;
   }
-
-  const income = price * yieldKg;
-  const profit = income - cost;
-  const balancePrice = cost / yieldKg;
-  const profitRate = (profit / income) * 100;
-
-  let advice = "";
-  let icon = "";
-
-  if (profit > 0) {
-    icon = "🟢";
-
-    if (profitRate >= 30) {
-      advice = `
-        <strong>獲利狀況良好</strong><br>
-        目前毛利率達 ${profitRate.toFixed(1)}%，已具有不錯的經營效益。<br>
-        若市場價格穩定，可考慮擴大種植面積或增加產量。
-      `;
-    } else {
-      advice = `
-        <strong>有獲利，但仍需注意成本控制</strong><br>
-        雖然目前為正毛利，但若遇到價格下跌或產量減少，獲利可能快速縮水。
-      `;
-    }
-
-  } else if (profit === 0) {
-    icon = "🟡";
-    advice = `
-      <strong>損益平衡</strong><br>
-      目前收入剛好等於成本，幾乎沒有實際獲利空間。
-    `;
-  } else {
-    icon = "🔴";
-    advice = `
-      <strong>虧損風險</strong><br>
-      目前售價或產量不足以支撐成本，建議提高售價、增加產量，或重新檢視成本結構。
-    `;
-  }
-
-  let riskText = "";
-  let riskColor = "";
-
-  if (profitRate >= 30) {
-    riskText = "低風險";
-    riskColor = "#1f9d55";
-  } else if (profitRate >= 10) {
-    riskText = "中風險";
-    riskColor = "#f59e0b";
-  } else {
-    riskText = "高風險";
-    riskColor = "#dc2626";
-  }
-
-  result.innerHTML = `
-    <h3>📊 經營分析結果</h3>
-
-    <p>💰 預估收入：<strong>${income.toLocaleString()} 元</strong></p>
-    <p>💸 總成本：<strong>${cost.toLocaleString()} 元</strong></p>
-    <p>🌱 預估毛利：<strong>${profit.toLocaleString()} 元</strong></p>
-    <p>📈 損益平衡價格：<strong>${balancePrice.toFixed(1)} 元/公斤</strong></p>
-    <p>📊 毛利率：<strong>${profitRate.toFixed(1)}%</strong></p>
-
-    <p>
-      ⚠️ 經營風險：
-      <strong style="color:${riskColor}">${riskText}</strong>
-    </p>
-
-    <hr>
-
-    <div class="ai-advice-box">
-      <h4>${icon} AI經營判讀</h4>
-      <p>${advice}</p>
-    </div>
-
-    <div class="tip-box">
-      📚 教學思考：<br>
-      如果市場價格下降 10 元，是否仍然能獲利？<br>
-      試著重新輸入售價觀察變化。
-    </div>
-  `;
-}
-
-function clearCalculator() {
-  document.getElementById("priceInput").value = "";
-  document.getElementById("yieldInput").value = "";
-  document.getElementById("costInput").value = "";
-  document.getElementById("result").innerHTML = "請輸入資料後按下「開始分析」。";
 }

@@ -47,6 +47,17 @@
 
         <label for="marketInput">市場名稱，可留空</label>
         <input id="marketInput" type="text" placeholder="例如：台北二、高雄市、西螺鎮">
+        
+        <label for="countySelect">產地縣市，可留空</label>
+          <select id="countySelect" onchange="updateTownships()">
+             <option value="">請選擇縣市</option>
+          </select>
+
+        <label for="townSelect">產地鄉鎮，可留空</label>
+          <select id="townSelect">
+             <option value="">請先選擇縣市</option>
+        </select>
+
 
         <label>分析期間</label>
         <div class="period-row">
@@ -89,9 +100,9 @@
   </main>
 
   <footer class="footer">
-    AI市場分析師 v1.0｜AI農產品大數據教學平台
+    AI市場分析師 v1.4｜AI農產品大數據教學平台
   </footer>
 
-  <script src="script.js?v=20260531a"></script>
+  <script src="script.js?v=20260531e"></script>
 </body>
 </html>

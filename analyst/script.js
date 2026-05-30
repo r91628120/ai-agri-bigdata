@@ -1,3 +1,51 @@
+const townshipData = {
+  "屏東縣": ["佳冬鄉", "枋寮鄉", "枋山鄉", "高樹鄉", "里港鄉", "內埔鄉"],
+  "高雄市": ["美濃區", "旗山區", "大樹區", "燕巢區", "杉林區"],
+  "臺南市": ["玉井區", "楠西區", "麻豆區", "新化區", "官田區"],
+  "嘉義縣": ["民雄鄉", "溪口鄉", "新港鄉", "竹崎鄉", "梅山鄉"],
+  "雲林縣": ["西螺鎮", "斗南鎮", "虎尾鎮", "二崙鄉", "崙背鄉"],
+  "彰化縣": ["溪湖鎮", "二林鎮", "田尾鄉", "埔心鄉", "永靖鄉"],
+  "南投縣": ["埔里鎮", "魚池鄉", "名間鄉", "信義鄉", "仁愛鄉"],
+  "臺東縣": ["卑南鄉", "鹿野鄉", "池上鄉", "關山鎮", "太麻里鄉"],
+  "花蓮縣": ["壽豐鄉", "鳳林鎮", "玉里鎮", "富里鄉", "光復鄉"],
+  "宜蘭縣": ["三星鄉", "員山鄉", "冬山鄉", "礁溪鄉"],
+  "苗栗縣": ["卓蘭鎮", "大湖鄉", "公館鄉", "銅鑼鄉"]
+};
+
+window.addEventListener("DOMContentLoaded", () => {
+  const countySelect = document.getElementById("countySelect");
+
+  if (!countySelect) return;
+
+  Object.keys(townshipData).forEach(county => {
+    const option = document.createElement("option");
+    option.value = county;
+    option.textContent = county;
+    countySelect.appendChild(option);
+  });
+});
+
+function updateTownships() {
+  const countySelect = document.getElementById("countySelect");
+  const townSelect = document.getElementById("townSelect");
+
+  const county = countySelect.value;
+  townSelect.innerHTML = "";
+
+  if (!county) {
+    townSelect.innerHTML = `<option value="">請先選擇縣市</option>`;
+    return;
+  }
+
+  townSelect.innerHTML = `<option value="">請選擇鄉鎮</option>`;
+
+  townshipData[county].forEach(town => {
+    const option = document.createElement("option");
+    option.value = town;
+    option.textContent = town;
+    townSelect.appendChild(option);
+  });
+}
 let selectedPeriod = 7;
 let chartInstance = null;
 
@@ -21,6 +69,9 @@ function formatRocDate(date) {
 async function analyzeMarket() {
   const crop = document.getElementById("cropInput").value.trim();
   const market = document.getElementById("marketInput").value.trim();
+  const county = document.getElementById("countySelect")?.value || "";
+  const town = document.getElementById("townSelect")?.value || "";
+  const locationText = county && town ? `${county}${town}` : "";
   const status = document.getElementById("status");
   const analysisText = document.getElementById("analysisText");
   const chartTitle = document.getElementById("chartTitle");
@@ -262,6 +313,10 @@ async function analyzeMarket() {
         riskScore = 25;
       }
 
+       const weatherResult = await getWeatherRisk(locationText);
+             weatherRisk = weatherResult.html;
+
+
      analysisText.innerHTML = `
 
        <div class="module-grid">
@@ -337,10 +392,9 @@ async function analyzeMarket() {
         </div>
 
         <div class="analysis-module">
-           <h3>⑦ 氣候風險模組</h3>
-            <p><strong>氣象整合狀態：</strong></p>
-            <p>${weatherRisk}</p>
-        </div> 
+            <h3>⑦ 氣候風險模組</h3>
+              ${weatherRisk}
+        </div>
     
         
         </div>
@@ -432,9 +486,55 @@ function clearAnalysis() {
   document.getElementById("chartTitle").innerHTML = "價格與交易量趨勢圖";
   document.getElementById("analysisText").innerHTML =
     "請輸入作物名稱後，系統會自動產生市場趨勢、供需判讀、農民建議與教學提問。";
-
+  document.getElementById("countySelect").value = "";
+  document.getElementById("townSelect").innerHTML = `<option value="">請先選擇縣市</option>`;
   if (chartInstance) {
     chartInstance.destroy();
     chartInstance = null;
+  }
+}
+
+async function getWeatherRisk(locationText) {
+  if (!locationText) {
+    return {
+      html: `
+        <p><strong>氣象整合狀態：</strong></p>
+        <p>尚未選擇產地縣市／鄉鎮，因此本次不進行氣候風險判斷。</p>
+      `
+    };
+  }
+
+  try {
+    const GAS_WEATHER_API =
+      "https://script.google.com/macros/s/AKfycbwxwioq0WREbKbuuNHRWiomhAB2Ee3LGdgR41XaBagcW6J4jmU7MTqgRT3otKnmvP_kCg/exec";
+
+    const apiUrl =
+      `${GAS_WEATHER_API}?location=${encodeURIComponent(locationText)}`;
+
+    const response = await fetch(apiUrl);
+    const data = await response.json();
+
+    return {
+      html: `
+        <p><strong>產地：</strong>${data.location}</p>
+        <ul>
+          <li>最高降雨機率：約 ${data.maxRain || "未取得"}%</li>
+          <li>最高溫：約 ${data.maxTemp || "未取得"}°C</li>
+          <li>降雨風險：${data.rainRisk}</li>
+          <li>高溫風險：${data.heatRisk}</li>
+          <li>採收風險：<strong>${data.harvestRisk}</strong></li>
+        </ul>
+        <p><strong>AI氣候建議：</strong>若降雨或高溫風險偏高，建議注意採收時機、運輸保存與品質管理。</p>
+      `
+    };
+
+  } catch (error) {
+    console.error(error);
+    return {
+      html: `
+        <p><strong>氣象整合狀態：</strong></p>
+        <p>氣象資料讀取失敗，請稍後再試。</p>
+      `
+    };
   }
 }

@@ -256,3 +256,13 @@ button {
   color: #057a4f;
   font-weight: 900;
 }
+
+select {
+  width: 100%;
+  padding: 15px 18px;
+  border: 1px solid rgba(0,120,80,.2);
+  border-radius: 16px;
+  font-size: 1rem;
+  background: white;
+  color: #073f2d;
+}

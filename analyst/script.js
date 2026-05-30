@@ -149,6 +149,12 @@ async function analyzeMarket() {
 
     let riskLevel = "低";
     let riskScore = 30;
+    
+    let priceForecast = "";
+    let supplyForecast = "";
+    let weatherRisk = "";
+
+
 
     if (changeRate > 5 && quantityChangeRate < -5) {
 
@@ -168,6 +174,14 @@ async function analyzeMarket() {
 
         riskLevel = "中";
         riskScore = 55;
+        
+        riskLevel = "高";
+        riskScore = 85;
+
+        priceForecast = "未來7天價格可能偏弱，若交易量持續增加，價格仍有下探壓力。";
+        supplyForecast = "目前有大量上市訊號，供給增加機率偏高。";
+        weatherRisk = "尚未串接即時氣象資料，建議後續加入降雨、颱風與高溫資料判斷採收風險。";
+
       }
       else if (changeRate < -5 && quantityChangeRate > 5) {
 
@@ -184,76 +198,78 @@ async function analyzeMarket() {
 
         studentQuestion =
            "大量上市時，農民如何降低價格風險？";
-
-        riskLevel = "高";
-        riskScore = 85;
-     }
-     else if (changeRate > 5 && quantityChangeRate > 5) {
+       
+      }
+      else if (changeRate > 5 && quantityChangeRate > 5) {
 
         supplyStatus = "需求增加";
 
         supplyDemandText =
           "價格與交易量同步上升，可能代表市場需求增加。";
 
-       farmerAdvice =
+        farmerAdvice =
           "可觀察是否持續缺貨，提高產品附加價值。";
 
-      decisionSuggestion =
+        decisionSuggestion =
          "適合加強品牌行銷與通路經營。";
 
-      studentQuestion =
+        studentQuestion =
          "價格與交易量同步增加代表什麼？";
 
-      riskLevel = "低";
-      riskScore = 35;
-    }
-    else if (changeRate < -5 && quantityChangeRate < -5) {
+        riskLevel = "低";
+        riskScore = 35;
+      }
+      else if (changeRate < -5 && quantityChangeRate < -5) {
 
-      supplyStatus = "需求下降";
+        supplyStatus = "需求下降";
 
-      supplyDemandText =
-         "價格與交易量同步下降，市場熱度減弱。";
+        supplyDemandText =
+          "價格與交易量同步下降，市場熱度減弱。";
 
-      farmerAdvice =
-        "保守規劃出貨時程。";
+        farmerAdvice =
+          "保守規劃出貨時程。";
 
-      decisionSuggestion =
-        "建議觀察市場後再決定是否大量出貨。";
+        decisionSuggestion =
+          "建議觀察市場後再決定是否大量出貨。";
 
-      studentQuestion =
-        "需求下降可能來自哪些原因？";
+        studentQuestion =
+          "需求下降可能來自哪些原因？";
 
-      riskLevel = "中";
-      riskScore = 60;
-    }
-    else {
+        riskLevel = "中";
+        riskScore = 60;
+    
+        priceForecast = "未來7天價格可能維持相對支撐，若供給持續減少，價格仍可能上升。";
+        supplyForecast = "供給可能偏少，需觀察是否進入採收尾聲。";
+        weatherRisk = "尚未串接即時氣象資料，後續可加入天氣風險判斷。";
+      }
+      else {
 
-      supplyStatus = "供需大致平衡";
+        supplyStatus = "供需大致平衡";
 
-      supplyDemandText =
-        "市場目前處於整理階段。";
+        supplyDemandText =
+           "市場目前處於整理階段。";
 
-      farmerAdvice =
-         "持續觀察後續行情。";
+        farmerAdvice =
+           "持續觀察後續行情。";
 
-      decisionSuggestion =
-         "維持正常出貨即可。";
+        decisionSuggestion =
+           "維持正常出貨即可。";
 
-      studentQuestion =
-        "除了價格之外還有哪些市場訊號？";
+        studentQuestion =
+           "除了價格之外還有哪些市場訊號？";
 
-      riskLevel = "低";
-      riskScore = 25;
-   }
+        riskLevel = "低";
+        riskScore = 25;
+      }
 
-  analysisText.innerHTML = `
+     analysisText.innerHTML = `
 
-     <div class="module-grid">
+       <div class="module-grid">
 
-    <div class="analysis-module">
-      <h3>① 市場判讀模組</h3>
+        <div class="analysis-module">
+          <h3>① 市場判讀模組</h3>
 
-        <p><strong>${trendIcon} 市場趨勢：</strong>${trendText}</p>
+           <p><strong>${trendIcon} 市場趨勢：</strong>${trendText}</p>
 
           <ul>
             <li>起始平均價：${firstPrice.toFixed(1)} 元/公斤</li>
@@ -263,7 +279,7 @@ async function analyzeMarket() {
            <li>交易量變化：${quantityChangeRate.toFixed(1)}%</li>
           </ul>
 
-    </div>
+       </div>
 
     <div class="analysis-module">
        <h3>② 供需分析模組</h3>
@@ -308,7 +324,26 @@ async function analyzeMarket() {
            ${decisionSuggestion}
         </p>
 
-    </div>
+         <div class="analysis-module">
+           <h3>⑤ AI價格預測模組</h3>
+             <p><strong>未來7天預測：</strong></p>
+             <p>${priceForecast}</p>
+         </div>
+
+         <div class="analysis-module">
+           <h3>⑥ AI供給預測模組</h3>
+         <p><strong>是否可能大量上市：</strong></p>
+         <p>${supplyForecast}</p>
+        </div>
+
+        <div class="analysis-module">
+           <h3>⑦ 氣候風險模組</h3>
+            <p><strong>氣象整合狀態：</strong></p>
+            <p>${weatherRisk}</p>
+        </div> 
+    
+        
+        </div>
 
     <div class="analysis-module">
 
@@ -326,7 +361,7 @@ async function analyzeMarket() {
 
     </div>
      `;
-     
+
   } catch (error) {
     console.error(error);
     status.innerHTML = "資料讀取失敗，可能是 API 暫時無法連線或瀏覽器限制。";

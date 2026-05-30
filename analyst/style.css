@@ -223,3 +223,36 @@ button {
     height: 390px;
   }
 }
+
+/* AI市場分析師 v1.1 四大模組 */
+
+.module-grid {
+  display: grid;
+  gap: 18px;
+}
+
+.analysis-module {
+  background: #f3fbf6;
+  border: 1px solid rgba(0,120,80,.12);
+  border-radius: 20px;
+  padding: 18px;
+}
+
+.analysis-module h3 {
+  color: #064b35;
+  margin-bottom: 10px;
+}
+
+.analysis-module ul {
+  padding-left: 22px;
+  margin: 10px 0;
+}
+
+.risk-badge {
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: #e7f8ef;
+  color: #057a4f;
+  font-weight: 900;
+}

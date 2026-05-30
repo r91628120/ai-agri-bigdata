@@ -176,29 +176,46 @@ async function analyzeMarket() {
     status.innerHTML =
       `已完成近 ${trendData.length} 日「${crop}」市場分析。`;
 
-    analysisText.innerHTML = `
-      <p><strong>${trendIcon} 市場趨勢：</strong>${trendText}</p>
+  analysisText.innerHTML = `
+      <div class="module-grid">
 
+    <div class="analysis-module">
+      <h3>① AI市場判讀</h3>
+      <p><strong>${trendIcon} 市場趨勢：</strong>${trendText}</p>
       <ul>
         <li>起始平均價：${firstPrice.toFixed(1)} 元/公斤</li>
         <li>最新平均價：${lastPrice.toFixed(1)} 元/公斤</li>
         <li>價格變化：${change.toFixed(1)} 元，約 ${changeRate.toFixed(1)}%</li>
         <li>交易量變化：約 ${quantityChangeRate.toFixed(1)}%</li>
-        <li>市場風險等級：<strong>${riskLevel}</strong></li>
       </ul>
-
-      <hr>
-
-      <p><strong>🤖 AI市場分析師判讀：</strong></p>
       <p>${supplyDemandText}</p>
+    </div>
 
-      <p><strong>🌾 農民經營建議：</strong></p>
+    <div class="analysis-module">
+      <h3>② 市場風險等級</h3>
+      <p class="risk-badge">風險等級：${riskLevel}</p>
+      <p>
+        可依價格波動與交易量變化，判斷市場是否穩定。
+        若價格快速下跌或交易量劇烈增加，代表市場可能有較高波動風險。
+      </p>
+    </div>
+
+    <div class="analysis-module">
+      <h3>③ 農民經營建議</h3>
       <p>${farmerAdvice}</p>
+    </div>
 
-      <p><strong>🎓 教學提問：</strong></p>
+    <div class="analysis-module">
+      <h3>④ 教師討論題</h3>
       <p>${studentQuestion}</p>
-    `;
+      <ul>
+        <li>如果你是農民，會選擇立即出貨還是分批出貨？</li>
+        <li>價格與交易量同時變化時，可能代表什麼市場訊號？</li>
+      </ul>
+     </div>
 
+    </div>
+    `;
   } catch (error) {
     console.error(error);
     status.innerHTML = "資料讀取失敗，可能是 API 暫時無法連線或瀏覽器限制。";

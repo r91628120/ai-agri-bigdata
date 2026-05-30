@@ -680,3 +680,73 @@ body {
   background:#10b981;
   color:#fff;
 }
+
+/* AI農業教育生態系功能地圖 */
+
+.ecosystem-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 22px;
+}
+
+.ecosystem-card {
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(0, 120, 80, 0.12);
+  border-radius: 26px;
+  padding: 26px;
+  box-shadow: 0 12px 32px rgba(0, 80, 50, 0.08);
+  transition: 0.2s ease;
+}
+
+.ecosystem-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 18px 40px rgba(0, 80, 50, 0.12);
+}
+
+.ecosystem-card strong {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 16px;
+  background: #e7f8ef;
+  color: #00a86b;
+  font-size: 1.2rem;
+  margin-bottom: 14px;
+}
+
+.ecosystem-card h3 {
+  color: #064b35;
+  font-size: 1.18rem;
+  line-height: 1.35;
+  margin-bottom: 10px;
+}
+
+.ecosystem-card p {
+  color: #587168;
+  font-size: 0.95rem;
+  margin-bottom: 18px;
+}
+
+.ecosystem-card span {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #eefaf4;
+  color: #057a4f;
+  font-weight: 800;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 1100px) {
+  .ecosystem-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .ecosystem-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -750,3 +750,7 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+.vision-title{
+  line-height:1.3;
+}

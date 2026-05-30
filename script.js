@@ -337,22 +337,60 @@ async function loadAmisData() {
     status.innerHTML =
       `已完成近 ${trendData.length} 日「${crop}」價格趨勢分析。（目前可取得 ${trendData.length} 日資料）`;
 
-    aiText.innerHTML = `
-      <p><strong>${trendIcon} 市場趨勢：</strong>${trendText}</p>
-      <ul>
-        <li>起始平均價：${firstPrice.toFixed(1)} 元/公斤</li>
-        <li>最新平均價：${lastPrice.toFixed(1)} 元/公斤</li>
-        <li>價格變化：${change.toFixed(1)} 元，約 ${changeRate.toFixed(1)}%</li>
-        <li>交易量變化：約 ${quantityChangeRate.toFixed(1)}%</li>
-      </ul>
-      <hr>
-      <p><strong>🎓 教學重點：</strong></p>
-      <p>
-        可引導學生觀察「價格」與「交易量」是否同時變化。
-        若價格上升但交易量下降，可能代表供應減少；
-        若價格下降但交易量增加，可能代表大量上市造成價格壓力。
-      </p>
-    `;
+    let supplyDemandText = "";
+let farmerAdvice = "";
+let studentQuestion = "";
+let riskLevel = "低";
+
+if (changeRate > 5 && quantityChangeRate < -5) {
+  supplyDemandText = "價格上升、交易量下降，可能代表市場供應減少，價格受到支撐。";
+  farmerAdvice = "可觀察是否進入採收尾聲，若品質穩定，可考慮分批出貨，提高平均售價。";
+  studentQuestion = "為什麼交易量下降時，價格可能反而上升？";
+  riskLevel = "中";
+} else if (changeRate < -5 && quantityChangeRate > 5) {
+  supplyDemandText = "價格下降、交易量上升，可能代表大量上市，市場供給增加造成價格壓力。";
+  farmerAdvice = "建議評估分級銷售、加工利用或轉往其他通路，避免集中出貨造成價格下跌。";
+  studentQuestion = "大量上市時，農民可以用哪些方式降低價格下跌風險？";
+  riskLevel = "高";
+} else if (changeRate > 5 && quantityChangeRate > 5) {
+  supplyDemandText = "價格與交易量同步上升，可能代表市場需求增加，買氣較強。";
+  farmerAdvice = "可注意市場是否持續有需求，若品質佳，可加強品牌包裝與通路銷售。";
+  studentQuestion = "價格和交易量都上升時，可能代表市場發生什麼變化？";
+  riskLevel = "低";
+} else if (changeRate < -5 && quantityChangeRate < -5) {
+  supplyDemandText = "價格與交易量同步下降，可能代表市場需求減弱或交易熱度降低。";
+  farmerAdvice = "建議保守評估出貨時機，避免過度期待價格短期反彈。";
+  studentQuestion = "價格與交易量都下降時，是否一定代表供給變少？";
+  riskLevel = "中";
+} else {
+  supplyDemandText = "價格與交易量變化不明顯，市場短期可能處於整理或觀望狀態。";
+  farmerAdvice = "可持續觀察後續行情，不宜只用單日價格做出重大決策。";
+  studentQuestion = "如果價格變化不大，還可以觀察哪些市場訊號？";
+  riskLevel = "低";
+}
+
+aiText.innerHTML = `
+  <p><strong>${trendIcon} 市場趨勢：</strong>${trendText}</p>
+
+  <ul>
+    <li>起始平均價：${firstPrice.toFixed(1)} 元/公斤</li>
+    <li>最新平均價：${lastPrice.toFixed(1)} 元/公斤</li>
+    <li>價格變化：${change.toFixed(1)} 元，約 ${changeRate.toFixed(1)}%</li>
+    <li>交易量變化：約 ${quantityChangeRate.toFixed(1)}%</li>
+    <li>市場風險等級：<strong>${riskLevel}</strong></li>
+  </ul>
+
+  <hr>
+
+  <p><strong>🤖 AI市場分析師判讀：</strong></p>
+  <p>${supplyDemandText}</p>
+
+  <p><strong>🌾 農民經營建議：</strong></p>
+  <p>${farmerAdvice}</p>
+
+  <p><strong>🎓 教學提問：</strong></p>
+  <p>${studentQuestion}</p>
+`;
 
   } catch (error) {
     console.error(error);

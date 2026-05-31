@@ -201,10 +201,11 @@ async function analyzeMarket() {
     let riskLevel = "低";
     let riskScore = 30;
     
-    let priceForecast = "";
-    let supplyForecast = "";
     let weatherRisk = "";
 
+    const pricePrediction = buildPriceForecast(prices, quantities);
+        priceForecast = pricePrediction.priceText;
+        supplyForecast = pricePrediction.supplyText;
 
 
     if (changeRate > 5 && quantityChangeRate < -5) {
@@ -537,4 +538,90 @@ async function getWeatherRisk(locationText) {
       `
     };
   }
+}
+
+function buildPriceForecast(prices, quantities) {
+  if (!prices || prices.length < 2) {
+    return {
+      priceText: "目前資料不足，暫時無法推估未來7天價格。",
+      supplyText: "目前交易量資料不足，暫時無法判斷是否大量上市。"
+    };
+  }
+
+  const firstPrice = prices[0];
+  const lastPrice = prices[prices.length - 1];
+  const priceChange = lastPrice - firstPrice;
+  const priceRate = firstPrice ? (priceChange / firstPrice) * 100 : 0;
+
+  const firstQty = quantities[0] || 0;
+  const lastQty = quantities[quantities.length - 1] || 0;
+  const qtyRate = firstQty ? ((lastQty - firstQty) / firstQty) * 100 : 0;
+
+  const recentPrices = prices.slice(-3);
+  const recentAvg =
+    recentPrices.reduce((sum, value) => sum + value, 0) / recentPrices.length;
+
+  let predictionDirection = "持平整理";
+  let probability = 55;
+  let priceLow = Math.max(0, recentAvg * 0.95);
+  let priceHigh = recentAvg * 1.05;
+
+  if (priceRate > 5 && qtyRate < 0) {
+    predictionDirection = "偏上漲";
+    probability = 68;
+    priceLow = recentAvg * 1.00;
+    priceHigh = recentAvg * 1.10;
+  } else if (priceRate < -5 && qtyRate > 0) {
+    predictionDirection = "偏下跌";
+    probability = 72;
+    priceLow = recentAvg * 0.88;
+    priceHigh = recentAvg * 0.98;
+  } else if (priceRate > 5 && qtyRate > 5) {
+    predictionDirection = "需求支撐，可能續漲";
+    probability = 64;
+    priceLow = recentAvg * 0.98;
+    priceHigh = recentAvg * 1.12;
+  } else if (priceRate < -5 && qtyRate < -5) {
+    predictionDirection = "市場轉弱，可能低檔整理";
+    probability = 62;
+    priceLow = recentAvg * 0.90;
+    priceHigh = recentAvg * 1.02;
+  }
+
+  let supplyText = "";
+
+  if (qtyRate > 30) {
+    supplyText = `
+      大量上市機率：高<br>
+      原因：近期交易量明顯增加，代表市場供給可能快速上升。
+      若價格同時下跌，需注意供過於求造成價格壓力。
+    `;
+  } else if (qtyRate > 10) {
+    supplyText = `
+      大量上市機率：中<br>
+      原因：交易量有增加趨勢，可能逐漸進入供應增加階段。
+      建議持續觀察未來幾日交易量是否擴大。
+    `;
+  } else if (qtyRate < -20) {
+    supplyText = `
+      大量上市機率：低<br>
+      原因：交易量下降，可能代表供給減少或市場進入採收尾聲。
+      若價格上升，可能反映供應偏緊。
+    `;
+  } else {
+    supplyText = `
+      大量上市機率：低～中<br>
+      原因：交易量變化不大，目前市場供給相對穩定。
+    `;
+  }
+
+  return {
+    priceText: `
+      預測趨勢：${predictionDirection}<br>
+      預測可信度：約 ${probability}%<br>
+      未來7天參考價格區間：約 ${priceLow.toFixed(1)}～${priceHigh.toFixed(1)} 元/公斤<br>
+      判讀依據：近期價格變化約 ${priceRate.toFixed(1)}%，交易量變化約 ${qtyRate.toFixed(1)}%。
+    `,
+    supplyText
+  };
 }

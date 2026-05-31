@@ -524,7 +524,6 @@ async function getWeatherRisk(locationText) {
       html: `
         <p><strong>產地：</strong>${data.location}</p>
         <ul>
-          <li>未來7天最高降雨機率：約 ${data.maxRain || "未取得"}%</li>
           <li>最高溫：約 ${data.maxTemp || "未取得"}°C</li>
           <li>降雨風險：${data.rainRisk}</li>
           <li>高溫風險：${data.heatRisk}</li>
@@ -544,6 +543,37 @@ async function getWeatherRisk(locationText) {
     };
   }
 }
+
+    <div class="climate-alert-box">
+      <h4>🚨 AI重大氣候警示</h4>
+        <p>
+             若近期有颱風、豪雨、高溫或寒流警報，可能影響採收、運輸、品質保存與市場價格波動。
+        </p>
+        <p>
+           建議農民在出貨前，先確認中央氣象署最新預報與颱風消息。
+        </p>
+
+      <div class="weather-links">
+        <a
+           href="https://www.cwa.gov.tw/V8/C/W/week.html"
+           target="_blank"
+           class="weather-link-btn"
+        >
+           🌦 查看中央氣象署1週預報
+        </a>
+
+        <a
+           href="https://www.cwa.gov.tw/V8/C/P/Typhoon/TY_NEWS.html"
+           target="_blank"
+           class="weather-link-btn typhoon-btn"
+        >
+           🌀 查看最新颱風資訊
+        </a>
+      </div>
+    </div>
+
+
+
 
 function buildPriceForecast(prices, quantities) {
   if (!prices || prices.length < 2) {

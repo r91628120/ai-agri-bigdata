@@ -266,3 +266,42 @@ select {
   background: white;
   color: #073f2d;
 }
+
+.climate-alert-box{
+  margin-top:16px;
+  padding:16px;
+  border-radius:16px;
+  background:#fff7ed;
+  border:1px solid rgba(255,123,0,.25);
+}
+
+.climate-alert-box h4{
+  margin:0 0 10px;
+  color:#9a3412;
+}
+
+.weather-links{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  margin-top:14px;
+}
+
+.weather-link-btn{
+  display:block;
+  text-align:center;
+  padding:12px;
+  border-radius:12px;
+  background:#0ea66c;
+  color:#fff;
+  text-decoration:none;
+  font-weight:700;
+}
+
+.weather-link-btn:hover{
+  opacity:.9;
+}
+
+.typhoon-btn{
+  background:#f97316;
+}

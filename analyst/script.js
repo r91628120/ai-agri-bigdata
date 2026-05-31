@@ -1,16 +1,24 @@
-const townshipData = {
-  "屏東縣": ["佳冬鄉", "枋寮鄉", "枋山鄉", "高樹鄉", "里港鄉", "內埔鄉"],
-  "高雄市": ["美濃區", "旗山區", "大樹區", "燕巢區", "杉林區"],
-  "臺南市": ["玉井區", "楠西區", "麻豆區", "新化區", "官田區"],
-  "嘉義縣": ["民雄鄉", "溪口鄉", "新港鄉", "竹崎鄉", "梅山鄉"],
-  "雲林縣": ["西螺鎮", "斗南鎮", "虎尾鎮", "二崙鄉", "崙背鄉"],
-  "彰化縣": ["溪湖鎮", "二林鎮", "田尾鄉", "埔心鄉", "永靖鄉"],
-  "南投縣": ["埔里鎮", "魚池鄉", "名間鄉", "信義鄉", "仁愛鄉"],
-  "臺東縣": ["卑南鄉", "鹿野鄉", "池上鄉", "關山鎮", "太麻里鄉"],
-  "花蓮縣": ["壽豐鄉", "鳳林鎮", "玉里鎮", "富里鄉", "光復鄉"],
-  "宜蘭縣": ["三星鄉", "員山鄉", "冬山鄉", "礁溪鄉"],
-  "苗栗縣": ["卓蘭鎮", "大湖鄉", "公館鄉", "銅鑼鄉"]
-};
+let townshipData = {};
+
+window.addEventListener("DOMContentLoaded", async () => {
+
+  const response = await fetch("./townships.json");
+  townshipData = await response.json();
+
+  const countySelect =
+    document.getElementById("countySelect");
+
+  Object.keys(townshipData).forEach(county => {
+
+    const option = document.createElement("option");
+
+    option.value = county;
+    option.textContent = county;
+
+    countySelect.appendChild(option);
+  });
+
+});
 
 window.addEventListener("DOMContentLoaded", () => {
   const countySelect = document.getElementById("countySelect");

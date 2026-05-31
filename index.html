@@ -1,479 +1,108 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>AI農產品大數據教學平台｜AI Agri Big Data</title>
-  <meta name="description" content="AI農產品大數據教學平台，結合農產品市場行情、價格趨勢分析、AI市場解讀、青農經營模擬與教師教學資源，打造台灣農業大數據教學平台。" />
-  <meta name="keywords" content="AI農業,農產品大數據,農業教育,農產品價格,青農,農業經營,市場行情,農業大數據教學" />
+  <title>AI市場分析師｜AI農產品大數據教學平台</title>
+  <meta name="description" content="AI市場分析師，協助判讀農產品價格、交易量、供需變化與市場風險，適合農業教學、青農與農民使用。">
 
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
   <header class="site-header">
-    <a href="#home" class="brand">
+    <a class="brand" href="../index.html">
       <span class="brand-icon">🌱</span>
       <span>
-        <strong>AI農產品大數據教學平台</strong>
-        <small>AI Agri Big Data Education</small>
+        <strong>AI市場分析師</strong>
+        <small>AI Market Analyst</small>
       </span>
     </a>
 
     <nav class="nav">
-      <a href="#features">平台特色</a>
-      <a href="#tools">六大功能</a>
-      <a href="#demo">教學示範</a>
-      <a href="#users">適用對象</a>
-      <a href="#roadmap">未來發展</a>
+      <a href="../index.html">回首頁</a>
+      <a href="#analyze">開始分析</a>
+      <a href="#guide">教學說明</a>
     </nav>
   </header>
 
   <main>
-    <section id="home" class="hero">
-      <div class="hero-content">
-        <div class="eyebrow">AI × 農業 × 大數據 × 教育</div>
-
-         <h1>
-          AI農產品大數據教學平台
-         </h1>
-
-         <h2>
-          看懂市場數據，培養未來青農決策力
-         </h2>
-
+    <section class="hero">
+      <div>
+        <div class="eyebrow">AI × 市場行情 × 農業決策</div>
+        <h1>AI市場分析師</h1>
         <p>
-          結合農產品市場行情、價格趨勢分析、AI智慧解讀與農場經營管理，
-          打造適合高中職、大專院校、青農、農民與教師使用的農業大數據教學平台。
-        </p>
-
-        <div class="hero-actions">
-          <a href="#tools" class="btn primary">開始探索平台</a>
-          <a href="#demo" class="btn secondary">查看教學示範</a>
-        </div>
-      </div>
-
-      <div class="hero-panel">
-        <div class="panel-grid">
-          <div class="mini-card">📈<span>行情</span></div>
-          <div class="mini-card">📊<span>趨勢</span></div>
-          <div class="mini-card">🤖<span>AI分析</span></div>
-          <div class="mini-card">🌱<span>經營</span></div>
-        </div>
-        <div class="panel-footer">
-          <small>平台定位</small>
-          <strong>台灣第一個 AI 農業大數據教學平台</strong>
-        </div>
-      </div>
-    </section>
-
-    <section id="features" class="section">
-      <div class="section-heading">
-        <span>Platform Vision</span>
-        <h2>不是單純查價格，<br>
-          而是學會做農業決策</h2>
-        <p>
-          本平台將農產品行情資料轉化為教學案例，讓學生與農民能從數字背後理解供需、價格、風險與經營判斷。
+          輸入作物名稱與市場名稱，系統會串接農產品交易行情資料，
+          分析價格變化、交易量變化、供需訊號與市場風險。
         </p>
       </div>
-
-      <div class="feature-strip">
-        <div>
-          <strong>01</strong>
-          <h3>真實市場資料</h3>
-          <p>以農產品批發市場行情為學習基礎。</p>
-        </div>
-        <div>
-          <strong>02</strong>
-          <h3>圖表視覺化</h3>
-          <p>用折線圖、趨勢圖理解價格變化。</p>
-        </div>
-        <div>
-          <strong>03</strong>
-          <h3>AI教學解讀</h3>
-          <p>把複雜數據轉換成學生聽得懂的說明。</p>
-        </div>
-      </div>
     </section>
 
-    <section id="tools" class="section soft">
-      <div class="section-heading">
-        <span>Core Modules</span>
-        <h2>六大核心功能</h2>
-      </div>
-
-      <div class="cards">
-        <article class="card">
-          <div class="icon">📈</div>
-          <h3>市場行情中心</h3>
-          <p>查詢蔬菜、水果、花卉等農產品價格與交易資訊，作為課堂資料判讀練習。</p>
-        </article>
-
-        <article class="card">
-          <div class="icon">📊</div>
-          <h3>價格趨勢分析</h3>
-          <p>透過近7天、30天、90天價格變化，學習折線圖判讀、供需變化與市場波動。</p>
-        </article>
-
-        <article class="card">
-          <div class="icon">🤖</div>
-          <h3>AI市場分析師</h3>
-          <p>協助解釋價格上漲、下跌與交易量變化，培養農業大數據判讀能力。</p>
-        </article>
-
-        <article class="card">
-          <div class="icon">🌱</div>
-          <h3>青農經營模擬器</h3>
-          <p>輸入面積、產量、成本與價格，模擬收入、毛利與損益平衡點。</p>
-        </article>
-
-        <article class="card">
-          <div class="icon">🎯</div>
-          <h3>農業決策挑戰</h3>
-          <p>透過颱風、採收期、價格波動等情境，練習農民現場會遇到的經營判斷。</p>
-        </article>
-
-        <article class="card">
-          <div class="icon">👨‍🏫</div>
-          <h3>教師教學資源</h3>
-          <p>提供學習單、教案、討論題目與評量活動，協助教師快速導入課程。</p>
-        </article>
-      </div>
-    </section>
-
-    <section id="ecosystem-map" class="section">
-          <div class="section-heading">
-             <span>AI Agriculture Ecosystem</span>
-             <h2>AI農業教育生態系功能地圖</h2>
-             <p>
-              從市場行情、大數據分析、農民決策、氣象風險、教學資源到青農品牌創業，
-              建立一套完整的 AI 農業教育生態系。
-             </p>
-          </div>
-
-          <div class="ecosystem-grid">
-            <article class="ecosystem-card">
-              <strong>01</strong>
-              <h3>AI農產品大數據分析平台</h3>
-                 <p>串接農產品行情資料，進行價格、交易量與市場趨勢分析。</p>
-                 <span>已建置中</span>
-            </article>
-
-            <article class="ecosystem-card">
-              <strong>02</strong>
-              <h3>AI市場分析師</h3>
-               <p>協助判讀價格漲跌、供需變化與市場波動原因。</p>
-               <a class="card-link" href="./analyst/index.html">進入 AI市場分析師</a>
-            </article>
-
-            <article class="ecosystem-card">
-               <strong>03</strong>
-                <h3>農民決策模擬</h3>
-                  <p>模擬是否出貨、延後採收、分批銷售或轉換市場。</p>
-                  <span>即將開放</span>
-            </article>
-
-            <article class="ecosystem-card">
-                <strong>04</strong>
-                <h3>AI智慧農業決策模擬器</h3>
-                  <p>整合作物價格、交易量、產季、成本與經營風險。</p>
-                <span>規劃中</span>
-                </article>
-
-                <article class="ecosystem-card">
-              <strong>05</strong>
-                 <h3>AI農業氣象整合中心</h3>
-                 <p>結合天氣、雨量、颱風與採收風險，輔助農業判斷。</p>
-                 <span>規劃中</span>
-           </article>
-
-           <article class="ecosystem-card">
-               <strong>06</strong>
-                <h3>農業教學中心</h3>
-                <p>提供學習單、課堂任務、圖表判讀練習與教案資源。</p>
-                <span>規劃中</span>
-          </article>
-
-           <article class="ecosystem-card">
-                 <strong>07</strong>
-                 <h3>AI趨勢預測中心</h3>
-                 <p>依據近期行情變化，推估價格趨勢與市場風險等級。</p>
-                 <span>規劃中</span>
-          </article>
-
-           <article class="ecosystem-card">
-            <strong>08</strong>
-            <h3>AI青農創業中心</h3>
-            <p>串接 AI青農品牌故事平台，協助品牌、文案與創業企劃。</p>
-            <span>串接規劃中</span>
-          </article>
-        </div>
-       </section>
-
-
-     <section id="market-live" class="section">
-      <div class="section-heading">
-        <span>Live Market Data</span>
-         <h2>農產品即時行情查詢</h2>
-        <p>資料來源：農業部農產品交易行情 OpenData。</p>
-     </div>
-
-      <div class="market-query-box">
+    <section id="analyze" class="section">
+      <div class="query-card">
         <label for="cropInput">輸入作物名稱</label>
-           <input
-               id="cropInput"
-               type="text"
-               placeholder="例如：芒果-愛文、香蕉、鳳梨、甘藍"
-      >
+        <input id="cropInput" type="text" placeholder="例如：苦瓜、甘藍、芒果-愛文">
 
-         <div class="amis-link-box">
-            不確定作物名稱？
-            <a href="https://amis.afa.gov.tw/main/Main.aspx" target="_blank" rel="noopener">
-               前往農產品批發市場交易行情站查詢
-            </a>
-      </div>
+        <label for="marketInput">市場名稱，可留空</label>
+        <input id="marketInput" type="text" placeholder="例如：台北二、高雄市、西螺鎮">
+        
+        <label for="countySelect">產地縣市，可留空</label>
+          <select id="countySelect" onchange="updateTownships()">
+             <option value="">請選擇縣市</option>
+          </select>
 
-       <label>市場名稱，可留空</label>
-    <input id="marketInput" type="text" placeholder="例如：台北一、高雄市、西螺鎮">
-
-      <div class="button-row">
-          <button onclick="loadAmisData()">查詢行情</button>
-          <button class="clear-btn" onclick="clearAmisData()">清除查詢</button>
-      </div>
-       </div>
-
-          <div id="marketStatus" class="market-status">尚未查詢資料。</div>
-
-          <div class="market-table-wrap">
-            <table class="market-table">
-           <thead>
-              <tr>
-                  <th>日期</th>
-                  <th>市場</th>
-                  <th>作物</th>
-                  <th>上價</th>
-                  <th>中價</th>
-                  <th>下價</th>
-                  <th>平均價</th>
-                  <th>交易量</th>
-              </tr>
-           </thead>
-         <tbody id="marketTableBody"></tbody>
-        </table>
-       </div>
-    </section>
-
-      <section id="demo" class="section demo-section">
-  <div class="section-heading">
-    <span>AI Trend Analysis</span>
-    <h2>AI 農產品趨勢分析中心</h2>
-    <p>
-      輸入作物名稱，系統會整理近期行情、繪製價格趨勢圖，並產生市場判讀建議。
-      透過近7天、30天、90天價格變化，學習折線圖判讀、供需變化與市場波動。
-    </p>
-  </div>
-
-  <div class="market-query-box">
-    <label for="trendCropInput">輸入分析作物</label>
-    <input id="trendCropInput" type="text" placeholder="例如：芒果-愛文、苦瓜、甘藍">
-
-    <label for="trendMarketInput">市場名稱，可留空</label>
-    <input id="trendMarketInput" type="text" placeholder="例如：台北二、高雄市、西螺鎮">
-
-     <label>分析期間</label>
-
-  <div class="period-selector">
-     <button
-        type="button"
-        id="period7"
-        class="period-btn active"
-        onclick="setTrendPeriod(7)">
-       近7天
-     </button>
-
-     <button
-       type="button"
-       id="period30"
-       class="period-btn"
-       onclick="setTrendPeriod(30)">
-       近30天
-     </button>
-
-     <button
-       type="button"
-       id="period90"
-       class="period-btn"
-       onclick="setTrendPeriod(90)">
-       近90天
-     </button>
-  </div>
-
-     <label>圖表模式</label>
-
-       <div class="period-selector">
-         <button type="button" id="modePrice" class="period-btn active" onclick="setChartMode('price')">
-           📈 價格趨勢
-         </button>
-
-         <button type="button" id="modeQuantity" class="period-btn" onclick="setChartMode('quantity')">
-           📦 交易量趨勢
-         </button>
-
-         <button type="button" id="modeDual" class="period-btn" onclick="setChartMode('dual')">
-           📊 雙軸圖
-         </button>
-       </div>
+        <label for="townSelect">產地鄉鎮，可留空</label>
+          <select id="townSelect">
+             <option value="">請先選擇縣市</option>
+        </select>
 
 
-
-
-    <div class="button-row">
-      <button onclick="analyzeTrend()">開始趨勢分析</button>
-      <button class="clear-btn" onclick="clearTrendAnalysis()">清除分析</button>
-    </div>
-  </div>
-
-  <div id="trendStatus" class="market-status">尚未進行趨勢分析。</div>
-
-  <div class="demo-layout">
-    <div class="chart-card">
-      <h3 id="trendChartTitle">價格趨勢圖</h3>
-      <canvas id="priceChart"></canvas>
-    </div>
-
-    <div class="analysis-card">
-      <h3>🤖 AI市場分析示範</h3>
-      <div id="aiTrendText">
-        請輸入作物名稱後，系統會自動產生價格趨勢、漲跌幅、交易量與教學重點。
-      </div>
-    </div>
-  </div>
-</section>
-    
-
-    <section class="section calculator">
-      <div class="section-heading">
-        <span>Business Simulation</span>
-        <h2>青農經營模擬器</h2>
-        <p>輸入價格、產量與成本，快速建立農業經營管理概念。</p>
-      </div>
-
-      <div class="calc-layout">
-
-  <div class="calc-box">
-
-    <div class="input-group">
-      <label for="priceInput">每公斤售價（元）</label>
-      <input type="number" id="priceInput" placeholder="例如：68">
-    </div>
-
-    <div class="input-group">
-      <label for="yieldInput">預估產量（公斤）</label>
-      <input type="number" id="yieldInput" placeholder="例如：10000">
-    </div>
-
-    <div class="input-group">
-      <label for="costInput">總成本（元）</label>
-      <input type="number" id="costInput" placeholder="例如：20000">
-    </div>
-
-    <div class="button-row">
-      <button onclick="calculateProfit()">開始分析</button>
-      <button class="clear-btn" onclick="clearCalculator()">清除資料</button>
-    </div>
-
-    <div id="result">請輸入資料後按下「開始分析」。</div>
-  </div>
-
-  <div class="calc-help">
-    <h3>📘 如何使用青農經營模擬器？</h3>
-    <p>本工具可協助學生理解農產品價格、生產成本與收益之間的關係。</p>
-
-    <ul>
-      <li>每公斤售價：農產品預估銷售價格。</li>
-      <li>預估產量：本次採收或預估販售總公斤數。</li>
-      <li>總成本：肥料、人工、農藥、包裝、運輸等成本。</li>
-      <li>預估收入 = 售價 × 產量。</li>
-      <li>預估毛利 = 預估收入 − 總成本。</li>
-      <li>損益平衡價格 = 總成本 ÷ 產量。</li>
-    </ul>
-
-    <div class="tip-box">
-      💡 教學建議：可讓學生調整不同價格、產量與成本，觀察農場經營是否獲利。
-    </div>
-  </div>
-
-</div>
-    </section>
-
-    <section id="users" class="section soft">
-      <div class="section-heading">
-        <span>Users</span>
-        <h2>適用對象</h2>
-      </div>
-
-      <div class="user-grid">
-        <div class="user-card">
-          <h3>高中職學生</h3>
-          <p>適合農場經營科、園藝科、農業群課程導入。</p>
+        <label>分析期間</label>
+        <div class="period-row">
+          <button id="period7" class="period-btn active" onclick="setPeriod(7)">近7天</button>
+          <button id="period30" class="period-btn" onclick="setPeriod(30)">近30天</button>
+          <button id="period90" class="period-btn" onclick="setPeriod(90)">近90天</button>
         </div>
-        <div class="user-card">
-          <h3>大專院校</h3>
-          <p>適合農企業管理、農業經濟、智慧農業與資料分析課程。</p>
+
+        <div class="button-row">
+          <button onclick="analyzeMarket()">開始市場分析</button>
+          <button class="clear-btn" onclick="clearAnalysis()">清除分析</button>
         </div>
-        <div class="user-card">
-          <h3>青農與農民</h3>
-          <p>協助理解價格趨勢、經營風險與市場判斷。</p>
+      </div>
+
+      <div id="status" class="status">尚未進行市場分析。</div>
+
+      <div class="result-layout">
+        <div class="chart-card">
+          <h2 id="chartTitle">價格與交易量趨勢圖</h2>
+          <canvas id="marketChart"></canvas>
         </div>
-        <div class="user-card">
-          <h3>農業教師</h3>
-          <p>快速轉化為學習單、專題討論與課堂活動。</p>
+
+        <div class="analysis-card">
+          <h2>🤖 AI市場分析報告</h2>
+          <div id="analysisText">
+            請輸入作物名稱後，系統會自動產生市場趨勢、供需判讀、農民建議與教學提問。
+          </div>
         </div>
       </div>
     </section>
 
-    <section id="roadmap" class="section roadmap">
-      <div class="section-heading">
-        <span>Roadmap</span>
-        <h2>未來發展</h2>
-      </div>
-
-      <div class="timeline">
-        <div>
-          <strong>v1.0</strong>
-          <p>建立平台首頁、示範圖表、經營模擬器與教學定位。</p>
-        </div>
-        <div>
-          <strong>v2.0</strong>
-          <p>串接 AMIS 農產品批發市場交易行情資料。</p>
-        </div>
-        <div>
-          <strong>v3.0</strong>
-          <p>導入 GPT 助理，建立 AI農產品分析師與AI農場經營顧問。</p>
-        </div>
-        <div>
-          <strong>v4.0</strong>
-          <p>加入教師模式，自動產生學習單、評量題與教案大綱。</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="final-cta">
-      <h2>打造 AI × 農業 × 大數據 × 教育的新世代平台</h2>
+    <section id="guide" class="section guide">
+      <h2>📘 教學說明</h2>
       <p>
-        讓學生不只會種植，也能看懂市場、分析趨勢、理解經營，成為更有決策力的未來農業人才。
+        本工具可協助學生理解「價格」與「交易量」之間的關係。
+        當價格上升但交易量下降，可能代表供應減少；
+        當價格下降但交易量上升，可能代表大量上市造成價格壓力。
       </p>
-      <a href="#home" class="btn primary">回到平台首頁</a>
     </section>
   </main>
 
   <footer class="footer">
-    <p>AI農產品大數據教學平台 v1.0</p>
-    <p>屬於 AI農業教育生態系平台｜AI Agri Education Ecosystem</p>
+    AI市場分析師 v1.6｜AI農產品大數據教學平台
   </footer>
 
-  <script src="script.js?v=20260531b"></script>
+  <script src="script.js?v=20260531h"></script>
 </body>
 </html>

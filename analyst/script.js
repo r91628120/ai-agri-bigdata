@@ -202,11 +202,12 @@ async function analyzeMarket() {
     let riskScore = 30;
     
     let weatherRisk = "";
+    let priceForecast = "";
+    let supplyForecast = "";
 
     const pricePrediction = buildPriceForecast(prices, quantities);
-        priceForecast = pricePrediction.priceText;
-        supplyForecast = pricePrediction.supplyText;
-
+          priceForecast = pricePrediction.priceText;
+          supplyForecast = pricePrediction.supplyText;
 
     if (changeRate > 5 && quantityChangeRate < -5) {
 
@@ -314,8 +315,12 @@ async function analyzeMarket() {
         riskScore = 25;
       }
 
-       const weatherResult = await getWeatherRisk(locationText);
-             weatherRisk = weatherResult.html;
+       status.innerHTML = `已完成近 ${trendData.length} 日「${crop}」市場分析，正在讀取未來7天氣象資料...`;
+
+    const weatherResult = await getWeatherRisk(locationText);
+          weatherRisk = weatherResult.html;
+
+          status.innerHTML = `已完成近 ${trendData.length} 日「${crop}」市場分析，並完成未來7天氣候風險判讀。`;
 
 
      analysisText.innerHTML = `
@@ -519,7 +524,7 @@ async function getWeatherRisk(locationText) {
       html: `
         <p><strong>產地：</strong>${data.location}</p>
         <ul>
-          <li>最高降雨機率：約 ${data.maxRain || "未取得"}%</li>
+          <li>未來7天最高降雨機率：約 ${data.maxRain || "未取得"}%</li>
           <li>最高溫：約 ${data.maxTemp || "未取得"}°C</li>
           <li>降雨風險：${data.rainRisk}</li>
           <li>高溫風險：${data.heatRisk}</li>

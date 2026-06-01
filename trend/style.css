@@ -167,6 +167,40 @@ button {
   font-size: 1rem;
 }
 
+/* 分析期間按鈕 */
+
+.period-btn.active::before {
+  content: "✓ ";
+}
+
+.period-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.period-btn {
+  background: #e6f5ee;
+  color: #0b5f45;
+  border: 2px solid #d2ece0;
+  transition: all 0.25s ease;
+}
+
+/* 已選取 */
+
+.period-btn.active {
+  background: linear-gradient(
+    135deg,
+    #007e55,
+    #00b878
+  );
+  color: white;
+  border-color: #00a86b;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0,168,107,.25);
+}
+
 button:hover {
   opacity: 0.92;
 }

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>農民決策模擬｜AI農產品大數據教學平台</title>
+  <meta name="description" content="農民決策模擬，協助學生理解價格、氣候、市場趨勢與採收出貨決策之間的關係。" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+<header class="header">
+  <div class="logo">
+    <div class="logo-icon">🌾</div>
+    <div>
+      <h1>農民決策模擬</h1>
+      <p>AI Farmer Decision Simulator</p>
+    </div>
+  </div>
+
+  <nav>
+    <a href="../index.html">回首頁</a>
+    <a href="#decision">開始模擬</a>
+    <a href="#guide">教學說明</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="hero-content">
+    <span class="badge">AI × FARMER DECISION</span>
+    <h2>農民決策模擬</h2>
+    <p>
+      從價格、氣候風險與市場趨勢出發，
+      模擬農民在採收、延後出貨、分批銷售與加工利用之間如何做決策。
+    </p>
+  </div>
+</section>
+
+<main>
+
+  <section id="decision" class="container">
+    <div class="card">
+      <h3>🌱 決策條件設定</h3>
+
+      <label for="cropInput">作物名稱</label>
+      <input id="cropInput" type="text" placeholder="例如：芒果、甘藍、香蕉、鳳梨" />
+
+      <label for="countySelect">產地縣市</label>
+      <select id="countySelect">
+        <option value="">請選擇縣市</option>
+      </select>
+
+      <label for="townshipSelect">產地鄉鎮</label>
+      <select id="townshipSelect">
+        <option value="">請先選擇縣市</option>
+      </select>
+
+      <label for="priceInput">目前平均價格（元／公斤）</label>
+      <input id="priceInput" type="number" placeholder="例如：48" min="0" />
+
+      <label for="trendSelect">價格趨勢</label>
+      <select id="trendSelect">
+        <option value="up">可能上升</option>
+        <option value="flat">持平整理</option>
+        <option value="down">可能下降</option>
+      </select>
+
+      <label for="weatherRiskSelect">氣候風險</label>
+      <select id="weatherRiskSelect">
+        <option value="low">低</option>
+        <option value="mid" selected>中</option>
+        <option value="high">高</option>
+      </select>
+
+      <label for="supplySelect">供給狀態</label>
+      <select id="supplySelect">
+        <option value="tight">供給偏少</option>
+        <option value="normal" selected>供給正常</option>
+        <option value="large">大量上市</option>
+      </select>
+
+      <div class="btn-row">
+        <button id="simulateBtn" type="button">開始決策模擬</button>
+        <button id="clearBtn" type="button" class="secondary-btn">清除資料</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="container">
+    <p id="statusText" class="status-text">尚未進行決策模擬。</p>
+
+    <div class="result-grid">
+
+      <div class="card decision-card">
+        <h3>🅰 方案A｜立即採收出貨</h3>
+        <div id="optionA">
+          尚未模擬。
+        </div>
+      </div>
+
+      <div class="card decision-card">
+        <h3>🅱 方案B｜延後採收出貨</h3>
+        <div id="optionB">
+          尚未模擬。
+        </div>
+      </div>
+
+      <div class="card decision-card">
+        <h3>🅲 方案C｜分批採收銷售</h3>
+        <div id="optionC">
+          尚未模擬。
+        </div>
+      </div>
+
+      <div class="card decision-card">
+        <h3>🅳 方案D｜加工或冷藏利用</h3>
+        <div id="optionD">
+          尚未模擬。
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="container">
+    <div class="result-grid">
+
+      <div class="card highlight-card">
+        <h3>🤖 AI推薦決策</h3>
+        <div id="aiDecision">
+          尚未產生建議。
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>🎓 教師討論題</h3>
+        <div id="teacherQuestion">
+          尚未產生討論題。
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="guide" class="container">
+    <div class="card">
+      <h3>📘 教學說明</h3>
+      <p>
+        本工具為 v1.0 教學模擬版，協助學生理解農民面對市場價格、
+        氣候風險、供給變化與銷售方式時，如何進行經營決策。
+      </p>
+
+      <ul>
+        <li>價格上升時，不一定代表應該延後出貨，仍需考量氣候與品質風險。</li>
+        <li>大量上市時，價格可能受到壓力，農民可考慮分批銷售或加工利用。</li>
+        <li>氣候風險高時，立即採收可能降低災損，但也可能錯過較佳價格。</li>
+        <li>分批採收可分散風險，但通常會增加人工、運輸與管理成本。</li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  農民決策模擬 v1.0｜AI農產品大數據教學平台
+</footer>
+
+<script src="script.js?v=20260601a"></script>
+</body>
+</html>

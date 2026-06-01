@@ -1,1 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <title>AI趨勢預測中心｜AI農產品大數據教學平台</title>
+  <meta name="description" content="AI趨勢預測中心，協助學生與農民理解價格、供給、氣候風險與市場趨勢判讀。">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header class="header">
+  <div class="logo">
+    <div class="logo-icon">📈</div>
+    <div>
+      <h1>AI趨勢預測中心</h1>
+      <p>AI Agriculture Trend Center</p>
+    </div>
+  </div>
+
+  <nav>
+    <a href="../index.html">回首頁</a>
+    <a href="#analysis">開始預測</a>
+    <a href="#guide">教學說明</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="hero-content">
+    <span class="badge">AI AGRICULTURE TREND CENTER</span>
+    <h2>AI趨勢預測中心</h2>
+    <p>
+      透過作物、產地與分析期間，模擬價格趨勢、供給趨勢與氣候風險，
+      協助學生學習農產品市場判讀與農業決策思考。
+    </p>
+  </div>
+</section>
+
+<section id="analysis" class="container">
+  <div class="card">
+    <h3>🌾 趨勢預測設定</h3>
+
+    <label for="cropInput">作物名稱</label>
+    <input id="cropInput" type="text" placeholder="例如：芒果、鳳梨、香蕉、甘藍">
+
+    <label for="countySelect">產地縣市</label>
+    <select id="countySelect">
+      <option value="">請選擇縣市</option>
+    </select>
+
+    <label for="townshipSelect">產地鄉鎮</label>
+    <select id="townshipSelect">
+      <option value="">請先選擇縣市</option>
+    </select>
+
+    <label>分析期間</label>
+    <div class="period-row">
+      <button type="button" class="period-btn active" data-period="7">近7天</button>
+      <button type="button" class="period-btn" data-period="30">近30天</button>
+      <button type="button" class="period-btn" data-period="90">近90天</button>
+    </div>
+
+    <button id="predictBtn">開始趨勢預測</button>
+  </div>
+</section>
+
+<section class="container">
+  <div class="result-grid">
+
+    <div class="card">
+      <h3>📈 價格趨勢預測</h3>
+      <div id="priceTrend">尚未預測</div>
+    </div>
+
+    <div class="card">
+      <h3>📦 供給趨勢預測</h3>
+      <div id="supplyTrend">尚未預測</div>
+    </div>
+
+    <div class="card">
+      <h3>🌦 氣候風險趨勢</h3>
+      <div id="climateTrend">尚未預測</div>
+    </div>
+
+    <div class="card">
+      <h3>🤖 AI綜合判讀</h3>
+      <div id="aiSummary">尚未預測</div>
+    </div>
+
+  </div>
+</section>
+
+<section id="guide" class="container">
+  <div class="card">
+    <h3>📘 教學說明</h3>
+    <p>
+      本工具目前為 v1.0 模擬預測版，主要用於教學示範，
+      讓學生理解價格、供給、氣候與市場決策之間的關係。
+    </p>
+    <ul>
+      <li>價格趨勢：學習判斷市場價格可能上升、下降或持平。</li>
+      <li>供給趨勢：理解大量上市、供應減少與市場壓力。</li>
+      <li>氣候風險：思考高溫、豪雨、颱風對農產品供應的影響。</li>
+      <li>AI綜合判讀：將市場與氣候訊號轉換成農業決策語言。</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  AI趨勢預測中心 v1.0｜AI農產品大數據教學平台
+</footer>
+
+<script src="script.js?v=20260601a"></script>
+</body>
+</html>

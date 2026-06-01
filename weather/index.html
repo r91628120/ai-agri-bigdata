@@ -1,1 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<title>AI農業氣象整合中心｜AI農產品大數據教學平台</title>
+
+<link rel="stylesheet" href="style.css">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<!-- Header -->
+
+<header class="header">
+
+    <div class="logo">
+
+        <div class="logo-icon">
+            🌦️
+        </div>
+
+        <div>
+            <h1>AI農業氣象整合中心</h1>
+            <p>AI Agriculture Weather Center</p>
+        </div>
+
+    </div>
+
+    <nav>
+
+        <a href="../index.html">回首頁</a>
+
+        <a href="#analysis">開始分析</a>
+
+        <a href="#guide">教學說明</a>
+
+    </nav>
+
+</header>
+
+<!-- Hero -->
+
+<section class="hero">
+
+    <div class="hero-content">
+
+        <span class="badge">
+            AI AGRICULTURE WEATHER CENTER
+        </span>
+
+        <h2>
+            AI農業氣象整合中心
+        </h2>
+
+        <p>
+            結合中央氣象署資料、氣候風險評估與農業判讀，
+            協助學生理解天氣如何影響農產品生產、採收、運輸與市場供應。
+        </p>
+
+    </div>
+
+</section>
+
+<!-- 分析區 -->
+
+<section id="analysis" class="container">
+
+    <div class="card">
+
+        <h3>🌾 作物與產地設定</h3>
+
+        <label>作物名稱</label>
+
+        <input
+            type="text"
+            id="cropInput"
+            placeholder="例如：芒果、蓮霧、香蕉、洋蔥">
+
+        <label>產地縣市</label>
+
+        <select id="countySelect">
+
+            <option value="">
+                請選擇縣市
+            </option>
+
+        </select>
+
+        <label>產地鄉鎮</label>
+
+        <select id="townshipSelect">
+
+            <option value="">
+                請選擇鄉鎮
+            </option>
+
+        </select>
+
+        <button id="analyzeBtn">
+
+            開始氣象分析
+
+        </button>
+
+    </div>
+
+</section>
+
+<!-- 分析結果 -->
+
+<section class="container">
+
+    <div class="result-grid">
+
+        <!-- 左側 -->
+
+        <div class="card">
+
+            <h3>☀️ 農業氣象風險分析</h3>
+
+            <div id="weatherRisk">
+
+                尚未分析
+
+            </div>
+
+        </div>
+
+        <!-- 右側 -->
+
+        <div class="card">
+
+            <h3>🚨 AI重大氣候警示</h3>
+
+            <div id="climateAlert">
+
+                尚未分析
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- 氣象資訊 -->
+
+<section class="container">
+
+    <div class="card">
+
+        <h3>🔗 中央氣象署資訊</h3>
+
+        <div class="button-group">
+
+            <a
+                class="link-btn"
+                href="https://www.cwa.gov.tw/V8/C/W/week.html"
+                target="_blank">
+
+                🌦️ 未來一週天氣預報
+
+            </a>
+
+            <a
+                class="link-btn"
+                href="https://www.cwa.gov.tw/V8/C/P/Typhoon/TY_NEWS.html"
+                target="_blank">
+
+                🌀 最新颱風消息
+
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- 教學說明 -->
+
+<section id="guide" class="container">
+
+    <div class="card">
+
+        <h3>📘 教學說明</h3>
+
+        <p>
+
+            本工具協助學生理解：
+
+        </p>
+
+        <ul>
+
+            <li>氣候與農業的關聯</li>
+
+            <li>高溫風險對作物影響</li>
+
+            <li>豪雨與颱風風險</li>
+
+            <li>採收與運輸時機判斷</li>
+
+            <li>農產品市場供應變化</li>
+
+        </ul>
+
+    </div>
+
+</section>
+
+<footer>
+
+    AI農業氣象整合中心 v1.0｜
+    AI農產品大數據教學平台
+
+</footer>
+
+<script src="script.js"></script>
+
+</body>
+</html>

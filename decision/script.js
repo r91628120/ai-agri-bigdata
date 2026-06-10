@@ -190,11 +190,13 @@ window.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("randomQuestionBtn")
           .addEventListener("click", randomQuestion);
   document.getElementById("clearBtn").addEventListener("click", clearDecision);
+  document.getElementById("certificateBtn").addEventListener("click", generateCertificate);
 });
 
   document.querySelectorAll(".choice-btn").forEach(btn => {
   btn.addEventListener("click", () => {
     submitStudentChoice(btn.dataset.choice);
+    renderAbilityReport();
   });
 });
 
@@ -486,21 +488,6 @@ function randomQuestion() {
   document.getElementById("costEvent").textContent = q.cost;
   document.getElementById("farmEvent").textContent = q.farm;
 
-   document.getElementById("eventCards")
-   .classList.remove("hidden");
-
-   document.getElementById("climateEvent")
-   .textContent = climate;
-
-   document.getElementById("marketEvent")
-   .textContent = market;
-
-   document.getElementById("costEvent")
-   .textContent = cost;
-
-   document.getElementById("farmEvent")
-   .textContent = farm;
-
 
 }
 
@@ -537,6 +524,24 @@ function submitStudentChoice(choice) {
   `;
 
   renderChallengeAiDecision(choice);
+
+   playerStats.totalQuestions++;
+
+  if(choice === currentQuestion.bestChoice){
+
+   playerStats.market += 10;
+   playerStats.risk += 10;
+   playerStats.management += 10;
+
+  }else{
+
+   playerStats.market += 6;
+   playerStats.risk += 5;
+   playerStats.management += 4;
+
+}
+
+
 }
 
 function renderChallengeAiDecision(choice) {
@@ -595,5 +600,99 @@ document.getElementById("optionD").innerHTML = `
     <p><strong>討論題 1：</strong>你同意 AI 的最佳方案嗎？為什麼？</p>
     <p><strong>討論題 2：</strong>如果氣候風險提高，你會改選哪一個方案？</p>
     <p><strong>討論題 3：</strong>除了 ${choiceName[best]}，還有沒有其他可能策略？</p>
+  `;
+}
+
+let playerStats = {
+  market: 0,
+  risk: 0,
+  management: 0,
+  totalQuestions: 0
+};
+
+function renderAbilityReport(){
+
+const market =
+Math.min(playerStats.market,100);
+
+const risk =
+Math.min(playerStats.risk,100);
+
+const management =
+Math.min(playerStats.management,100);
+
+const total =
+Math.round(
+(market+risk+management)/3
+);
+
+let level="C";
+
+if(total>=90) level="S";
+else if(total>=80) level="A";
+else if(total>=70) level="B";
+
+document.getElementById("abilityReport")
+.innerHTML = `
+
+<p>📈 市場判讀能力：${market}</p>
+
+<p>🌪 風險管理能力：${risk}</p>
+
+<p>🚜 經營決策能力：${management}</p>
+
+<hr>
+
+<p>
+🏆 綜合評等：
+<strong>${level}</strong>
+</p>
+
+<p>
+累積完成題數：
+${playerStats.totalQuestions} 題
+</p>
+
+`;
+
+}
+
+function generateCertificate() {
+  if (playerStats.totalQuestions < 5) {
+    document.getElementById("certificateBox").innerHTML =
+      `⚠️ 請先完成至少 5 題評量，目前完成 ${playerStats.totalQuestions} 題。`;
+    return;
+  }
+
+  const market = Math.min(playerStats.market, 100);
+  const risk = Math.min(playerStats.risk, 100);
+  const management = Math.min(playerStats.management, 100);
+  const total = Math.round((market + risk + management) / 3);
+
+  let level = "C";
+  if (total >= 90) level = "S";
+  else if (total >= 80) level = "A";
+  else if (total >= 70) level = "B";
+
+  const today = new Date().toLocaleDateString("zh-TW");
+
+  document.getElementById("certificateBox").innerHTML = `
+    <div class="certificate">
+      <div class="certificate-org">AI農業教育中心</div>
+      <h2>🏅 AI農業經營決策學習證書</h2>
+
+      <p>茲證明學習者已完成</p>
+      <h3>農業經營決策與風險管理模擬評量</h3>
+
+      <div class="certificate-score">
+        <p>📈 市場判讀能力：${market}</p>
+        <p>🌪 風險管理能力：${risk}</p>
+        <p>🚜 經營決策能力：${management}</p>
+        <p>🏆 綜合評等：${level}</p>
+        <p>完成題數：${playerStats.totalQuestions} 題</p>
+      </div>
+
+      <p class="certificate-date">授證日期：${today}</p>
+    </div>
   `;
 }

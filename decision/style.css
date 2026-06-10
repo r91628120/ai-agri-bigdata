@@ -440,3 +440,42 @@ footer {
 .farm{
   background:#e7f8ef;
 }
+
+.certificate {
+  border: 4px double #00a86b;
+  border-radius: 24px;
+  padding: 28px;
+  text-align: center;
+  background: linear-gradient(135deg, #ffffff, #f0fff7);
+}
+
+.certificate-org {
+  font-weight: 900;
+  color: #057a4f;
+  letter-spacing: 2px;
+  margin-bottom: 12px;
+}
+
+.certificate h2 {
+  color: #064b35;
+  margin-bottom: 18px;
+}
+
+.certificate h3 {
+  color: #007e55;
+  margin: 14px 0;
+}
+
+.certificate-score {
+  margin: 20px auto;
+  padding: 18px;
+  border-radius: 18px;
+  background: #e7f8ef;
+  max-width: 520px;
+  text-align: left;
+}
+
+.certificate-date {
+  margin-top: 18px;
+  font-weight: 900;
+}

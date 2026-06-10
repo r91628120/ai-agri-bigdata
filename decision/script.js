@@ -708,6 +708,63 @@ function generateCertificate() {
       </div>
 
       <p class="certificate-date">授證日期：${today}</p>
+
+    <div class="share-row">
+       <button type="button" onclick="downloadCertificateImage()">下載證書圖片</button>
+       <button type="button" onclick="shareCertificate()">分享證書</button>
+    </div> 
+
     </div>
   `;
+}
+
+async function downloadCertificateImage() {
+  const certificate = document.querySelector(".certificate");
+
+  if (!certificate) {
+    alert("請先產生證書。");
+    return;
+  }
+
+  const canvas = await html2canvas(certificate, {
+    scale: 2,
+    backgroundColor: "#ffffff"
+  });
+
+  const link = document.createElement("a");
+  link.download = "AI農業經營決策學習證書.png";
+  link.href = canvas.toDataURL("image/png");
+  link.click();
+}
+
+async function shareCertificate() {
+  const certificate = document.querySelector(".certificate");
+
+  if (!certificate) {
+    alert("請先產生證書。");
+    return;
+  }
+
+  const canvas = await html2canvas(certificate, {
+    scale: 2,
+    backgroundColor: "#ffffff"
+  });
+
+  canvas.toBlob(async blob => {
+    const file = new File(
+      [blob],
+      "AI農業經營決策學習證書.png",
+      { type: "image/png" }
+    );
+
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({
+        title: "AI農業經營決策學習證書",
+        text: "我完成了 AI農業經營決策與風險管理模擬評量！",
+        files: [file]
+      });
+    } else {
+      alert("此瀏覽器不支援直接分享，請先下載證書圖片後，再分享到 IG、FB、Threads 或 LINE。");
+    }
+  });
 }

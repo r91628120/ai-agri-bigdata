@@ -479,3 +479,21 @@ footer {
   margin-top: 18px;
   font-weight: 900;
 }
+
+.share-row {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.share-row button {
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: none;
+  background: #00a86b;
+  color: white;
+  font-weight: 800;
+  cursor: pointer;
+}

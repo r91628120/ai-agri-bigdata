@@ -1,3 +1,55 @@
+const questionBank = [
+{
+  crop: "芒果",
+  county: "屏東縣",
+  township: "枋山鄉",
+  price: 55,
+  trend: "up",
+  weatherRisk: "low",
+  supply: "normal"
+},
+
+{
+  crop: "香蕉",
+  county: "高雄市",
+  township: "旗山區",
+  price: 30,
+  trend: "down",
+  weatherRisk: "high",
+  supply: "large"
+},
+
+{
+  crop: "鳳梨",
+  county: "屏東縣",
+  township: "內埔鄉",
+  price: 42,
+  trend: "flat",
+  weatherRisk: "mid",
+  supply: "normal"
+},
+
+{
+  crop: "甘藍",
+  county: "雲林縣",
+  township: "西螺鎮",
+  price: 18,
+  trend: "down",
+  weatherRisk: "low",
+  supply: "large"
+},
+
+{
+  crop: "蓮霧",
+  county: "屏東縣",
+  township: "南州鄉",
+  price: 75,
+  trend: "up",
+  weatherRisk: "mid",
+  supply: "tight"
+}
+];
+
 let townshipData = {};
 
 window.addEventListener("DOMContentLoaded", async () => {
@@ -5,6 +57,8 @@ window.addEventListener("DOMContentLoaded", async () => {
 
   document.getElementById("countySelect").addEventListener("change", updateTownships);
   document.getElementById("simulateBtn").addEventListener("click", simulateDecision);
+  document.getElementById("randomQuestionBtn")
+          .addEventListener("click", randomQuestion);
   document.getElementById("clearBtn").addEventListener("click", clearDecision);
 });
 
@@ -233,4 +287,38 @@ function clearDecision() {
   document.getElementById("optionD").innerHTML = "尚未模擬。";
   document.getElementById("aiDecision").innerHTML = "尚未產生建議。";
   document.getElementById("teacherQuestion").innerHTML = "尚未產生討論題。";
+}
+
+function randomQuestion() {
+
+  const q =
+    questionBank[
+      Math.floor(Math.random() * questionBank.length)
+    ];
+
+  document.getElementById("cropInput").value =
+    q.crop;
+
+  document.getElementById("countySelect").value =
+    q.county;
+
+  updateTownships();
+
+  document.getElementById("townshipSelect").value =
+    q.township;
+
+  document.getElementById("priceInput").value =
+    q.price;
+
+  document.getElementById("trendSelect").value =
+    q.trend;
+
+  document.getElementById("weatherRiskSelect").value =
+    q.weatherRisk;
+
+  document.getElementById("supplySelect").value =
+    q.supply;
+
+  document.getElementById("statusText").innerHTML =
+    `🎲 AI已產生一題農業經營情境，請先思考你會如何決策，再按「開始決策模擬」。`;
 }

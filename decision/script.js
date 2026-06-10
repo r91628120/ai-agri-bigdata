@@ -31,74 +31,152 @@ const farmEvents = [
 ];
 
 
-const questionBank = [
-  {
-    crop: "芒果",
-    county: "屏東縣",
-    township: "枋山鄉",
-    price: 55,
-    trend: "up",
-    weatherRisk: "low",
-    supply: "normal",
-    profits: { A: 6, B: 10, C: 12, D: 4 },
-    bestChoice: "C",
-    scenario: "價格可能上升，但仍有氣候風險，請判斷最佳出貨策略。",
-    explanation: "分批採收可兼顧價格機會與氣候風險。"
-  },
-  {
-    crop: "香蕉",
-    county: "高雄市",
-    township: "旗山區",
-    price: 30,
-    trend: "down",
-    weatherRisk: "high",
-    supply: "large",
-    profits: { A: 3, B: -8, C: 5, D: 9 },
-    bestChoice: "D",
-    scenario: "香蕉大量上市，價格下跌，又遇到高氣候風險。",
-    explanation: "加工利用可降低低價出清壓力，並減少災損風險。"
-  },
-  {
-    crop: "鳳梨",
-    county: "屏東縣",
-    township: "內埔鄉",
-    price: 42,
-    trend: "flat",
-    weatherRisk: "mid",
-    supply: "normal",
-    profits: { A: 6, B: 5, C: 9, D: 7 },
-    bestChoice: "C",
-    scenario: "價格持平、供給正常，但氣候風險中等。",
-    explanation: "分批採收能分散市場與氣候風險。"
-  },
-  {
-    crop: "甘藍",
-    county: "雲林縣",
-    township: "西螺鎮",
-    price: 18,
-    trend: "down",
-    weatherRisk: "low",
-    supply: "large",
-    profits: { A: 2, B: -5, C: 4, D: 8 },
-    bestChoice: "D",
-    scenario: "甘藍大量上市，價格可能下跌，但氣候穩定。",
-    explanation: "加工或冷藏可延長銷售時間，避免集中出貨造成價格壓力。"
-  },
-  {
-    crop: "蓮霧",
-    county: "屏東縣",
-    township: "南州鄉",
-    price: 75,
-    trend: "up",
-    weatherRisk: "mid",
-    supply: "tight",
-    profits: { A: 8, B: 13, C: 15, D: 6 },
-    bestChoice: "C",
-    scenario: "蓮霧供給偏少，價格可能上升，但仍有中度氣候風險。",
-    explanation: "分批採收可保留漲價機會，也能避免一次承擔全部氣候風險。"
-  }
+const cropPool = [
+  { crop: "芒果", county: "屏東縣", township: "枋山鄉", prices: [45, 55, 65, 75] },
+  { crop: "香蕉", county: "高雄市", township: "旗山區", prices: [18, 25, 30, 38] },
+  { crop: "鳳梨", county: "屏東縣", township: "內埔鄉", prices: [25, 35, 42, 50] },
+  { crop: "甘藍", county: "雲林縣", township: "西螺鎮", prices: [12, 18, 25, 32] },
+  { crop: "蓮霧", county: "屏東縣", township: "南州鄉", prices: [55, 75, 95, 120] },
+  { crop: "番茄", county: "台南市", township: "新化區", prices: [28, 40, 55, 70] },
+  { crop: "木瓜", county: "屏東縣", township: "九如鄉", prices: [20, 30, 42, 55] },
+  { crop: "洋蔥", county: "屏東縣", township: "恆春鎮", prices: [18, 25, 35, 45] },
+  { crop: "西瓜", county: "台南市", township: "學甲區", prices: [12, 18, 25, 32] },
+  { crop: "番石榴", county: "高雄市", township: "燕巢區", prices: [25, 35, 48, 60] }
 ];
 
+function pickRandom(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function generateDynamicQuestion() {
+  const cropData = pickRandom(cropPool);
+  const price = pickRandom(cropData.prices);
+  const trend = pickRandom(["up", "flat", "down"]);
+  const weatherRisk = pickRandom(["low", "mid", "high"]);
+  const supply = pickRandom(["tight", "normal", "large"]);
+
+  const climate = pickRandom(climateEvents);
+  const market = pickRandom(marketEvents);
+  const cost = pickRandom(costEvents);
+  const farm = pickRandom(farmEvents);
+
+  let profits = { A: 6, B: 6, C: 8, D: 5 };
+
+  if (trend === "up") {
+    profits.B += 5;
+    profits.C += 4;
+  }
+
+  if (trend === "down") {
+    profits.A += 5;
+    profits.D += 4;
+    profits.B -= 6;
+  }
+
+  if (weatherRisk === "high") {
+    profits.A += 6;
+    profits.C += 3;
+    profits.B -= 8;
+  }
+
+  if (weatherRisk === "low") {
+    profits.B += 3;
+  }
+
+  if (supply === "large") {
+    profits.D += 7;
+    profits.C += 4;
+    profits.A -= 2;
+  }
+
+  if (supply === "tight") {
+    profits.B += 4;
+    profits.C += 3;
+  }
+
+  if (climate.includes("颱風") || climate.includes("豪雨") || climate.includes("寒流")) {
+    profits.A += 4;
+    profits.B -= 5;
+    profits.C += 2;
+  }
+
+  if (climate.includes("乾旱")) {
+    profits.B -= 2;
+    profits.C += 2;
+  }
+
+  if (market.includes("訂單增加") || market.includes("市場開放") || market.includes("促銷")) {
+    profits.B += 3;
+    profits.C += 4;
+  }
+
+  if (market.includes("需求下降") || market.includes("進口")) {
+    profits.A += 2;
+    profits.D += 4;
+    profits.B -= 3;
+  }
+
+  if (cost.includes("上漲") || cost.includes("增加") || cost.includes("提高")) {
+    profits.C -= 2;
+    profits.D -= 1;
+  }
+
+  if (cost.includes("補助")) {
+    profits.D += 4;
+  }
+
+  if (farm.includes("人力不足") || farm.includes("故障") || farm.includes("病蟲害")) {
+    profits.A += 3;
+    profits.B -= 4;
+  }
+
+  if (farm.includes("加工廠")) {
+    profits.D += 5;
+  }
+
+  if (farm.includes("認證")) {
+    profits.B += 3;
+    profits.C += 3;
+  }
+
+  Object.keys(profits).forEach(k => {
+    profits[k] = Math.round(profits[k]);
+  });
+
+  const bestChoice = Object.keys(profits).sort((a, b) => profits[b] - profits[a])[0];
+
+  const choiceText = {
+    A: "立即採收",
+    B: "延後採收",
+    C: "分批採收",
+    D: "加工利用"
+  };
+
+  return {
+    crop: cropData.crop,
+    county: cropData.county,
+    township: cropData.township,
+    price,
+    trend,
+    weatherRisk,
+    supply,
+    climate,
+    market,
+    cost,
+    farm,
+    profits,
+    bestChoice,
+    scenario: `
+      ${cropData.crop}目前價格為 ${price} 元／公斤。
+      氣候事件：${climate}。
+      市場事件：${market}。
+      成本事件：${cost}。
+      農場事件：${farm}。
+      請判斷最適合的出貨策略。
+    `,
+    explanation: `本題最佳策略為「${choiceText[bestChoice]}」，因為在目前價格、供給、氣候與事件條件下，預估獲利最高。`
+  };
+}
 
 
 let townshipData = {};
@@ -361,10 +439,7 @@ function clearDecision() {
 
 function randomQuestion() {
 
-  const q =
-    questionBank[
-      Math.floor(Math.random() * questionBank.length)
-    ];
+  const q = generateDynamicQuestion();
 
   document.getElementById("cropInput").value =
     q.crop;
@@ -405,25 +480,11 @@ function randomQuestion() {
      btn.classList.remove("active");
 });
 
-  const climate =
-        climateEvents[
-        Math.floor(Math.random()*climateEvents.length)
-  ];
-
-  const market =
-        marketEvents[
-        Math.floor(Math.random()*marketEvents.length)
-  ];
-
-  const cost =
-        costEvents[
-        Math.floor(Math.random()*costEvents.length)
-  ];
-
-  const farm =
-        farmEvents[
-        Math.floor(Math.random()*farmEvents.length)
-  ];
+  document.getElementById("eventCards").classList.remove("hidden");
+  document.getElementById("climateEvent").textContent = q.climate;
+  document.getElementById("marketEvent").textContent = q.market;
+  document.getElementById("costEvent").textContent = q.cost;
+  document.getElementById("farmEvent").textContent = q.farm;
 
    document.getElementById("eventCards")
    .classList.remove("hidden");

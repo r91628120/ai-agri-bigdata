@@ -557,6 +557,7 @@ function submitStudentChoice(choice) {
   questionAnswered = true;
 }
 
+}  // ✅ 補這個，結束 submitStudentChoice 函式
 
 function renderChallengeAiDecision(choice) {
   const q = currentQuestion;

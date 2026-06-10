@@ -181,6 +181,7 @@ function generateDynamicQuestion() {
 
 let townshipData = {};
 let currentQuestion = null;
+let questionAnswered = false;
 
 window.addEventListener("DOMContentLoaded", async () => {
   await loadTownships();
@@ -429,6 +430,20 @@ function clearDecision() {
 
   currentQuestion = null;
 
+  questionAnswered = false;
+
+  playerStats = {
+     market: 0,
+     risk: 0,
+     management: 0,
+     totalQuestions: 0
+  };
+
+  document.getElementById("abilityReport").innerHTML = "尚未完成評量";
+
+  document.getElementById("certificateBox").innerHTML =
+      "完成 5 題以上評量後，可產生學習證書。";
+
   document.getElementById("challengeBox").classList.add("hidden");
   document.getElementById("challengeText").innerHTML = "請先按「AI隨機出題」。";
   document.getElementById("challengeResult").innerHTML = "";
@@ -470,6 +485,7 @@ function randomQuestion() {
     `🎲 AI已產生一題農業經營情境，請先思考你會如何決策，再按「開始決策模擬」。`;
 
   currentQuestion = q;
+  questionAnswered = false;
 
   document.getElementById("challengeBox").classList.remove("hidden");
 
@@ -525,24 +541,22 @@ function submitStudentChoice(choice) {
 
   renderChallengeAiDecision(choice);
 
-   playerStats.totalQuestions++;
+   if (!questionAnswered) {
+  playerStats.totalQuestions++;
 
-  if(choice === currentQuestion.bestChoice){
+  if (choice === currentQuestion.bestChoice) {
+    playerStats.market += 10;
+    playerStats.risk += 10;
+    playerStats.management += 10;
+  } else {
+    playerStats.market += 6;
+    playerStats.risk += 5;
+    playerStats.management += 4;
+  }
 
-   playerStats.market += 10;
-   playerStats.risk += 10;
-   playerStats.management += 10;
-
-  }else{
-
-   playerStats.market += 6;
-   playerStats.risk += 5;
-   playerStats.management += 4;
-
+  questionAnswered = true;
 }
 
-
-}
 
 function renderChallengeAiDecision(choice) {
   const q = currentQuestion;

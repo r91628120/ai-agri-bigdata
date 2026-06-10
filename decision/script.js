@@ -1,3 +1,36 @@
+const climateEvents = [
+"颱風逼近產區",
+"豪雨特報發布",
+"持續乾旱",
+"氣候穩定",
+"寒流來襲"
+];
+
+const marketEvents = [
+"日本訂單增加",
+"中國需求下降",
+"超市促銷活動",
+"出口市場開放",
+"進口農產品增加"
+];
+
+const costEvents = [
+"肥料價格上漲15%",
+"油價上漲",
+"運費增加",
+"冷鏈補助啟動",
+"包裝成本提高"
+];
+
+const farmEvents = [
+"採收人力不足",
+"冷藏設備故障",
+"加工廠合作邀約",
+"品質認證通過",
+"產區病蟲害增加"
+];
+
+
 const questionBank = [
   {
     crop: "芒果",
@@ -372,6 +405,42 @@ function randomQuestion() {
      btn.classList.remove("active");
 });
 
+  const climate =
+        climateEvents[
+        Math.floor(Math.random()*climateEvents.length)
+  ];
+
+  const market =
+        marketEvents[
+        Math.floor(Math.random()*marketEvents.length)
+  ];
+
+  const cost =
+        costEvents[
+        Math.floor(Math.random()*costEvents.length)
+  ];
+
+  const farm =
+        farmEvents[
+        Math.floor(Math.random()*farmEvents.length)
+  ];
+
+   document.getElementById("eventCards")
+   .classList.remove("hidden");
+
+   document.getElementById("climateEvent")
+   .textContent = climate;
+
+   document.getElementById("marketEvent")
+   .textContent = market;
+
+   document.getElementById("costEvent")
+   .textContent = cost;
+
+   document.getElementById("farmEvent")
+   .textContent = farm;
+
+
 }
 
 function submitStudentChoice(choice) {
@@ -420,6 +489,27 @@ function renderChallengeAiDecision(choice) {
   };
 
   const best = q.bestChoice;
+
+  document.getElementById("optionA").innerHTML = `
+  <p><strong>模擬獲利：</strong>${q.profits.A >= 0 ? "+" : ""}${q.profits.A} 萬元</p>
+  <p><strong>判斷：</strong>立即採收可降低等待風險，但可能錯過較佳價格。</p>
+`;
+
+document.getElementById("optionB").innerHTML = `
+  <p><strong>模擬獲利：</strong>${q.profits.B >= 0 ? "+" : ""}${q.profits.B} 萬元</p>
+  <p><strong>判斷：</strong>延後採收可能等待較好價格，但需承擔氣候與品質風險。</p>
+`;
+
+document.getElementById("optionC").innerHTML = `
+  <p><strong>模擬獲利：</strong>${q.profits.C >= 0 ? "+" : ""}${q.profits.C} 萬元</p>
+  <p><strong>判斷：</strong>分批採收可分散風險，兼顧收益與安全性。</p>
+`;
+
+document.getElementById("optionD").innerHTML = `
+  <p><strong>模擬獲利：</strong>${q.profits.D >= 0 ? "+" : ""}${q.profits.D} 萬元</p>
+  <p><strong>判斷：</strong>加工或冷藏可降低集中出貨壓力，增加附加價值。</p>
+`;
+
 
   document.getElementById("statusText").innerHTML =
     `已完成「${q.crop}」AI隨機情境決策挑戰。`;

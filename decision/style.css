@@ -412,3 +412,31 @@ footer {
 .guide-toggle[open] summary {
   margin-bottom: 18px;
 }
+
+.event-cards{
+  margin-top:16px;
+  display:grid;
+  gap:10px;
+}
+
+.event-card{
+  padding:12px 16px;
+  border-radius:14px;
+  font-weight:800;
+}
+
+.climate{
+  background:#fff3cd;
+}
+
+.market{
+  background:#d1ecf1;
+}
+
+.cost{
+  background:#ffe5d0;
+}
+
+.farm{
+  background:#e7f8ef;
+}

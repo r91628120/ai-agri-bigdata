@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>農民決策模擬｜AI農產品大數據教學平台</title>
+  <title>農民決策模擬與農業風險管理｜AI農產品大數據教學平台</title>
   <meta name="description" content="農民決策模擬，協助學生理解價格、氣候、市場趨勢與採收出貨決策之間的關係。" />
 
   <link rel="stylesheet" href="style.css" />
@@ -16,7 +16,7 @@
   <div class="logo">
     <div class="logo-icon">🌾</div>
     <div>
-      <h1>農民決策模擬</h1>
+      <h1>農民決策模擬與農業風險管理</h1>
       <p>AI Farmer Decision Simulator</p>
     </div>
   </div>
@@ -31,7 +31,7 @@
 <section class="hero">
   <div class="hero-content">
     <span class="badge">AI × FARMER DECISION</span>
-    <h2>農民決策模擬</h2>
+    <h2>農民決策模擬與農業風險管理</h2>
     <p>
       從價格、氣候風險與市場趨勢出發，
       模擬農民在採收、延後出貨、分批銷售與加工利用之間如何做決策。
@@ -135,6 +135,31 @@
       <div id="challengeBox" class="challenge-box hidden">
   <h3>🎮 學生決策挑戰</h3>
   <p id="challengeText">請先按「AI隨機出題」。</p>
+   
+  <div id="eventCards" class="event-cards hidden">
+
+  <div class="event-card climate">
+    🌪 氣候事件：
+    <span id="climateEvent"></span>
+  </div>
+
+  <div class="event-card market">
+    📈 市場事件：
+    <span id="marketEvent"></span>
+  </div>
+
+  <div class="event-card cost">
+    💰 成本事件：
+    <span id="costEvent"></span>
+  </div>
+
+  <div class="event-card farm">
+    🚜 農場事件：
+    <span id="farmEvent"></span>
+  </div>
+
+</div>
+
 
   <div class="choice-grid">
     <button type="button" class="choice-btn" data-choice="A">A 立即採收</button>
@@ -224,9 +249,9 @@
 </main>
 
 <footer>
-  農民決策模擬 v2.1｜AI農產品大數據教學平台
+  農民決策模擬與農業風險管理 V2.2
 </footer>
 
-<script src="script.js?v=20260601e"></script>
+<script src="script.js?v=20260601g"></script>
 </body>
 </html>

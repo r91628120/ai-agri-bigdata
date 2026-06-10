@@ -709,7 +709,7 @@ function generateCertificate() {
 
       <p class="certificate-date">授證日期：${today}</p>
 
-    <div class="share-row">
+    <div class="share-row" data-html2canvas-ignore="true">
        <button type="button" onclick="downloadCertificateImage()">下載證書圖片</button>
        <button type="button" onclick="shareCertificate()">分享證書</button>
     </div> 

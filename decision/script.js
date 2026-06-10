@@ -313,6 +313,17 @@ function clearDecision() {
   document.getElementById("optionD").innerHTML = "尚未模擬。";
   document.getElementById("aiDecision").innerHTML = "尚未產生建議。";
   document.getElementById("teacherQuestion").innerHTML = "尚未產生討論題。";
+
+  currentQuestion = null;
+
+  document.getElementById("challengeBox").classList.add("hidden");
+  document.getElementById("challengeText").innerHTML = "請先按「AI隨機出題」。";
+  document.getElementById("challengeResult").innerHTML = "";
+
+  document.querySelectorAll(".choice-btn").forEach(btn => {
+    btn.classList.remove("active");
+  });
+
 }
 
 function randomQuestion() {
@@ -397,3 +408,4 @@ function submitStudentChoice(choice) {
 
   simulateDecision();
 }
+

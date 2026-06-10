@@ -406,6 +406,43 @@ function submitStudentChoice(choice) {
     <p>解析：${currentQuestion.explanation}</p>
   `;
 
-  simulateDecision();
+  renderChallengeAiDecision(choice);
 }
 
+function renderChallengeAiDecision(choice) {
+  const q = currentQuestion;
+
+  const choiceName = {
+    A: "立即採收出貨",
+    B: "延後採收出貨",
+    C: "分批採收銷售",
+    D: "加工或冷藏利用"
+  };
+
+  const best = q.bestChoice;
+
+  document.getElementById("statusText").innerHTML =
+    `已完成「${q.crop}」AI隨機情境決策挑戰。`;
+
+  document.getElementById("aiDecision").innerHTML = `
+    <p><strong>作物：</strong>${q.crop}</p>
+    <p><strong>產地：</strong>${q.county}${q.township}</p>
+    <p><strong>目前價格：</strong>${q.price} 元／公斤</p>
+    <p><strong>你的選擇：</strong>${choice}｜${choiceName[choice]}</p>
+    <p><strong>你的獲利：</strong>${q.profits[choice] >= 0 ? "+" : ""}${q.profits[choice]} 萬元</p>
+
+    <hr>
+
+    <p><strong>AI最佳方案：</strong>
+      <span class="success-text">${best}｜${choiceName[best]}</span>
+    </p>
+    <p><strong>最佳獲利：</strong>${q.profits[best] >= 0 ? "+" : ""}${q.profits[best]} 萬元</p>
+    <p><strong>AI解析：</strong>${q.explanation}</p>
+  `;
+
+  document.getElementById("teacherQuestion").innerHTML = `
+    <p><strong>討論題 1：</strong>你同意 AI 的最佳方案嗎？為什麼？</p>
+    <p><strong>討論題 2：</strong>如果氣候風險提高，你會改選哪一個方案？</p>
+    <p><strong>討論題 3：</strong>除了 ${choiceName[best]}，還有沒有其他可能策略？</p>
+  `;
+}

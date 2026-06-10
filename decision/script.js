@@ -1,56 +1,75 @@
 const questionBank = [
-{
-  crop: "芒果",
-  county: "屏東縣",
-  township: "枋山鄉",
-  price: 55,
-  trend: "up",
-  weatherRisk: "low",
-  supply: "normal"
-},
-
-{
-  crop: "香蕉",
-  county: "高雄市",
-  township: "旗山區",
-  price: 30,
-  trend: "down",
-  weatherRisk: "high",
-  supply: "large"
-},
-
-{
-  crop: "鳳梨",
-  county: "屏東縣",
-  township: "內埔鄉",
-  price: 42,
-  trend: "flat",
-  weatherRisk: "mid",
-  supply: "normal"
-},
-
-{
-  crop: "甘藍",
-  county: "雲林縣",
-  township: "西螺鎮",
-  price: 18,
-  trend: "down",
-  weatherRisk: "low",
-  supply: "large"
-},
-
-{
-  crop: "蓮霧",
-  county: "屏東縣",
-  township: "南州鄉",
-  price: 75,
-  trend: "up",
-  weatherRisk: "mid",
-  supply: "tight"
-}
+  {
+    crop: "芒果",
+    county: "屏東縣",
+    township: "枋山鄉",
+    price: 55,
+    trend: "up",
+    weatherRisk: "low",
+    supply: "normal",
+    profits: { A: 6, B: 10, C: 12, D: 4 },
+    bestChoice: "C",
+    scenario: "價格可能上升，但仍有氣候風險，請判斷最佳出貨策略。",
+    explanation: "分批採收可兼顧價格機會與氣候風險。"
+  },
+  {
+    crop: "香蕉",
+    county: "高雄市",
+    township: "旗山區",
+    price: 30,
+    trend: "down",
+    weatherRisk: "high",
+    supply: "large",
+    profits: { A: 3, B: -8, C: 5, D: 9 },
+    bestChoice: "D",
+    scenario: "香蕉大量上市，價格下跌，又遇到高氣候風險。",
+    explanation: "加工利用可降低低價出清壓力，並減少災損風險。"
+  },
+  {
+    crop: "鳳梨",
+    county: "屏東縣",
+    township: "內埔鄉",
+    price: 42,
+    trend: "flat",
+    weatherRisk: "mid",
+    supply: "normal",
+    profits: { A: 6, B: 5, C: 9, D: 7 },
+    bestChoice: "C",
+    scenario: "價格持平、供給正常，但氣候風險中等。",
+    explanation: "分批採收能分散市場與氣候風險。"
+  },
+  {
+    crop: "甘藍",
+    county: "雲林縣",
+    township: "西螺鎮",
+    price: 18,
+    trend: "down",
+    weatherRisk: "low",
+    supply: "large",
+    profits: { A: 2, B: -5, C: 4, D: 8 },
+    bestChoice: "D",
+    scenario: "甘藍大量上市，價格可能下跌，但氣候穩定。",
+    explanation: "加工或冷藏可延長銷售時間，避免集中出貨造成價格壓力。"
+  },
+  {
+    crop: "蓮霧",
+    county: "屏東縣",
+    township: "南州鄉",
+    price: 75,
+    trend: "up",
+    weatherRisk: "mid",
+    supply: "tight",
+    profits: { A: 8, B: 13, C: 15, D: 6 },
+    bestChoice: "C",
+    scenario: "蓮霧供給偏少，價格可能上升，但仍有中度氣候風險。",
+    explanation: "分批採收可保留漲價機會，也能避免一次承擔全部氣候風險。"
+  }
 ];
 
+
+
 let townshipData = {};
+let currentQuestion = null;
 
 window.addEventListener("DOMContentLoaded", async () => {
   await loadTownships();
@@ -61,6 +80,13 @@ window.addEventListener("DOMContentLoaded", async () => {
           .addEventListener("click", randomQuestion);
   document.getElementById("clearBtn").addEventListener("click", clearDecision);
 });
+
+  document.querySelectorAll(".choice-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    submitStudentChoice(btn.dataset.choice);
+  });
+});
+
 
 async function loadTownships() {
   const countySelect = document.getElementById("countySelect");
@@ -321,4 +347,53 @@ function randomQuestion() {
 
   document.getElementById("statusText").innerHTML =
     `🎲 AI已產生一題農業經營情境，請先思考你會如何決策，再按「開始決策模擬」。`;
+
+  currentQuestion = q;
+
+  document.getElementById("challengeBox").classList.remove("hidden");
+
+  document.getElementById("challengeText").innerHTML =
+  `情境題：${q.crop}｜${q.county}${q.township}｜目前價格 ${q.price} 元／公斤。<br>${q.scenario}`;
+
+  document.getElementById("challengeResult").innerHTML = "";
+
+  document.querySelectorAll(".choice-btn").forEach(btn => {
+     btn.classList.remove("active");
+});
+
+}
+
+function submitStudentChoice(choice) {
+  if (!currentQuestion) {
+    document.getElementById("challengeResult").innerHTML =
+      "⚠️ 請先按「AI隨機出題」。";
+    return;
+  }
+
+  document.querySelectorAll(".choice-btn").forEach(btn => {
+    btn.classList.remove("active");
+  });
+
+  document.querySelector(`.choice-btn[data-choice="${choice}"]`)
+    .classList.add("active");
+
+  const profit = currentQuestion.profits[choice];
+  const best = currentQuestion.bestChoice;
+  const bestProfit = currentQuestion.profits[best];
+
+  const choiceName = {
+    A: "立即採收",
+    B: "延後採收",
+    C: "分批採收",
+    D: "加工利用"
+  };
+
+  document.getElementById("challengeResult").innerHTML = `
+    <p>你的選擇：${choice}｜${choiceName[choice]}</p>
+    <p>模擬結果：獲利 ${profit >= 0 ? "+" : ""}${profit} 萬元</p>
+    <p>最佳方案：${best}｜${choiceName[best]}，獲利 ${bestProfit >= 0 ? "+" : ""}${bestProfit} 萬元</p>
+    <p>解析：${currentQuestion.explanation}</p>
+  `;
+
+  simulateDecision();
 }

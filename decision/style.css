@@ -356,3 +356,44 @@ footer {
     width: 100%;
   }
 }
+
+.hidden {
+  display: none;
+}
+
+.challenge-box {
+  margin-top: 28px;
+  padding: 22px;
+  border-radius: 22px;
+  background: #f0fff7;
+  border: 1px solid rgba(0,168,107,.22);
+}
+
+.choice-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.choice-btn {
+  background: #e7f8ef;
+  color: #064b35;
+}
+
+.choice-btn.active {
+  background: linear-gradient(135deg, #007e55, #00b878);
+  color: white;
+}
+
+.challenge-result {
+  margin-top: 18px;
+  font-weight: 900;
+  color: #064b35;
+}
+
+@media (max-width: 900px) {
+  .choice-grid {
+    grid-template-columns: 1fr;
+  }
+}

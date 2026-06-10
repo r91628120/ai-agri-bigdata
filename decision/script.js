@@ -692,7 +692,7 @@ function generateCertificate() {
 
   document.getElementById("certificateBox").innerHTML = `
     <div class="certificate">
-      <div class="certificate-org">AI農業教育中心</div>
+      <div class="certificate-org"><h2>AI農業教育中心</h2></div>
       <h2>🏅 AI農業經營決策學習證書</h2>
 
       <p>茲證明學習者已完成</p>

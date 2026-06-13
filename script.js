@@ -439,81 +439,192 @@ function calculateProfit() {
 
   const income = price * yieldKg;
   const profit = income - cost;
+  const profitRate = income ? (profit / income) * 100 : 0;
   const balancePrice = cost / yieldKg;
-  const profitRate = (profit / income) * 100;
+  const safeSpace = price - balancePrice;
+  const priceImpact = yieldKg;
 
-  let advice = "";
-  let icon = "";
+  function money(num) {
+    return Math.round(num).toLocaleString();
+  }
 
-  if (profit > 0) {
-    icon = "🟢";
+  function percent(num) {
+    return num.toFixed(1);
+  }
 
-    if (profitRate >= 30) {
-      advice = `
-        <strong>獲利狀況良好</strong><br>
-        目前毛利率達 ${profitRate.toFixed(1)}%，已具有不錯的經營效益。<br>
-        若市場價格穩定，可考慮擴大種植面積或增加產量。
-      `;
-    } else {
-      advice = `
-        <strong>有獲利，但仍需注意成本控制</strong><br>
-        雖然目前為正毛利，但若遇到價格下跌或產量減少，獲利可能快速縮水。
-      `;
-    }
-
-  } else if (profit === 0) {
-    icon = "🟡";
-    advice = `
-      <strong>損益平衡</strong><br>
-      目前收入剛好等於成本，幾乎沒有實際獲利空間。
+  function rowPrice(p, label = "") {
+    const rowIncome = p * yieldKg;
+    const rowProfit = rowIncome - cost;
+    return `
+      <tr class="${p === price ? "current-row" : ""}">
+        <td>${label || p.toFixed(1) + " 元"}</td>
+        <td>${money(rowIncome)} 元</td>
+        <td>${money(rowProfit)} 元</td>
+      </tr>
     `;
-  } else {
-    icon = "🔴";
-    advice = `
-      <strong>虧損風險</strong><br>
-      目前售價或產量不足以支撐成本，建議提高售價、增加產量，或重新檢視成本結構。
+  }
+
+  function rowYield(rate, label) {
+    const newYield = yieldKg * rate;
+    const rowIncome = price * newYield;
+    const rowProfit = rowIncome - cost;
+    return `
+      <tr class="${rate === 1 ? "current-row" : ""}">
+        <td>${label}</td>
+        <td>${money(newYield)} kg</td>
+        <td>${money(rowIncome)} 元</td>
+        <td>${money(rowProfit)} 元</td>
+      </tr>
     `;
   }
 
   let riskText = "";
-  let riskColor = "";
+  let riskClass = "";
 
   if (profitRate >= 30) {
     riskText = "低風險";
-    riskColor = "#1f9d55";
+    riskClass = "risk-low";
   } else if (profitRate >= 10) {
     riskText = "中風險";
-    riskColor = "#f59e0b";
+    riskClass = "risk-mid";
   } else {
     riskText = "高風險";
-    riskColor = "#dc2626";
+    riskClass = "risk-high";
+  }
+
+  let advice = "";
+
+  if (profit > 0 && profitRate >= 30) {
+    advice = `
+      目前經營結果良好，利潤率達 ${percent(profitRate)}%。本案例最關鍵的變因是「價格」與「產量」。
+      每公斤售價每增加 1 元，整體收入約增加 ${money(priceImpact)} 元。
+      建議可進一步思考品牌化、契作、直銷或分批銷售，提高平均售價並降低市場波動風險。
+    `;
+  } else if (profit > 0) {
+    advice = `
+      目前仍有獲利，但利潤安全距離不高。若遇到價格下跌或產量減少，獲利可能明顯縮水。
+      建議檢視成本結構，並思考提高單價、分散通路或加工加值。
+    `;
+  } else {
+    advice = `
+      目前推算結果顯示有虧損風險。建議優先檢查成本是否過高、售價是否偏低，或產量是否不足。
+      可嘗試提高售價、增加產量、降低成本，再重新模擬一次。
+    `;
   }
 
   result.innerHTML = `
-    <h3>📊 經營分析結果</h3>
+    <div class="simulation-report">
+      <h3>📊 AI推演分析報告</h3>
+      <p class="report-subtitle">
+        AI已根據您輸入的售價、產量與成本，自動推演可能的收益、風險與經營建議。
+      </p>
 
-    <p>💰 預估收入：<strong>${income.toLocaleString()} 元</strong></p>
-    <p>💸 總成本：<strong>${cost.toLocaleString()} 元</strong></p>
-    <p>🌱 預估毛利：<strong>${profit.toLocaleString()} 元</strong></p>
-    <p>📈 損益平衡價格：<strong>${balancePrice.toFixed(1)} 元/公斤</strong></p>
-    <p>📊 毛利率：<strong>${profitRate.toFixed(1)}%</strong></p>
+      <div class="result-grid">
+        <div class="result-card">
+          <span>💰 預估收入</span>
+          <strong>${money(income)} 元</strong>
+        </div>
+        <div class="result-card">
+          <span>💸 總成本</span>
+          <strong>${money(cost)} 元</strong>
+        </div>
+        <div class="result-card">
+          <span>🌱 預估獲利</span>
+          <strong>${money(profit)} 元</strong>
+        </div>
+        <div class="result-card">
+          <span>📈 利潤率</span>
+          <strong>${percent(profitRate)}%</strong>
+        </div>
+        <div class="result-card">
+          <span>⚖️ 損益平衡價格</span>
+          <strong>${balancePrice.toFixed(2)} 元/kg</strong>
+        </div>
+        <div class="result-card">
+          <span>🛡️ 價格安全空間</span>
+          <strong>${safeSpace.toFixed(2)} 元/kg</strong>
+        </div>
+      </div>
 
-    <p>
-      ⚠️ 經營風險：
-      <strong style="color:${riskColor}">${riskText}</strong>
-    </p>
+      <div class="risk-badge ${riskClass}">
+        經營風險：${riskText}
+      </div>
 
-    <hr>
+      <div class="analysis-section">
+        <h4>② 價格敏感度分析</h4>
+        <p>以目前售價 ${price} 元為中心，自動推算價格變動後的結果。</p>
 
-    <div class="ai-advice-box">
-      <h4>${icon} AI經營判讀</h4>
-      <p>${advice}</p>
-    </div>
+        <div class="table-wrap">
+          <table class="analysis-table">
+            <thead>
+              <tr>
+                <th>每公斤售價</th>
+                <th>預估收入</th>
+                <th>預估獲利</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rowPrice(Math.max(price - 2, 0), `${Math.max(price - 2, 0).toFixed(1)} 元`)}
+              ${rowPrice(Math.max(price - 1, 0), `${Math.max(price - 1, 0).toFixed(1)} 元`)}
+              ${rowPrice(price, `目前 ${price.toFixed(1)} 元`)}
+              ${rowPrice(price + 1, `${(price + 1).toFixed(1)} 元`)}
+              ${rowPrice(price + 2, `${(price + 2).toFixed(1)} 元`)}
+            </tbody>
+          </table>
+        </div>
 
-    <div class="tip-box">
-      📚 教學思考：<br>
-      如果市場價格下降 10 元，是否仍然能獲利？<br>
-      試著重新輸入售價觀察變化。
+        <div class="insight-box">
+          💡 價格每增加 1 元，總收入約增加 <strong>${money(priceImpact)} 元</strong>。
+        </div>
+      </div>
+
+      <div class="analysis-section">
+        <h4>③ 產量風險分析</h4>
+        <p>AI自動推算減產與增產情境，協助學生理解氣候、病蟲害與管理技術對收益的影響。</p>
+
+        <div class="table-wrap">
+          <table class="analysis-table">
+            <thead>
+              <tr>
+                <th>情境</th>
+                <th>產量</th>
+                <th>預估收入</th>
+                <th>預估獲利</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rowYield(0.8, "減產 20%")}
+              ${rowYield(0.9, "減產 10%")}
+              ${rowYield(1, "目前產量")}
+              ${rowYield(1.1, "增產 10%")}
+              ${rowYield(1.2, "增產 20%")}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="insight-box">
+          🌪️ 若減產 20%，預估獲利將變為 
+          <strong>${money(price * yieldKg * 0.8 - cost)} 元</strong>。
+        </div>
+      </div>
+
+      <div class="analysis-section">
+        <h4>④ 損益平衡點</h4>
+        <p>
+          本案例的損益平衡價格為 
+          <strong>${balancePrice.toFixed(2)} 元/kg</strong>。
+          只要售價低於這個價格，就可能進入虧損。
+        </p>
+      </div>
+
+      <div class="ai-advice-box">
+        <h4>🤖 AI經營建議</h4>
+        <p>${advice}</p>
+      </div>
+
+      <div class="tip-box">
+        📚 教學思考：請學生觀察「價格變動」與「產量變動」哪一項對獲利影響更大，並討論農民可以如何降低風險。
+      </div>
     </div>
   `;
 }

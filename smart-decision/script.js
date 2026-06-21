@@ -1,5 +1,6 @@
 let currentSimulation = null;
 let simulationCount = 0;
+let decisionAnswered = false;
 
 const events = {
   climate: ["天氣穩定", "連續豪雨", "高溫乾旱", "颱風接近", "寒流影響"],
@@ -38,6 +39,32 @@ function getLevelName(level) {
   return "中";
 }
 
+function updateDashboardBasic() {
+  const crop = getText("cropSelect");
+  const area = Number(getText("areaSelect"));
+  const method = getText("methodSelect");
+  const fertilizer = getText("fertilizerSelect");
+  const labor = getText("laborSelect");
+  const equipment = getText("equipmentSelect");
+
+  const base = cropBase[crop];
+  let cost = base.cost * area;
+
+  if (method === "organic") cost *= 1.18;
+  if (method === "friendly") cost *= 1.08;
+  if (fertilizer === "high") cost *= 1.08;
+  if (labor === "high") cost *= 1.1;
+  if (equipment === "high") cost *= 1.12;
+
+  document.getElementById("dashCrop").textContent = crop;
+  document.getElementById("dashArea").textContent = area + " 甲地";
+  document.getElementById("dashMethod").textContent = getMethodName(method);
+  document.getElementById("dashCost").textContent = Math.round(cost).toLocaleString() + " 元";
+  document.getElementById("dashRisk").textContent = "模擬中";
+  document.getElementById("dashStatus").textContent = "等待決策";
+}
+
+
 function runSimulation() {
   const crop = getText("cropSelect");
   const area = Number(getText("areaSelect"));
@@ -63,6 +90,9 @@ function runSimulation() {
     pestEvent,
     laborEvent
   };
+
+   decisionAnswered = false;
+   updateDashboardBasic();
 
   document.getElementById("eventBox").innerHTML = `
     <strong>🌱 作物：</strong>${crop}<br>
@@ -97,8 +127,7 @@ function makeDecision(choice) {
     return;
   }
 
-  simulationCount++;
-
+  
   const base = cropBase[currentSimulation.crop];
   let price = base.price;
   let yieldAmount = base.yield * currentSimulation.area;
@@ -196,9 +225,25 @@ function makeDecision(choice) {
 
   risk = Math.max(5, Math.min(95, Math.round(risk)));
 
+  let riskLevel = "低";
+    if (risk >= 60) riskLevel = "高";
+    else if (risk >= 35) riskLevel = "中";
+
+   document.getElementById("dashRisk").textContent = riskLevel + "（" + risk + "%）";
+  
+
   const income = Math.round(price * yieldAmount);
   const profit = Math.round(income - cost);
   const profitRate = Math.round((profit / income) * 100);
+
+  if (!decisionAnswered) {
+       simulationCount++;
+       decisionAnswered = true;
+  }
+
+  document.getElementById("dashStatus").textContent =
+  profit > 0 ? "獲利經營" : "需要調整";
+
 
   document.getElementById("decisionResult").innerHTML = `
     <strong>你的決策：</strong>${decisionName}<br>
@@ -244,7 +289,8 @@ function makeDecision(choice) {
 
 function clearSimulation() {
   currentSimulation = null;
-
+  decisionAnswered = false;
+  
   document.getElementById("cropSelect").value = "水稻";
   document.getElementById("areaSelect").value = "0.1";
   document.getElementById("methodSelect").value = "conventional";
@@ -259,3 +305,10 @@ function clearSimulation() {
   document.getElementById("teacherQuestion").innerHTML = "尚未產生討論題。";
   document.getElementById("certificateBox").innerHTML = "完成模擬後，可產生學習成果。";
 }
+
+document.getElementById("dashCrop").textContent = "尚未設定";
+document.getElementById("dashArea").textContent = "尚未設定";
+document.getElementById("dashMethod").textContent = "尚未設定";
+document.getElementById("dashRisk").textContent = "尚未模擬";
+document.getElementById("dashCost").textContent = "尚未估算";
+document.getElementById("dashStatus").textContent = "等待模擬";

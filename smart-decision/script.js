@@ -84,7 +84,23 @@ function runSimulation() {
 
   const climateEvent = pickRandom(events.climate);
   const marketEvent = pickRandom(events.market);
-  const pestEvent = pickRandom(cropPestEvents[crop] || ["無重大病蟲害", "病蟲害輕微"]);
+  let pestEvent;
+
+  const pestList = cropPestEvents[crop] || [];
+
+   if (Math.random() < 0.1) {
+
+  pestEvent = "無重大病蟲害";
+
+  } else {
+
+  const filteredPests =
+    pestList.filter(item => item !== "無重大病蟲害");
+
+  pestEvent = pickRandom(filteredPests);
+
+  }
+
   const laborEvent = pickRandom(events.labor);
 
   currentSimulation = {
@@ -171,7 +187,7 @@ function makeDecision(choice) {
     yieldAmount *= 0.78;
     risk += 22;
   }
-  
+
   if (
   currentSimulation.pestEvent.includes("果實蠅") ||
   currentSimulation.pestEvent.includes("褐飛蝨") ||

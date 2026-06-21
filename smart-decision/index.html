@@ -1,1 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <title>AI智慧農業決策模擬器｜AI農產品大數據教學平台</title>
+  <meta name="description" content="AI智慧農業決策模擬器，整合作物、市場、氣候、成本、人力與病蟲害事件，協助學生學習完整農場經營決策。">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header class="header">
+  <div class="logo">
+    <div class="logo-icon">🌾</div>
+    <div>
+      <h1>AI智慧農業決策模擬器</h1>
+      <p>AI Smart Agriculture Decision Simulator</p>
+    </div>
+  </div>
+
+  <nav>
+    <a href="../index.html">回首頁</a>
+    <a href="#simulation">開始模擬</a>
+    <a href="#guide">教學說明</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="hero-content">
+    <span class="badge">AI SMART AGRICULTURE</span>
+    <h2>從種植到採收，學會完整農場經營決策</h2>
+    <p>
+      整合作物選擇、種植方式、生產成本、氣候事件、市場變化、病蟲害與人力風險，
+      讓學生體驗真實農場經營中的判斷與取捨。
+    </p>
+  </div>
+</section>
+
+<main>
+
+<section id="simulation" class="container">
+  <div class="card">
+    <h3>🌱 建立你的農場</h3>
+
+    <label>作物名稱</label>
+    <select id="cropSelect">
+      <option value="水稻">水稻</option>
+      <option value="芒果">芒果</option>
+      <option value="香蕉">香蕉</option>
+      <option value="鳳梨">鳳梨</option>
+      <option value="高麗菜">高麗菜</option>
+      <option value="洋蔥">洋蔥</option>
+      <option value="蓮霧">蓮霧</option>
+    </select>
+
+    <label>種植面積</label>
+    <select id="areaSelect">
+      <option value="0.1">1分地</option>
+      <option value="0.3">3分地</option>
+      <option value="0.5">5分地</option>
+      <option value="1">1甲地</option>
+      <option value="3">3甲地</option>
+      <option value="5">5甲地</option>
+    </select>
+
+    <label>種植方式</label>
+    <select id="methodSelect">
+      <option value="conventional">慣行農法</option>
+      <option value="friendly">友善農法</option>
+      <option value="organic">有機農法</option>
+    </select>
+
+    <h3>💰 生產規劃</h3>
+
+    <label>肥料投入</label>
+    <select id="fertilizerSelect">
+      <option value="low">低</option>
+      <option value="mid" selected>中</option>
+      <option value="high">高</option>
+    </select>
+
+    <label>人力投入</label>
+    <select id="laborSelect">
+      <option value="low">低</option>
+      <option value="mid" selected>中</option>
+      <option value="high">高</option>
+    </select>
+
+    <label>設備投入</label>
+    <select id="equipmentSelect">
+      <option value="low">低</option>
+      <option value="mid" selected>中</option>
+      <option value="high">高</option>
+    </select>
+
+    <div class="btn-row">
+      <button onclick="runSimulation()">🎲 開始模擬</button>
+      <button class="secondary-btn" onclick="clearSimulation()">清除資料</button>
+    </div>
+  </div>
+</section>
+
+<section class="container">
+  <div class="result-grid">
+
+    <div class="card">
+      <h3>🌦 AI事件產生器</h3>
+      <div id="eventBox">尚未產生事件。</div>
+    </div>
+
+    <div class="card">
+      <h3>🤔 學生決策</h3>
+      <p>面對目前情境，你會如何選擇？</p>
+
+      <div class="choice-grid">
+        <button onclick="makeDecision('A')">A 增加防治</button>
+        <button onclick="makeDecision('B')">B 維持原計畫</button>
+        <button onclick="makeDecision('C')">C 提前採收</button>
+        <button onclick="makeDecision('D')">D 加工利用</button>
+      </div>
+
+      <div id="decisionResult">請先開始模擬，再選擇決策。</div>
+    </div>
+
+  </div>
+</section>
+
+<section class="container">
+  <div class="result-grid">
+
+    <div class="card">
+      <h3>📊 AI經營結果</h3>
+      <div id="businessResult">尚未產生經營結果。</div>
+    </div>
+
+    <div class="card highlight-card">
+      <h3>🏆 AI農場經營能力報告</h3>
+      <div id="abilityReport">尚未完成模擬。</div>
+    </div>
+
+    <div class="card">
+      <h3>👨‍🏫 教師討論題</h3>
+      <div id="teacherQuestion">尚未產生討論題。</div>
+    </div>
+
+    <div class="card certificate-card">
+      <h3>📜 AI農場經營證書</h3>
+      <div id="certificateBox">完成模擬後，可產生學習成果。</div>
+    </div>
+
+  </div>
+</section>
+
+<section id="guide" class="container">
+  <div class="card">
+    <h3>📘 教學說明</h3>
+    <p>
+      本工具為 v1.0 教學模擬版，重點不是計算絕對正確答案，
+      而是讓學生理解農業經營中「成本、氣候、市場、病蟲害、人力」之間的關係。
+    </p>
+
+    <ul>
+      <li>讓學生建立農場條件。</li>
+      <li>由系統產生隨機農業事件。</li>
+      <li>學生根據情境選擇決策。</li>
+      <li>系統產生收益、成本、風險與能力評量。</li>
+      <li>教師可引導學生討論不同決策的優缺點。</li>
+    </ul>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  AI智慧農業決策模擬器 v1.0｜AI農產品大數據教學平台
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,275 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+  background: linear-gradient(180deg, #f0fbf5 0%, #ffffff 55%, #eefaf3 100%);
+  color: #174335;
+  line-height: 1.8;
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid #d8f1e3;
+  padding: 18px 7%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.logo-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #18b66a, #8ee6ad);
+  display: grid;
+  place-items: center;
+  font-size: 28px;
+  box-shadow: 0 12px 28px rgba(24, 182, 106, 0.25);
+}
+
+.logo h1 {
+  margin: 0;
+  font-size: 22px;
+  color: #064e3b;
+}
+
+.logo p {
+  margin: 0;
+  font-size: 13px;
+  color: #5f7f73;
+}
+
+nav {
+  display: flex;
+  gap: 22px;
+  flex-wrap: wrap;
+}
+
+nav a {
+  text-decoration: none;
+  color: #0f5f46;
+  font-weight: 700;
+}
+
+nav a:hover {
+  color: #10b981;
+}
+
+.hero {
+  padding: 90px 7% 70px;
+  background:
+    radial-gradient(circle at top left, rgba(16, 185, 129, 0.18), transparent 35%),
+    radial-gradient(circle at bottom right, rgba(132, 204, 22, 0.16), transparent 35%);
+}
+
+.hero-content {
+  max-width: 920px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: #dcfce7;
+  color: #047857;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  font-size: 13px;
+}
+
+.hero h2 {
+  margin: 24px 0 18px;
+  font-size: clamp(32px, 5vw, 56px);
+  line-height: 1.2;
+  color: #064e3b;
+}
+
+.hero p {
+  max-width: 760px;
+  font-size: 19px;
+  color: #3f6456;
+}
+
+.container {
+  width: min(1120px, 92%);
+  margin: 42px auto;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid #d8f1e3;
+  border-radius: 28px;
+  padding: 32px;
+  box-shadow: 0 20px 45px rgba(15, 94, 70, 0.08);
+}
+
+.card h3 {
+  margin-top: 0;
+  color: #064e3b;
+  font-size: 24px;
+}
+
+label {
+  display: block;
+  margin-top: 18px;
+  margin-bottom: 8px;
+  font-weight: 800;
+  color: #145c46;
+}
+
+select,
+input {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid #bdebd2;
+  background: #f8fffb;
+  color: #174335;
+  font-size: 16px;
+  outline: none;
+}
+
+select:focus,
+input:focus {
+  border-color: #10b981;
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.14);
+}
+
+.btn-row {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-top: 28px;
+}
+
+button {
+  border: none;
+  border-radius: 999px;
+  padding: 14px 22px;
+  background: linear-gradient(135deg, #059669, #10b981);
+  color: white;
+  font-size: 16px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 12px 24px rgba(16, 185, 129, 0.22);
+}
+
+button:hover {
+  transform: translateY(-2px);
+}
+
+.secondary-btn {
+  background: #e9fdf2;
+  color: #047857;
+  box-shadow: none;
+}
+
+.result-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.choice-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin: 18px 0;
+}
+
+.choice-grid button {
+  width: 100%;
+  background: #ecfdf5;
+  color: #047857;
+  box-shadow: none;
+  border: 1px solid #bbf7d0;
+}
+
+.choice-grid button:hover {
+  background: #d1fae5;
+}
+
+#eventBox,
+#decisionResult,
+#businessResult,
+#abilityReport,
+#teacherQuestion,
+#certificateBox {
+  margin-top: 12px;
+  padding: 18px;
+  border-radius: 18px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #285848;
+}
+
+.highlight-card {
+  background: linear-gradient(135deg, #ffffff, #ecfdf5);
+  border-color: #86efac;
+}
+
+.certificate-card {
+  background: linear-gradient(135deg, #fffdf5, #f0fdf4);
+  border-color: #fde68a;
+}
+
+ul {
+  padding-left: 22px;
+}
+
+li {
+  margin-bottom: 8px;
+}
+
+footer {
+  margin-top: 70px;
+  padding: 32px 7%;
+  text-align: center;
+  color: #4f7667;
+  background: #ecfdf5;
+  border-top: 1px solid #d8f1e3;
+  font-weight: 700;
+}
+
+@media (max-width: 820px) {
+  .header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  nav {
+    gap: 14px;
+  }
+
+  .hero {
+    padding: 64px 6% 46px;
+  }
+
+  .card {
+    padding: 24px;
+    border-radius: 24px;
+  }
+
+  .result-grid,
+  .choice-grid {
+    grid-template-columns: 1fr;
+  }
+
+  button {
+    width: 100%;
+  }
+}

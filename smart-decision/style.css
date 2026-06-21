@@ -100,11 +100,12 @@ nav a:hover {
   white-space: nowrap;
 }
 
-.hero-tagline{
-    margin-top:15px;
-    color:#10b981;
-    font-weight:700;
-    font-size:18px;
+.hero-tagline {
+  margin-top: 15px;
+  color: #10b981;
+  font-weight: 700;
+  font-size: 18px;
+  text-align: center;
 }
 
 @media (max-width: 768px) {
@@ -117,8 +118,10 @@ nav a:hover {
 
 .hero p {
   max-width: 760px;
+  margin: 18px auto 0;
   font-size: 19px;
   color: #3f6456;
+  text-align: center;
 }
 
 .container {

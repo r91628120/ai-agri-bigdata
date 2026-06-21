@@ -5,8 +5,17 @@ let decisionAnswered = false;
 const events = {
   climate: ["天氣穩定", "連續豪雨", "高溫乾旱", "颱風接近", "寒流影響"],
   market: ["市場價格穩定", "價格上漲", "價格下跌", "大量上市", "外銷訂單增加"],
-  pest: ["無重大病蟲害", "病蟲害輕微", "病蟲害擴散", "果實蠅風險升高", "葉部病害增加"],
   labor: ["人力充足", "臨時缺工", "工資上漲", "採收人力不足", "包裝人力不足"]
+};
+
+const cropPestEvents = {
+  "水稻": ["無重大病蟲害", "負泥蟲危害增加", "螟蟲危害增加", "褐飛蝨密度升高", "稻苞蟲危害增加", "紋枯病風險升高", "稻熱病風險升高"],
+  "芒果": ["無重大病蟲害", "果實蠅風險升高", "炭疽病風險升高", "薊馬危害增加", "介殼蟲危害增加"],
+  "香蕉": ["無重大病蟲害", "葉斑病風險升高", "香蕉弄蝶危害增加", "蚜蟲危害增加"],
+  "鳳梨": ["無重大病蟲害", "粉介殼蟲危害增加", "心腐病風險升高", "葉部病害增加"],
+  "高麗菜": ["無重大病蟲害", "小菜蛾危害增加", "斜紋夜蛾危害增加", "蚜蟲危害增加", "黑腐病風險升高"],
+  "洋蔥": ["無重大病蟲害", "薊馬危害增加", "紫斑病風險升高", "露菌病風險升高"],
+  "蓮霧": ["無重大病蟲害", "果實蠅風險升高", "薊馬危害增加", "炭疽病風險升高", "介殼蟲危害增加"]
 };
 
 const cropBase = {
@@ -75,7 +84,7 @@ function runSimulation() {
 
   const climateEvent = pickRandom(events.climate);
   const marketEvent = pickRandom(events.market);
-  const pestEvent = pickRandom(events.pest);
+  const pestEvent = pickRandom(cropPestEvents[crop] || ["無重大病蟲害", "病蟲害輕微"]);
   const laborEvent = pickRandom(events.labor);
 
   currentSimulation = {
@@ -162,14 +171,37 @@ function makeDecision(choice) {
     yieldAmount *= 0.78;
     risk += 22;
   }
-  if (currentSimulation.pestEvent.includes("果實蠅")) {
-    yieldAmount *= 0.84;
-    risk += 18;
-  }
-  if (currentSimulation.pestEvent.includes("葉部")) {
-    yieldAmount *= 0.88;
-    risk += 12;
-  }
+  
+  if (
+  currentSimulation.pestEvent.includes("果實蠅") ||
+  currentSimulation.pestEvent.includes("褐飛蝨") ||
+  currentSimulation.pestEvent.includes("螟蟲") ||
+  currentSimulation.pestEvent.includes("負泥蟲") ||
+  currentSimulation.pestEvent.includes("稻苞蟲") ||
+  currentSimulation.pestEvent.includes("小菜蛾") ||
+  currentSimulation.pestEvent.includes("斜紋夜蛾") ||
+  currentSimulation.pestEvent.includes("薊馬") ||
+  currentSimulation.pestEvent.includes("介殼蟲") ||
+  currentSimulation.pestEvent.includes("粉介殼蟲")
+) {
+  yieldAmount *= 0.84;
+  risk += 18;
+}
+
+if (
+  currentSimulation.pestEvent.includes("葉部") ||
+  currentSimulation.pestEvent.includes("紋枯病") ||
+  currentSimulation.pestEvent.includes("稻熱病") ||
+  currentSimulation.pestEvent.includes("炭疽病") ||
+  currentSimulation.pestEvent.includes("葉斑病") ||
+  currentSimulation.pestEvent.includes("心腐病") ||
+  currentSimulation.pestEvent.includes("黑腐病") ||
+  currentSimulation.pestEvent.includes("紫斑病") ||
+  currentSimulation.pestEvent.includes("露菌病")
+) {
+  yieldAmount *= 0.88;
+  risk += 12;
+}
 
   if (currentSimulation.laborEvent.includes("缺工") || currentSimulation.laborEvent.includes("不足")) {
     cost *= 1.16;
@@ -290,7 +322,7 @@ function makeDecision(choice) {
 function clearSimulation() {
   currentSimulation = null;
   decisionAnswered = false;
-  
+
   document.getElementById("cropSelect").value = "水稻";
   document.getElementById("areaSelect").value = "0.1";
   document.getElementById("methodSelect").value = "conventional";

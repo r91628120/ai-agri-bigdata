@@ -374,3 +374,78 @@ footer {
     grid-template-columns: 1fr;
   }
 }
+
+.ai-prompt-card .button-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ai-prompt-card .button-group button,
+.ai-prompt-card .button-group .link-btn {
+
+  height: 52px;
+
+  padding: 0 24px;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 16px;
+
+  font-size: 1rem;
+
+  font-weight: 900;
+
+  white-space: nowrap;
+}
+
+.ai-prompt-card .button-group .link-btn {
+  background: linear-gradient(135deg,#007e55,#00b878);
+}
+
+/* =========================
+   AI 氣象儀表板
+========================= */
+
+.weather-dashboard {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.weather-card {
+  background: linear-gradient(135deg, #ffffff, #effdf5);
+  border: 1px solid rgba(0, 120, 80, 0.15);
+  border-radius: 22px;
+  padding: 20px;
+  box-shadow: 0 10px 24px rgba(0, 80, 50, 0.08);
+  text-align: center;
+}
+
+.weather-card span {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.weather-card p {
+  font-weight: 900;
+  color: #49695f;
+  margin-bottom: 4px;
+}
+
+.weather-card strong {
+  font-size: 1.35rem;
+  color: #064b35;
+}
+
+@media(max-width:900px) {
+  .weather-dashboard {
+    grid-template-columns: 1fr;
+  }
+}

@@ -154,6 +154,7 @@ async function analyzeWeatherRisk() {
   }
 
   latestWeatherData = weather;
+  updateWeatherDashboard(weather);
 
   const risk = buildAgricultureWeatherRisk(crop, county, township, weather);
 
@@ -463,3 +464,21 @@ function copyAIPrompt() {
 
   alert("已複製 AI 氣象決策指令，可以貼到 AI農業氣象教練 GPT 進一步分析！");
 }
+
+function updateWeatherDashboard(weather) {
+  document.getElementById("dashTemp").textContent =
+    `${showValue(weather.temp)} ℃`;
+
+  document.getElementById("dashHumidity").textContent =
+    `${showValue(weather.humidity)} %`;
+
+  document.getElementById("dashRain").textContent =
+    `${showValue(weather.rainMm)} mm`;
+
+  document.getElementById("dashWind").textContent =
+    `${showValue(weather.windSpeed)} m/s`;
+
+  document.getElementById("dashSunshine").textContent =
+    `${showValue(weather.sunshine)} hr`;
+}
+

@@ -482,3 +482,9 @@ function updateWeatherDashboard(weather) {
     `${showValue(weather.sunshine)} hr`;
 }
 
+function clearAIPrompt() {
+  const promptBox = document.getElementById("aiPromptOutput");
+  if (!promptBox) return;
+
+  promptBox.value = "請先完成氣象分析，系統會自動產生可複製的 AI 農業氣象決策指令。";
+}

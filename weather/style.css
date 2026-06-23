@@ -449,3 +449,56 @@ footer {
     grid-template-columns: 1fr;
   }
 }
+
+/* 修正 AI 氣象儀表板排列 */
+.weather-dashboard {
+  width: 100%;
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+  margin-bottom: 28px;
+}
+
+.weather-card {
+  min-height: 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 修正 AI 指令區按鈕大小一致 */
+.ai-prompt-card .button-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.ai-prompt-card .button-group button,
+.ai-prompt-card .button-group .link-btn {
+  width: 190px;
+  height: 52px;
+  margin-top: 16px;
+  padding: 0 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  font-size: 0.95rem;
+  font-weight: 900;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+}
+
+@media(max-width:900px) {
+  .weather-dashboard {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .ai-prompt-card .button-group button,
+  .ai-prompt-card .button-group .link-btn {
+    width: 100%;
+  }
+}

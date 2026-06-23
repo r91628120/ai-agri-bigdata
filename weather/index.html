@@ -151,39 +151,33 @@
 
 </section>
 
-<!-- 氣象資訊 -->
+<!-- AI氣象決策指令區 -->
+<section class="container" id="aiPromptSection">
+  <div class="card ai-prompt-card">
+    <h3>🤖 AI氣象決策指令區</h3>
+    <p>
+      完成氣象分析後，可複製下方指令，貼到「AI農業氣象教練 GPT」進行更深入的農事決策推演。
+    </p>
 
-<section class="container">
+    <textarea id="aiPromptOutput" readonly>
+請先完成氣象分析，系統會自動產生可複製的 AI 農業氣象決策指令。
+    </textarea>
 
-    <div class="card">
+    <div class="button-group">
+      <button onclick="copyAIPrompt()">📋 複製 AI 指令</button>
 
-        <h3>🔗 中央氣象署資訊</h3>
-
-        <div class="button-group">
-
-            <a
-                class="link-btn"
-                href="https://www.cwa.gov.tw/V8/C/W/week.html"
-                target="_blank">
-
-                🌦️ 未來一週天氣預報
-
-            </a>
-
-            <a
-                class="link-btn"
-                href="https://www.cwa.gov.tw/V8/C/P/Typhoon/TY_NEWS.html"
-                target="_blank">
-
-                🌀 最新颱風消息
-
-            </a>
-
-        </div>
-
+      <a
+        class="link-btn"
+        href="請貼上您的AI農業氣象教練GPT網址"
+        target="_blank"
+        rel="noopener">
+        🤖 開啟 AI農業氣象教練 GPT
+      </a>
     </div>
-
+  </div>
 </section>
+
+
 
 <!-- 教學說明 -->
 
@@ -218,10 +212,39 @@
 </section>
 
 <footer>
+  <div class="footer-eco">
+    <h3>🌱 AI農業教育生態系</h3>
+    <p>
+      從農業氣象、作物診療、植物探索到農產品大數據分析，
+      打造高中職農業教育的 AI 學習平台。
+    </p>
 
-    AI農業氣象整合中心 v1.0｜
-    AI農產品大數據教學平台
+    <div class="footer-grid">
+      <a class="footer-card" href="../index.html">
+        <span>🌾</span>
+        AI農產品大數據教學平台
+      </a>
 
+      <a class="footer-card" href="../../ai-agri-weather-coach/ai-agri-weather-coach/" target="_blank">
+        <span>🌦️</span>
+        AI農業氣象教練
+      </a>
+
+      <a class="footer-card" href="../../ai-plant-clinic/" target="_blank">
+        <span>🩺</span>
+        AI植物診療師
+      </a>
+
+      <a class="footer-card" href="../../ai-agri-education/" target="_blank">
+        <span>🏫</span>
+        AI農業教育平台
+      </a>
+    </div>
+
+    <div class="footer-bottom">
+      AI農業氣象整合中心 v2.0 ｜ AI農產品大數據教學平台
+    </div>
+  </div>
 </footer>
 
 <script src="script.js"></script>

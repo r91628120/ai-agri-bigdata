@@ -201,6 +201,8 @@ async function analyzeWeatherRisk() {
   `;
 
   climateAlert.innerHTML = buildClimateAlertHtml(risk, weather);
+  updateAIPrompt(crop, county, township, station, weather, risk);
+
 }
 
 async function fetchWeatherData(stationId) {
@@ -407,4 +409,57 @@ function showValue(value) {
   }
 
   return value;
+}
+
+function updateAIPrompt(crop, county, township, station, weather, risk) {
+  const promptBox = document.getElementById("aiPromptOutput");
+  if (!promptBox) return;
+
+  promptBox.value = `你是「AI農業氣象教練、作物栽培顧問與智慧農業決策教練」。
+
+請根據以下農業情境，協助學生進行氣象判讀與農事決策推演。
+
+【作物】
+${crop}
+
+【產地】
+${county}${township}
+
+【最近農業氣象站】
+${station.name}（${station.id}，距離約 ${station.distanceKm.toFixed(1)} 公里）
+
+【目前農業氣象資料】
+觀測時間：${weather.obsTime || "--"}
+氣溫：${showValue(weather.temp)} ℃
+相對濕度：${showValue(weather.humidity)} %
+實測雨量：${showValue(weather.rainMm)} mm
+風速：${showValue(weather.windSpeed)} m/s
+日照時數：${showValue(weather.sunshine)} hr
+
+【目前初步風險判斷】
+高溫風險：${risk.heatRisk}
+降雨風險：${risk.rainRisk}
+採收運輸風險：${risk.transportRisk}
+品質保存風險：${risk.qualityRisk}
+
+請輸出：
+1. 氣象資料判讀
+2. 對作物可能造成的影響
+3. 採收、運輸與品質保存風險
+4. 病蟲害或災害風險
+5. 今日農事建議
+6. 未來三天注意事項
+7. 適合高中職學生理解的教學說明
+
+請用條列式、清楚、實用、適合農業教育平台呈現的方式回答。`;
+}
+
+function copyAIPrompt() {
+  const promptBox = document.getElementById("aiPromptOutput");
+  if (!promptBox) return;
+
+  promptBox.select();
+  document.execCommand("copy");
+
+  alert("已複製 AI 氣象決策指令，可以貼到 AI農業氣象教練 GPT 進一步分析！");
 }

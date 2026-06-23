@@ -292,3 +292,85 @@ footer {
     padding: 24px;
   }
 }
+
+/* AI Prompt 區 */
+
+.ai-prompt-card textarea {
+  width: 100%;
+  min-height: 260px;
+  margin-top: 16px;
+  padding: 18px;
+  border-radius: 18px;
+  border: 1px solid rgba(0, 120, 80, 0.18);
+  background: #071b15;
+  color: #d8fff0;
+  font-size: 0.95rem;
+  line-height: 1.8;
+  resize: vertical;
+}
+
+/* 生態系 Footer */
+
+footer {
+  margin-top: 60px;
+  padding: 56px 7% 32px;
+  background:
+    linear-gradient(135deg, #032f22, #065f46);
+  color: white;
+  text-align: left;
+}
+
+.footer-eco {
+  max-width: 1200px;
+  margin: auto;
+}
+
+.footer-eco h3 {
+  font-size: 1.8rem;
+  margin-bottom: 12px;
+}
+
+.footer-eco p {
+  color: rgba(255,255,255,.82);
+  margin-bottom: 28px;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+
+.footer-card {
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 18px;
+  padding: 18px;
+  color: white;
+  text-decoration: none;
+}
+
+.footer-card:hover {
+  background: rgba(255,255,255,.15);
+  transform: translateY(-3px);
+}
+
+.footer-card span {
+  font-size: 1.8rem;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.footer-bottom {
+  margin-top: 32px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255,255,255,.18);
+  text-align: center;
+  color: rgba(255,255,255,.72);
+}
+
+@media(max-width:900px){
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+}

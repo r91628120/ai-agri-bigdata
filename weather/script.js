@@ -483,8 +483,15 @@ function updateWeatherDashboard(weather) {
 }
 
 function clearAIPrompt() {
-  const promptBox = document.getElementById("aiPromptOutput");
+
+  const promptBox =
+    document.getElementById("aiPromptOutput");
+
   if (!promptBox) return;
 
-  promptBox.value = "請先完成氣象分析，系統會自動產生可複製的 AI 農業氣象決策指令。";
+  if(confirm("確定要清除目前 AI 指令嗎？")){
+
+      promptBox.value = "";
+
+  }
 }

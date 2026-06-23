@@ -502,3 +502,12 @@ footer {
     width: 100%;
   }
 }
+
+.ai-prompt-card .button-group{
+    align-items:flex-end !important;
+}
+
+.ai-prompt-card .button-group .link-btn{
+    margin-top:16px;
+    box-sizing:border-box;
+}

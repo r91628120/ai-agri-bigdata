@@ -209,10 +209,13 @@ async function analyzeWeatherRisk() {
     </p>
   `;
 
-  climateAlert.innerHTML = buildClimateAlertHtml(risk, weather);
-  updateAIPrompt(crop, county, township, station, weather, risk);
+   climateAlert.innerHTML = buildClimateAlertHtml(risk, weather);
+   updateAIPrompt(crop, county, township, station, weather, risk);
 
-}
+   // 啟動四大升級區
+   updateSmartDecisionSections(crop, weather, risk);
+
+  }
 
 async function fetchWeatherData(stationId) {
   try {
@@ -768,3 +771,24 @@ function answerScenario(answer){
     messages[answer];
 }
 
+function updateSmartDecisionSections(crop, weather, risk) {
+  renderDiseaseRisk(crop, weather);
+  renderFarmAdvice(risk);
+  saveWeatherHistory(weather);
+  buildScenario(crop, risk);
+}
+
+function clearWeatherHistory() {
+  if (!confirm("確定要清除歷史氣象紀錄嗎？")) return;
+
+  localStorage.removeItem("weatherHistory");
+
+  const area = document.getElementById("historyChartArea");
+  if (area) {
+    area.innerHTML = `
+      <div class="empty-state">
+        尚無歷史紀錄。完成幾次氣象分析後，這裡會出現趨勢圖。
+      </div>
+    `;
+  }
+}

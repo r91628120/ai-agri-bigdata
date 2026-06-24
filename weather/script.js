@@ -1,6 +1,6 @@
 /* AI農業氣象整合中心 script.js v2.0 */
 
-const WEATHER_API_URL = "https://script.google.com/macros/s/AKfycbw7zj9FmzzzciRlE2oGmrHsJhx5WjOFzjzwUvZXBocKnyFMF4o9YacQAZTwVUfit_Kh/exec";
+const WEATHER_API_URL = "https://script.google.com/macros/s/AKfycbyegFC6V-J02oRtnSHHqUcu98AtDSr-62m69FrT3vqzHYgNW2-T5UxQvoylbf3YUo8m/exec";
 
 let townshipData = {};
 
@@ -162,7 +162,7 @@ async function analyzeWeatherRisk() {
 
                renderFarmAdvice(risk);
 
-               saveWeatherHistory(weather);
+               renderSixHourWeatherHistory(weather.history || []);
 
                buildScenario(crop, risk);
 
@@ -627,69 +627,52 @@ function renderFarmAdvice(risk){
     `).join("");
 }
 
-function saveWeatherHistory(weather){
 
-  const history =
-    JSON.parse(
-      localStorage.getItem("weatherHistory")
-      || "[]"
-    );
-
-  history.push({
-    time:new Date().toLocaleString(),
-    temp:Number(weather.temp || 0),
-    humidity:Number(weather.humidity || 0),
-    rain:Number(weather.rainMm || 0)
-  });
-
-  if(history.length>10){
-    history.shift();
-  }
-
-  localStorage.setItem(
-    "weatherHistory",
-    JSON.stringify(history)
-  );
-
-  renderWeatherHistory();
-}
-
-function renderWeatherHistory(){
+function renderSixHourWeatherHistory(history){
 
   const area = document.getElementById("historyChartArea");
   if(!area) return;
 
-  const history = JSON.parse(localStorage.getItem("weatherHistory") || "[]");
-
-  if(history.length === 0){
+  if(!Array.isArray(history) || history.length === 0){
     area.innerHTML = `
       <div class="empty-state">
-        尚無歷史紀錄。完成幾次氣象分析後，這裡會出現趨勢圖。
+        尚無最近6小時氣象資料。請先完成氣象分析。
       </div>
     `;
     return;
   }
+
+  const cleanHistory = history
+    .filter(h => h && h.obsTime)
+    .slice(-6)
+    .map(h => ({
+      time: formatHistoryHour(h.obsTime),
+      temp: Number(h.temp || 0),
+      humidity: Number(h.humidity || 0),
+      rain: Number(h.rainMm || 0),
+      wind: Number(h.windSpeed || 0)
+    }));
 
   area.innerHTML = `
     <div class="history-table-wrap">
       <table class="history-table">
         <thead>
           <tr>
-            <th>次數</th>
             <th>時間</th>
             <th>氣溫 ℃</th>
             <th>濕度 %</th>
             <th>雨量 mm</th>
+            <th>風速 m/s</th>
           </tr>
         </thead>
         <tbody>
-          ${history.map((h, i) => `
+          ${cleanHistory.map(h => `
             <tr>
-              <td>${i + 1}</td>
               <td>${h.time}</td>
               <td>${h.temp}</td>
               <td>${h.humidity}</td>
               <td>${h.rain}</td>
+              <td>${h.wind}</td>
             </tr>
           `).join("")}
         </tbody>
@@ -697,17 +680,18 @@ function renderWeatherHistory(){
     </div>
 
     <div class="chart-stack">
-      ${buildAxisBarChart("氣溫變化", "℃", history.map(h => h.temp))}
-      ${buildAxisBarChart("濕度變化", "%", history.map(h => h.humidity))}
-      ${buildAxisBarChart("雨量變化", "mm", history.map(h => h.rain))}
+      ${buildSixHourAxisChart("氣溫變化", "℃", cleanHistory.map(h => h.temp), cleanHistory.map(h => h.time))}
+      ${buildSixHourAxisChart("濕度變化", "%", cleanHistory.map(h => h.humidity), cleanHistory.map(h => h.time))}
+      ${buildSixHourAxisChart("雨量變化", "mm", cleanHistory.map(h => h.rain), cleanHistory.map(h => h.time))}
+      ${buildSixHourAxisChart("風速變化", "m/s", cleanHistory.map(h => h.wind), cleanHistory.map(h => h.time))}
     </div>
   `;
 }
 
-function buildAxisBarChart(title, unit, data){
+function buildSixHourAxisChart(title, unit, data, labels){
 
   const max = Math.max(...data, 1);
-  const yMax = Math.ceil(max / 10) * 10 || 10;
+  const yMax = unit === "%" ? 100 : Math.ceil(max / 10) * 10 || 10;
 
   return `
     <div class="axis-chart">
@@ -733,17 +717,30 @@ function buildAxisBarChart(title, unit, data){
                   class="axis-bar"
                   style="height:${Math.max((v / yMax) * 100, 3)}%">
                 </div>
-                <div class="x-label">${i + 1}</div>
+                <div class="x-label">${labels[i]}</div>
               </div>
             `).join("")}
           </div>
         </div>
       </div>
 
-      <div class="x-axis-title">X軸：分析次數｜Y軸：${title}（${unit}）</div>
+      <div class="x-axis-title">X軸：最近6小時｜Y軸：${title}（${unit}）</div>
     </div>
   `;
 }
+
+function formatHistoryHour(obsTime){
+  if(!obsTime) return "--";
+
+  const date = new Date(obsTime);
+  if(isNaN(date.getTime())){
+    return String(obsTime).substring(11,16);
+  }
+
+  return `${String(date.getHours()).padStart(2,"0")}:00`;
+}
+
+
 
 let currentScenario = null;
 
@@ -795,7 +792,7 @@ function answerScenario(answer){
 function updateSmartDecisionSections(crop, weather, risk) {
   renderDiseaseRisk(crop, weather);
   renderFarmAdvice(risk);
-  saveWeatherHistory(weather);
+  renderSixHourWeatherHistory(weather.history || []);
   buildScenario(crop, risk);
 }
 

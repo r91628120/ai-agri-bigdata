@@ -701,3 +701,141 @@ footer {
     grid-template-columns: 1fr;
   }
 }
+
+/* =========================
+   歷史氣象圖表：表格＋座標軸版
+========================= */
+
+.history-table-wrap {
+  overflow-x: auto;
+  margin-bottom: 24px;
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #ffffff;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.history-table th,
+.history-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(0,120,80,.12);
+  text-align: center;
+}
+
+.history-table th {
+  background: #e8f8ef;
+  color: #064b35;
+  font-weight: 900;
+}
+
+.chart-stack {
+  display: grid;
+  gap: 24px;
+}
+
+.axis-chart {
+  background: #ffffff;
+  border: 1px solid rgba(0,120,80,.14);
+  border-radius: 20px;
+  padding: 20px;
+}
+
+.axis-chart h4 {
+  color: #064b35;
+  margin-bottom: 14px;
+}
+
+.axis-chart-body {
+  display: grid;
+  grid-template-columns: 70px 1fr;
+  gap: 12px;
+  height: 260px;
+}
+
+.y-axis {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: right;
+  color: #527268;
+  font-weight: 800;
+  font-size: 0.85rem;
+}
+
+.plot-area {
+  position: relative;
+  border-left: 2px solid rgba(0,80,50,.3);
+  border-bottom: 2px solid rgba(0,80,50,.3);
+  padding: 12px 10px 0;
+}
+
+.grid-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-top: 1px dashed rgba(0,80,50,.18);
+}
+
+.grid-line.top { top: 0; }
+.grid-line.mid { top: 50%; }
+.grid-line.bottom { bottom: 0; }
+
+.bar-area {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  align-items: end;
+  gap: 12px;
+}
+
+.axis-bar-wrap {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  align-items: center;
+  gap: 6px;
+}
+
+.axis-bar-value {
+  font-size: 0.8rem;
+  font-weight: 900;
+  color: #064b35;
+}
+
+.axis-bar {
+  width: 80%;
+  min-height: 8px;
+  border-radius: 10px 10px 0 0;
+  background: linear-gradient(180deg, #00b878, #007e55);
+}
+
+.x-label {
+  font-size: 0.8rem;
+  color: #527268;
+  font-weight: 900;
+}
+
+.x-axis-title {
+  margin-top: 12px;
+  color: #527268;
+  font-size: 0.9rem;
+  font-weight: 800;
+  text-align: center;
+}
+
+@media(max-width:900px){
+  .axis-chart-body {
+    grid-template-columns: 56px 1fr;
+  }
+
+  .bar-area {
+    gap: 6px;
+  }
+}

@@ -656,70 +656,91 @@ function saveWeatherHistory(weather){
 
 function renderWeatherHistory(){
 
-  const area =
-    document.getElementById("historyChartArea");
-
+  const area = document.getElementById("historyChartArea");
   if(!area) return;
 
-  const history =
-    JSON.parse(
-      localStorage.getItem("weatherHistory")
-      || "[]"
-    );
+  const history = JSON.parse(localStorage.getItem("weatherHistory") || "[]");
 
-  if(history.length===0){
+  if(history.length === 0){
+    area.innerHTML = `
+      <div class="empty-state">
+        尚無歷史紀錄。完成幾次氣象分析後，這裡會出現趨勢圖。
+      </div>
+    `;
     return;
   }
 
   area.innerHTML = `
-    <div class="mini-chart-row">
+    <div class="history-table-wrap">
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th>次數</th>
+            <th>時間</th>
+            <th>氣溫 ℃</th>
+            <th>濕度 %</th>
+            <th>雨量 mm</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${history.map((h, i) => `
+            <tr>
+              <td>${i + 1}</td>
+              <td>${h.time}</td>
+              <td>${h.temp}</td>
+              <td>${h.humidity}</td>
+              <td>${h.rain}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    </div>
 
-      ${buildMiniChart(
-        "氣溫",
-        history.map(h=>h.temp)
-      )}
-
-      ${buildMiniChart(
-        "濕度",
-        history.map(h=>h.humidity)
-      )}
-
-      ${buildMiniChart(
-        "雨量",
-        history.map(h=>h.rain)
-      )}
-
+    <div class="chart-stack">
+      ${buildAxisBarChart("氣溫變化", "℃", history.map(h => h.temp))}
+      ${buildAxisBarChart("濕度變化", "%", history.map(h => h.humidity))}
+      ${buildAxisBarChart("雨量變化", "mm", history.map(h => h.rain))}
     </div>
   `;
 }
 
-function buildMiniChart(title,data){
+function buildAxisBarChart(title, unit, data){
 
-  const max =
-    Math.max(...data,1);
+  const max = Math.max(...data, 1);
+  const yMax = Math.ceil(max / 10) * 10 || 10;
 
   return `
-    <div class="mini-chart">
+    <div class="axis-chart">
+      <h4>${title}</h4>
 
-      <div class="mini-chart-title">
-        <strong>${title}</strong>
-      </div>
+      <div class="axis-chart-body">
+        <div class="y-axis">
+          <span>${yMax}${unit}</span>
+          <span>${Math.round(yMax / 2)}${unit}</span>
+          <span>0${unit}</span>
+        </div>
 
-      <div class="mini-bars">
+        <div class="plot-area">
+          <div class="grid-line top"></div>
+          <div class="grid-line mid"></div>
+          <div class="grid-line bottom"></div>
 
-        ${data.map(v=>`
-          <div class="mini-bar-wrap">
-            <div
-              class="mini-bar"
-              style="
-                height:${(v/max)*100}%;
-              ">
-            </div>
+          <div class="bar-area">
+            ${data.map((v, i) => `
+              <div class="axis-bar-wrap">
+                <div class="axis-bar-value">${v}</div>
+                <div 
+                  class="axis-bar"
+                  style="height:${Math.max((v / yMax) * 100, 3)}%">
+                </div>
+                <div class="x-label">${i + 1}</div>
+              </div>
+            `).join("")}
           </div>
-        `).join("")}
-
+        </div>
       </div>
 
+      <div class="x-axis-title">X軸：分析次數｜Y軸：${title}（${unit}）</div>
     </div>
   `;
 }

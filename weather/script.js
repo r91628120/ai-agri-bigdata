@@ -158,6 +158,14 @@ async function analyzeWeatherRisk() {
 
   const risk = buildAgricultureWeatherRisk(crop, county, township, weather);
 
+               renderDiseaseRisk(crop, weather);
+
+               renderFarmAdvice(risk);
+
+               saveWeatherHistory(weather);
+
+               buildScenario(crop, risk);
+
   weatherRisk.innerHTML = `
     <p><strong>作物：</strong>${crop}</p>
     <p><strong>產地：</strong>${county}${township}</p>
@@ -495,3 +503,268 @@ function clearAIPrompt() {
 
   }
 }
+
+function renderDiseaseRisk(crop, weather){
+
+  const container =
+    document.getElementById("diseaseRiskLights");
+
+  if(!container) return;
+
+  const humidity = Number(weather.humidity || 0);
+  const rain = Number(weather.rainMm || 0);
+
+  let diseases = [];
+
+  if(crop.includes("芒果")){
+    diseases = [
+      {
+        name:"炭疽病",
+        risk: humidity > 80 ? "高" : "中"
+      },
+      {
+        name:"白粉病",
+        risk: humidity > 70 ? "中" : "低"
+      }
+    ];
+  }
+  else if(crop.includes("香蕉")){
+    diseases = [
+      {
+        name:"黃葉病",
+        risk: humidity > 75 ? "中" : "低"
+      },
+      {
+        name:"葉斑病",
+        risk: rain > 5 ? "高" : "中"
+      }
+    ];
+  }
+  else{
+    diseases = [
+      {
+        name:"葉部病害",
+        risk: humidity > 80 ? "高" : "中"
+      }
+    ];
+  }
+
+  container.innerHTML = diseases.map(d=>{
+
+    const cls =
+      d.risk==="高"
+      ? "risk-high-box"
+      : d.risk==="中"
+      ? "risk-mid-box"
+      : "risk-low-box";
+
+    const dot =
+      d.risk==="高"
+      ? "🔴"
+      : d.risk==="中"
+      ? "🟡"
+      : "🟢";
+
+    return `
+      <div class="disease-light ${cls}">
+        <div class="disease-head">
+          <span class="risk-dot">${dot}</span>
+          <strong>${d.name}</strong>
+          <b>${d.risk}</b>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+function renderFarmAdvice(risk){
+
+  const box =
+    document.getElementById("farmAdviceCards");
+
+  if(!box) return;
+
+  const cards = [];
+
+  cards.push({
+    icon:"🌱",
+    title:"巡田觀察",
+    text:"每日檢查葉片與病斑狀況"
+  });
+
+  if(risk.rainRisk==="高"){
+    cards.push({
+      icon:"🌧️",
+      title:"排水管理",
+      text:"注意田區積水與根系缺氧"
+    });
+  }
+
+  if(risk.heatRisk==="高"){
+    cards.push({
+      icon:"☀️",
+      title:"高溫防護",
+      text:"避開中午作業並加強灌溉"
+    });
+  }
+
+  cards.push({
+    icon:"🚚",
+    title:"採收規劃",
+    text:"依氣象條件調整出貨時機"
+  });
+
+  box.innerHTML =
+    cards.map(card=>`
+      <div class="farm-advice-card">
+        <div class="advice-icon">${card.icon}</div>
+        <h4>${card.title}</h4>
+        <p>${card.text}</p>
+      </div>
+    `).join("");
+}
+
+function saveWeatherHistory(weather){
+
+  const history =
+    JSON.parse(
+      localStorage.getItem("weatherHistory")
+      || "[]"
+    );
+
+  history.push({
+    time:new Date().toLocaleString(),
+    temp:Number(weather.temp || 0),
+    humidity:Number(weather.humidity || 0),
+    rain:Number(weather.rainMm || 0)
+  });
+
+  if(history.length>10){
+    history.shift();
+  }
+
+  localStorage.setItem(
+    "weatherHistory",
+    JSON.stringify(history)
+  );
+
+  renderWeatherHistory();
+}
+
+function renderWeatherHistory(){
+
+  const area =
+    document.getElementById("historyChartArea");
+
+  if(!area) return;
+
+  const history =
+    JSON.parse(
+      localStorage.getItem("weatherHistory")
+      || "[]"
+    );
+
+  if(history.length===0){
+    return;
+  }
+
+  area.innerHTML = `
+    <div class="mini-chart-row">
+
+      ${buildMiniChart(
+        "氣溫",
+        history.map(h=>h.temp)
+      )}
+
+      ${buildMiniChart(
+        "濕度",
+        history.map(h=>h.humidity)
+      )}
+
+      ${buildMiniChart(
+        "雨量",
+        history.map(h=>h.rain)
+      )}
+
+    </div>
+  `;
+}
+
+function buildMiniChart(title,data){
+
+  const max =
+    Math.max(...data,1);
+
+  return `
+    <div class="mini-chart">
+
+      <div class="mini-chart-title">
+        <strong>${title}</strong>
+      </div>
+
+      <div class="mini-bars">
+
+        ${data.map(v=>`
+          <div class="mini-bar-wrap">
+            <div
+              class="mini-bar"
+              style="
+                height:${(v/max)*100}%;
+              ">
+            </div>
+          </div>
+        `).join("")}
+
+      </div>
+
+    </div>
+  `;
+}
+
+let currentScenario = null;
+
+function buildScenario(crop,risk){
+
+  const box =
+    document.getElementById(
+      "scenarioQuestion"
+    );
+
+  if(!box) return;
+
+  currentScenario = risk;
+
+  box.innerHTML = `
+    目前作物：
+    <strong>${crop}</strong>
+
+    <br><br>
+
+    若未來三天持續
+    ${risk.rainRisk==="高"
+      ?"豪雨"
+      :"高溫"}
+
+    ，您會如何決策？
+  `;
+}
+
+function answerScenario(answer){
+
+  const box =
+    document.getElementById(
+      "scenarioFeedback"
+    );
+
+  if(!box) return;
+
+  const messages = {
+    A:"✅ 積極預防，可降低損失。",
+    B:"⚠️ 需持續觀察氣象變化。",
+    C:"🟡 保守策略，但可能影響產量。"
+  };
+
+  box.innerHTML =
+    messages[answer];
+}
+

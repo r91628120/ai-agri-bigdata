@@ -184,6 +184,63 @@
 
 </section>
 
+
+<!-- 高價值升級區：病害燈號、農事建議、歷史圖表、情境推演 -->
+<section class="container" id="smartDecisionSection">
+  <div class="smart-grid">
+
+    <div class="card">
+      <h3>🦠 AI病害風險燈號</h3>
+      <p class="section-note">依據氣溫、濕度、雨量與作物類型，推估今日常見病害風險。</p>
+      <div id="diseaseRiskLights" class="disease-lights">
+        <div class="empty-state">請先完成氣象分析，系統會自動產生病害風險燈號。</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>📌 AI農事建議卡</h3>
+      <p class="section-note">把氣象條件轉換成今日可執行的農事提醒。</p>
+      <div id="farmAdviceCards" class="advice-card-grid">
+        <div class="empty-state">請先完成氣象分析，系統會自動產生今日農事建議。</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="card history-card">
+    <h3>📈 歷史氣象圖表</h3>
+    <p class="section-note">每次分析後會在本機瀏覽器留下紀錄，可用來觀察最近氣溫、濕度與雨量變化。</p>
+
+    <div class="history-toolbar">
+      <button onclick="clearWeatherHistory()" class="btn-clear">🧹 清除歷史紀錄</button>
+    </div>
+
+    <div id="historyChartArea" class="history-chart-area">
+      <div class="empty-state">尚無歷史紀錄。完成幾次氣象分析後，這裡會出現趨勢圖。</div>
+    </div>
+  </div>
+
+  <div class="card simulation-card">
+    <h3>🎮 氣象情境推演</h3>
+    <p class="section-note">讓學生用農場經營者角度，根據氣象風險做決策。</p>
+
+    <div id="scenarioQuestion" class="scenario-question">
+      請先完成氣象分析，系統會依目前作物與氣象條件產生推演題。
+    </div>
+
+    <div class="scenario-options">
+      <button onclick="answerScenario('A')">A. 立即採取預防措施</button>
+      <button onclick="answerScenario('B')">B. 維持原計畫並加強巡田</button>
+      <button onclick="answerScenario('C')">C. 暫緩作業，等待天氣穩定</button>
+    </div>
+
+    <div id="scenarioFeedback" class="scenario-feedback">
+      選擇一個決策後，系統會給出農業經營推演回饋。
+    </div>
+  </div>
+</section>
+
+
 <!-- AI氣象決策指令區 -->
 <section class="container" id="aiPromptSection">
   <div class="card ai-prompt-card">

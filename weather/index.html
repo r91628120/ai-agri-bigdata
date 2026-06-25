@@ -248,6 +248,59 @@
 </section>
 
 
+
+<!-- V3.0 AI 決策中心：三站融合、可信度、決策矩陣 -->
+<section class="container" id="decisionCenterSection">
+  <div class="decision-center-grid">
+
+    <div class="card fusion-card">
+      <h3>🔄 三站融合分析</h3>
+      <p class="section-note">
+        系統會自動比對最近三個農業氣象站，降低單一測站誤差，提升區域判讀可信度。
+      </p>
+      <div id="stationFusionPanel" class="station-fusion-panel">
+        <div class="empty-state">請先完成氣象分析，系統會產生最近三站融合資料。</div>
+      </div>
+    </div>
+
+    <div class="card confidence-card">
+      <h3>⭐ AI可信度評分</h3>
+      <p class="section-note">
+        依據資料完整度、測站距離、三站一致性與更新狀態，產生 AI 可信度。
+      </p>
+      <div id="aiConfidencePanel" class="ai-confidence-panel">
+        <div class="empty-state">請先完成氣象分析，系統會產生可信度評分。</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="decision-center-grid decision-center-grid-second">
+
+    <div class="card decision-confidence-card">
+      <h3>🧠 AI Decision Confidence</h3>
+      <p class="section-note">
+        依據目前風險等級與資料可信度，推估本次農事決策的可採信程度。
+      </p>
+      <div id="decisionConfidencePanel" class="decision-confidence-panel">
+        <div class="empty-state">請先完成氣象分析，系統會產生 Decision Confidence。</div>
+      </div>
+    </div>
+
+    <div class="card decision-matrix-card">
+      <h3>📊 AI決策矩陣</h3>
+      <p class="section-note">
+        將氣溫、濕度、雨量、風速、病害與採收風險整理成可解釋的決策矩陣。
+      </p>
+      <div id="decisionMatrixPanel" class="decision-matrix-panel">
+        <div class="empty-state">請先完成氣象分析，系統會產生 AI 決策矩陣。</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
 <!-- 高價值升級區：病害燈號、農事建議、歷史圖表、情境推演 -->
 <section class="container" id="smartDecisionSection">
   <div class="smart-grid">

@@ -839,3 +839,138 @@ footer {
     gap: 6px;
   }
 }
+
+
+/* =========================
+   V3.0 AI 決策中心首頁儀表板
+========================= */
+
+.v3-dashboard-section {
+  padding-top: 32px;
+  padding-bottom: 20px;
+}
+
+.v3-dashboard-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 34px;
+  padding: 34px;
+  background:
+    linear-gradient(135deg, rgba(3, 47, 34, .96), rgba(6, 95, 70, .94)),
+    radial-gradient(circle at 90% 10%, rgba(120, 217, 139, .25), transparent 30%);
+  color: #ffffff;
+  box-shadow: 0 22px 55px rgba(0, 80, 50, .22);
+}
+
+.v3-dashboard-head {
+  display: grid;
+  grid-template-columns: 1fr 180px;
+  gap: 24px;
+  align-items: center;
+}
+
+.v3-kicker {
+  color: #8ff0bd;
+  font-size: .78rem;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+}
+
+.v3-dashboard-head h3 {
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  margin: 10px 0 12px;
+  color: #ffffff;
+}
+
+.v3-dashboard-head p {
+  color: rgba(255,255,255,.82);
+  max-width: 860px;
+}
+
+.v3-score-box {
+  border-radius: 26px;
+  padding: 22px;
+  text-align: center;
+  background: rgba(255,255,255,.12);
+  border: 1px solid rgba(255,255,255,.22);
+}
+
+.v3-score-box span,
+.v3-score-box small {
+  display: block;
+  color: rgba(255,255,255,.75);
+  font-weight: 800;
+}
+
+.v3-score-box strong {
+  display: block;
+  font-size: 2.4rem;
+  line-height: 1.1;
+  color: #b7ffd1;
+}
+
+.v3-dashboard-grid {
+  margin-top: 28px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.v3-metric {
+  border-radius: 22px;
+  padding: 20px;
+  background: rgba(255,255,255,.10);
+  border: 1px solid rgba(255,255,255,.16);
+}
+
+.v3-metric span {
+  font-size: 1.8rem;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.v3-metric small {
+  display: block;
+  color: rgba(255,255,255,.72);
+  font-weight: 800;
+}
+
+.v3-metric strong {
+  display: block;
+  margin-top: 4px;
+  color: #ffffff;
+  font-size: 1.05rem;
+}
+
+.v3-flow {
+  margin-top: 26px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.v3-flow div {
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.12);
+  border: 1px solid rgba(255,255,255,.18);
+  font-weight: 900;
+  color: rgba(255,255,255,.9);
+}
+
+.v3-flow span {
+  color: #8ff0bd;
+  font-weight: 900;
+}
+
+@media(max-width:900px) {
+  .v3-dashboard-head,
+  .v3-dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .v3-dashboard-card {
+    padding: 26px;
+  }
+}

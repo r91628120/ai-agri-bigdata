@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>AI農業氣象整合中心｜AI農產品大數據教學平台</title>
+<title>AI農業氣象決策支援系統 V3.0｜AI Agricultural Weather Decision Support System</title>
 
 <link rel="stylesheet" href="style.css">
 
@@ -27,8 +27,8 @@
         </div>
 
         <div>
-            <h1>AI農業氣象整合中心</h1>
-            <p>AI Agriculture Weather Center</p>
+            <h1>AI農業氣象決策支援系統</h1>
+            <p>AI Agricultural Weather Decision Support System</p>
         </div>
 
     </div>
@@ -52,20 +52,83 @@
     <div class="hero-content">
 
         <span class="badge">
-            AI AGRICULTURE WEATHER CENTER
+            AI AGRICULTURAL WEATHER DECISION SUPPORT SYSTEM
         </span>
 
         <h2>
-            AI農業氣象整合中心
+            AI農業氣象決策支援系統 V3.0
         </h2>
 
         <p>
-            結合中央氣象署資料、氣候風險評估與農業判讀，
-            協助學生理解天氣如何影響農產品生產、採收、運輸與市場供應。
+            整合農業氣象站資料、AI風險評估、病害燈號、農事建議與情境推演，
+            協助學生與農業實務工作者把氣象資料轉化為可行的農業決策。
         </p>
 
     </div>
 
+</section>
+
+
+<!-- V3.0 AI 決策中心儀表板 -->
+<section class="container v3-dashboard-section">
+  <div class="v3-dashboard-card">
+
+    <div class="v3-dashboard-head">
+      <div>
+        <span class="v3-kicker">PROFESSIONAL DECISION DASHBOARD</span>
+        <h3>🌦️ AI農業氣象決策中心</h3>
+        <p>
+          從「單一測站查詢」升級為「區域決策支援」：
+          目前先呈現專業首頁儀表板，下一階段將加入最近三站融合分析、AI可信度與決策流程。
+        </p>
+      </div>
+
+      <div class="v3-score-box">
+        <span>AI DSS</span>
+        <strong>V3.0</strong>
+        <small>Decision Support</small>
+      </div>
+    </div>
+
+    <div class="v3-dashboard-grid">
+      <div class="v3-metric">
+        <span>📍</span>
+        <small>分析位置</small>
+        <strong id="v3Location">尚未選擇</strong>
+      </div>
+
+      <div class="v3-metric">
+        <span>🌾</span>
+        <small>作物情境</small>
+        <strong id="v3Crop">尚未輸入</strong>
+      </div>
+
+      <div class="v3-metric">
+        <span>📡</span>
+        <small>測站模式</small>
+        <strong>最近測站 → 三站融合</strong>
+      </div>
+
+      <div class="v3-metric">
+        <span>⭐</span>
+        <small>AI可信度</small>
+        <strong id="v3Confidence">待分析</strong>
+      </div>
+    </div>
+
+    <div class="v3-flow">
+      <div>農業氣象站</div>
+      <span>→</span>
+      <div>最近測站</div>
+      <span>→</span>
+      <div>AI風險評估</div>
+      <span>→</span>
+      <div>病害與農事建議</div>
+      <span>→</span>
+      <div>決策推演</div>
+    </div>
+
+  </div>
 </section>
 
 <!-- 分析區 -->
@@ -338,12 +401,12 @@
     </div>
 
     <div class="footer-bottom">
-      AI農業氣象整合中心 v2.0 ｜ AI農產品大數據教學平台
+      AI農業氣象決策支援系統 V3.0 ｜ AI Agricultural Weather Decision Support System
     </div>
   </div>
 </footer>
 
-<script src="script.js?v=20260624-2"></script>
+<script src="script.js?v=20260625-v3"></script>
 
 </body>
 </html>

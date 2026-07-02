@@ -248,6 +248,9 @@ updateSmartDecisionSections(
   weather,
   localRisk
 );
+
+renderFusionStations(result.fusion);
+
 }
 
 
@@ -676,16 +679,19 @@ function renderSixHourWeatherHistory(history){
     return;
   }
 
-  const cleanHistory = history
-    .filter(h => h && h.obsTime)
-    .slice(-6)
-    .map(h => ({
-      time: formatHistoryHour(h.obsTime),
-      temp: Number(h.temp || 0),
-      humidity: Number(h.humidity || 0),
-      rain: Number(h.rainMm || 0),
-      wind: Number(h.windSpeed || 0)
-    }));
+  const cleanHistorySource = history
+          .filter(h => h)
+          .slice(-6);
+
+  const labels = buildRecentHourLabels(cleanHistorySource.length);
+
+  const cleanHistory = cleanHistorySource.map((h, index) => ({
+        time: labels[index],
+        temp: Number(h.temp || 0),
+        humidity: Number(h.humidity || 0),
+        rain: Number(h.rainMm || 0),
+       wind: Number(h.windSpeed || 0)
+  }));
 
   area.innerHTML = `
     <div class="history-table-wrap">
@@ -763,6 +769,19 @@ function buildSixHourAxisChart(title, unit, data, labels){
   `;
 }
 
+function buildRecentHourLabels(count = 6) {
+  const base = new Date();
+
+  return Array.from({ length: count }, (_, index) => {
+    const d = new Date(base);
+    d.setHours(base.getHours() - (count - 1 - index));
+    d.setMinutes(0, 0, 0);
+
+    return `${String(d.getHours()).padStart(2, "0")}:00`;
+  });
+}
+
+
 function formatHistoryHour(obsTime){
   if(!obsTime) return "--";
 
@@ -773,6 +792,8 @@ function formatHistoryHour(obsTime){
 
   return `${String(date.getHours()).padStart(2,"0")}:00`;
 }
+
+
 
 
 
@@ -843,4 +864,41 @@ function clearWeatherHistory() {
       </div>
     `;
   }
+}
+
+
+function renderFusionStations(fusion) {
+  const box = document.getElementById("fusionStationPanel");
+
+  if (!box) return;
+
+  if (!fusion || !Array.isArray(fusion.stations) || fusion.stations.length === 0) {
+    box.innerHTML = `
+      <div class="empty-state">
+        尚無三站融合資料。
+      </div>
+    `;
+    return;
+  }
+
+  box.innerHTML = `
+    <div class="fusion-station-grid">
+      ${fusion.stations.map(station => `
+        <div class="fusion-station-card">
+          <h4>${station.name || "--"}</h4>
+          <p>距離：約 ${station.distanceKm ?? "--"} km</p>
+          <p>氣溫：${showValue(station.temp)} ℃</p>
+          <p>濕度：${showValue(station.humidity)} %</p>
+          <p>雨量：${showValue(station.rainMm)} mm</p>
+          <p>風速：${showValue(station.windSpeed)} m/s</p>
+          <p>日照：${showValue(station.sunshine)} hr</p>
+        </div>
+      `).join("")}
+    </div>
+
+    <div class="fusion-summary-box">
+      <strong>融合結果：</strong>
+      ${fusion.summary || "已完成融合分析。"}
+    </div>
+  `;
 }

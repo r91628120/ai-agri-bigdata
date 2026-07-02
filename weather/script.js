@@ -6,6 +6,8 @@ let townshipData = {};
 
 let latestWeatherData = null;
 
+let AIAKOS_APP = null;
+
 /* 農業氣象站資料，可未來再擴充 */
 const AGRI_STATIONS = [
   { id: "C2C410", name: "中央大學", lat: 24.9680, lng: 121.1950 },
@@ -56,6 +58,15 @@ const COUNTY_COORDS = {
 };
 
 window.addEventListener("DOMContentLoaded", async () => {
+  AIAKOS_APP = new AIAgricultureApp();
+
+  await AIAKOS_APP.init({
+    weatherApi: WEATHER_API_URL,
+    stationJson: "data/stations.json",
+    cropJson: "data/crops.json",
+    diseaseJson: "data/diseases.json"
+  });
+
   await loadTownships();
 
   document
@@ -132,90 +143,71 @@ async function analyzeWeatherRisk() {
   weatherRisk.innerHTML = `<p>⏳ 正在尋找最近農業氣象站並讀取真實氣象資料...</p>`;
   climateAlert.innerHTML = `資料讀取中...`;
 
-  const position = getCountyPosition(county);
-  const station = findNearestStation(position.lat, position.lng);
+  
+ const position = getCountyPosition(county);
 
-  const weather = await fetchWeatherData(station.id);
+const response =
+  await AIAKOS_APP.analyzeFarmDecision({
+    cropName: crop,
+    stage: "",
+    county,
+    township,
+    lat: position.lat,
+    lng: position.lng
+  });
 
-  if (!weather || weather.success !== true) {
-    weatherRisk.innerHTML = `
-      <p>⚠️ 無法取得此測站即時資料。</p>
-      <p><strong>系統嘗試測站：</strong>${station.name}（${station.id}）</p>
-      <p>請確認 GAS 已部署最新版，或此測站目前是否有即時資料。</p>
-    `;
-
-    climateAlert.innerHTML = `
-      <div class="alert-box">
-        <h4>資料讀取提醒</h4>
-        <p>目前無法取得農業氣象站即時資料，請稍後再試，或改選其他產地。</p>
-      </div>
-    `;
-    return;
-  }
-
-  latestWeatherData = weather;
-  updateWeatherDashboard(weather);
-
-  const risk = buildAgricultureWeatherRisk(crop, county, township, weather);
-
-               renderDiseaseRisk(crop, weather);
-
-               renderFarmAdvice(risk);
-
-               renderSixHourWeatherHistory(weather.history || []);
-
-               buildScenario(crop, risk);
-
+if (!response.success || !response.result || response.result.success !== true) {
   weatherRisk.innerHTML = `
-    <p><strong>作物：</strong>${crop}</p>
-    <p><strong>產地：</strong>${county}${township}</p>
-    <p><strong>最近農業氣象站：</strong>${station.name}（${station.id}，約 ${station.distanceKm.toFixed(1)} 公里）</p>
-    <p><strong>觀測時間：</strong>${weather.obsTime || "--"}</p>
-
-    <div class="risk-list">
-      <div class="risk-item">
-        <strong>🌡 高溫風險：</strong>
-        <span class="${risk.heatClass}">${risk.heatRisk}</span>
-      </div>
-
-      <div class="risk-item">
-        <strong>🌧 降雨風險：</strong>
-        <span class="${risk.rainClass}">${risk.rainRisk}</span>
-      </div>
-
-      <div class="risk-item">
-        <strong>🚚 採收運輸風險：</strong>
-        <span class="${risk.transportClass}">${risk.transportRisk}</span>
-      </div>
-
-      <div class="risk-item">
-        <strong>🧺 品質保存風險：</strong>
-        <span class="${risk.qualityClass}">${risk.qualityRisk}</span>
-      </div>
-    </div>
-
-    <p style="margin-top:16px;">
-      <strong>即時氣象資料：</strong><br>
-      氣溫：${showValue(weather.temp)} ℃｜
-      相對濕度：${showValue(weather.humidity)} %｜
-      實測雨量：${showValue(weather.rainMm)} mm｜
-      風速：${showValue(weather.windSpeed)} m/s｜
-      日照：${showValue(weather.sunshine)} hr
-    </p>
-
-    <p style="margin-top:16px;">
-      <strong>AI農業氣象建議：</strong><br>
-      ${risk.advice}
-    </p>
+    <p>⚠️ AIAKOS Framework 分析失敗。</p>
+    <p>${response.error || response.result?.message || "請確認 WeatherEngine、WeatherFusionEngine、StationService 是否正常載入。"}</p>
   `;
 
-   climateAlert.innerHTML = buildClimateAlertHtml(risk, weather);
-   updateAIPrompt(crop, county, township, station, weather, risk);
+  climateAlert.innerHTML = `
+    <div class="alert-box">
+      <h4>Framework 驗證提醒</h4>
+      <p>目前無法完成 AIAKOS 氣象分析，請查看 Console 錯誤訊息。</p>
+    </div>
+  `;
+  return;
+}
 
-   // 啟動四大升級區
-   updateSmartDecisionSections(crop, weather, risk);
+const result = response.result;
+const weather = result.weather || {};
+latestWeatherData = weather;
 
-  }
+document.getElementById("v3Location").textContent = `${county}${township}`;
+document.getElementById("v3Crop").textContent = crop;
+
+weatherRisk.innerHTML = `
+  <p><strong>作物：</strong>${crop}</p>
+  <p><strong>產地：</strong>${county}${township}</p>
+  <p><strong>AIAKOS Framework：</strong>已成功接入</p>
+  <p><strong>融合測站數：</strong>${result.fusion?.stationCount || "--"} 站</p>
+  <p><strong>AI可信度：</strong>${result.fusion?.quality?.confidence || "--"}%</p>
+
+  <p style="margin-top:16px;">
+    <strong>融合氣象資料：</strong><br>
+    氣溫：${showValue(weather.temp)} ℃｜
+    相對濕度：${showValue(weather.humidity)} %｜
+    實測雨量：${showValue(weather.rainMm)} mm｜
+    風速：${showValue(weather.windSpeed)} m/s｜
+    日照：${showValue(weather.sunshine)} hr
+  </p>
+
+  <p style="margin-top:16px;">
+    <strong>AI決策摘要：</strong><br>
+    ${result.decision?.summary || "尚無決策摘要"}
+  </p>
+`;
+
+climateAlert.innerHTML = `
+  <div class="alert-box">
+    <h4>🚨 AIAKOS 氣象決策狀態</h4>
+    <p>Decision Confidence：${result.decision?.decisionConfidence || "--"}</p>
+    <p>可信度分數：${result.decision?.confidenceScore || "--"}%</p>
+    <p>${result.diseaseRisk?.summary || "病害風險資料已由 DiseaseEngine 分析。"}</p>
+  </div>
+`; 
 
 async function fetchWeatherData(stationId) {
   try {

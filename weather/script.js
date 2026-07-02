@@ -162,15 +162,25 @@ async function analyzeWeatherRisk() {
   
  const position = getCountyPosition(county);
 
-const response =
-  await AIAKOS_APP.analyzeFarmDecision({
+const response = await Promise.race([
+  AIAKOS_APP.analyzeFarmDecision({
     cropName: crop,
     stage: "",
     county,
     township,
     lat: position.lat,
     lng: position.lng
-  });
+  }),
+
+  new Promise(resolve => {
+    setTimeout(() => {
+      resolve({
+        success: false,
+        error: "農業氣象 API 讀取逾時，請稍後再試。"
+      });
+    }, 12000);
+  })
+]);
 
 if (!response.success || !response.result || response.result.success !== true) {
   weatherRisk.innerHTML = `

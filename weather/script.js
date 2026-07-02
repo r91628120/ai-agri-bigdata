@@ -82,8 +82,17 @@ async function loadTownships() {
   const countySelect = document.getElementById("countySelect");
 
   try {
-    const response = await fetch("./townships.json?v=20260623");
-    townshipData = await response.json();
+    const response = await fetch(
+      "https://r91628120.github.io/ai-agriculture-core/data/townships.json?v=20260702"
+    );
+
+    const data = await response.json();
+
+    townshipData = {};
+
+    data.forEach(item => {
+      townshipData[item.county] = item.townships || [];
+    });
 
     countySelect.innerHTML = `<option value="">請選擇縣市</option>`;
 
@@ -95,10 +104,11 @@ async function loadTownships() {
     });
 
   } catch (error) {
-    console.error("townships.json 讀取失敗：", error);
+    console.error("AIAKOS townships.json 讀取失敗：", error);
     countySelect.innerHTML = `<option value="">縣市資料讀取失敗</option>`;
   }
 }
+
 
 function updateTownships() {
   const county = document.getElementById("countySelect").value;

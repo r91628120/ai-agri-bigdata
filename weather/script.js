@@ -58,15 +58,8 @@ const COUNTY_COORDS = {
 };
 
 window.addEventListener("DOMContentLoaded", async () => {
-  AIAKOS_APP = new AIAgricultureApp();
 
-  await AIAKOS_APP.init({
-  weatherApi: WEATHER_API_URL,
-  stationJson: "https://r91628120.github.io/ai-agriculture-core/data/stations.json",
-  cropJson: "https://r91628120.github.io/ai-agriculture-core/data/crops.json",
-  diseaseJson: "https://r91628120.github.io/ai-agriculture-core/data/diseases.json"
-});
-
+  // ① 先載入縣市鄉鎮，不要被 AIAKOS 初始化影響
   await loadTownships();
 
   document
@@ -76,15 +69,32 @@ window.addEventListener("DOMContentLoaded", async () => {
   document
     .getElementById("analyzeBtn")
     .addEventListener("click", analyzeWeatherRisk);
+
+  // ② 再初始化 AIAKOS Framework
+  try {
+    AIAKOS_APP = new AIAgricultureApp();
+
+    await AIAKOS_APP.init({
+      weatherApi: WEATHER_API_URL,
+      stationJson: "https://r91628120.github.io/ai-agriculture-core/data/stations.json",
+      cropJson: "https://r91628120.github.io/ai-agriculture-core/data/crops.json",
+      diseaseJson: "https://r91628120.github.io/ai-agriculture-core/data/diseases.json"
+    });
+
+    console.log("AIAKOS Framework 初始化完成");
+
+  } catch (error) {
+    console.error("AIAKOS Framework 初始化失敗：", error);
+  }
+
 });
+
 
 async function loadTownships() {
   const countySelect = document.getElementById("countySelect");
 
   try {
-    const response = await fetch(
-      "https://r91628120.github.io/ai-agriculture-core/data/townships.json?v=20260702-2"
-    );
+    const response = await fetch("./townships.json?v=20260702-local");
 
     const data = await response.json();
 
@@ -100,7 +110,7 @@ async function loadTownships() {
     });
 
   } catch (error) {
-    console.error("AIAKOS townships.json 讀取失敗：", error);
+    console.error("townships.json 讀取失敗：", error);
     countySelect.innerHTML = `<option value="">縣市資料讀取失敗</option>`;
   }
 }

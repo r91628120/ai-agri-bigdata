@@ -233,7 +233,21 @@ climateAlert.innerHTML = `
     <p>可信度分數：${result.decision?.confidenceScore || "--"}%</p>
     <p>${result.diseaseRisk?.summary || "病害風險資料已由 DiseaseEngine 分析。"}</p>
   </div>
-`; 
+`;
+
+const localRisk =
+  buildAgricultureWeatherRisk(
+    crop,
+    county,
+    township,
+    weather
+  );
+
+updateSmartDecisionSections(
+  crop,
+  weather,
+  localRisk
+);
 }
 
 

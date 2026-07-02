@@ -61,11 +61,11 @@ window.addEventListener("DOMContentLoaded", async () => {
   AIAKOS_APP = new AIAgricultureApp();
 
   await AIAKOS_APP.init({
-    weatherApi: WEATHER_API_URL,
-    stationJson: "data/stations.json",
-    cropJson: "data/crops.json",
-    diseaseJson: "data/diseases.json"
-  });
+  weatherApi: WEATHER_API_URL,
+  stationJson: "https://r91628120.github.io/ai-agriculture-core/data/stations.json",
+  cropJson: "https://r91628120.github.io/ai-agriculture-core/data/crops.json",
+  diseaseJson: "https://r91628120.github.io/ai-agriculture-core/data/diseases.json"
+});
 
   await loadTownships();
 
@@ -208,6 +208,8 @@ climateAlert.innerHTML = `
     <p>${result.diseaseRisk?.summary || "病害風險資料已由 DiseaseEngine 分析。"}</p>
   </div>
 `; 
+}
+
 
 async function fetchWeatherData(stationId) {
   try {

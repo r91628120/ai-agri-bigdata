@@ -83,16 +83,12 @@ async function loadTownships() {
 
   try {
     const response = await fetch(
-      "https://r91628120.github.io/ai-agriculture-core/data/townships.json?v=20260702"
+      "https://r91628120.github.io/ai-agriculture-core/data/townships.json?v=20260702-2"
     );
 
     const data = await response.json();
 
-    townshipData = {};
-
-    data.forEach(item => {
-      townshipData[item.county] = item.townships || [];
-    });
+    townshipData = data;
 
     countySelect.innerHTML = `<option value="">請選擇縣市</option>`;
 

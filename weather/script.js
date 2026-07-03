@@ -1,11 +1,9 @@
-/* AI農業氣象整合中心 script.js v2.0 */
+/* AI農業氣象決策中心 AIAKOS V4.0 / V3.2 Professional */
 
 const WEATHER_API_URL = "https://script.google.com/macros/s/AKfycbyegFC6V-J02oRtnSHHqUcu98AtDSr-62m69FrT3vqzHYgNW2-T5UxQvoylbf3YUo8m/exec";
 
 let townshipData = {};
-
 let latestWeatherData = null;
-
 let AIAKOS_APP = null;
 
 /* 農業氣象站資料，可未來再擴充 */
@@ -58,8 +56,6 @@ const COUNTY_COORDS = {
 };
 
 window.addEventListener("DOMContentLoaded", async () => {
-
-  // ① 先載入縣市鄉鎮，不要被 AIAKOS 初始化影響
   await loadTownships();
 
   document
@@ -70,7 +66,6 @@ window.addEventListener("DOMContentLoaded", async () => {
     .getElementById("analyzeBtn")
     .addEventListener("click", analyzeWeatherRisk);
 
-  // ② 再初始化 AIAKOS Framework
   try {
     AIAKOS_APP = new AIAgricultureApp();
 
@@ -86,20 +81,16 @@ window.addEventListener("DOMContentLoaded", async () => {
   } catch (error) {
     console.error("AIAKOS Framework 初始化失敗：", error);
   }
-
 });
-
 
 async function loadTownships() {
   const countySelect = document.getElementById("countySelect");
 
   try {
     const response = await fetch("./townships.json?v=20260702-local");
-
     const data = await response.json();
 
     townshipData = data;
-
     countySelect.innerHTML = `<option value="">請選擇縣市</option>`;
 
     Object.keys(townshipData).forEach(county => {
@@ -114,7 +105,6 @@ async function loadTownships() {
     countySelect.innerHTML = `<option value="">縣市資料讀取失敗</option>`;
   }
 }
-
 
 function updateTownships() {
   const county = document.getElementById("countySelect").value;
@@ -156,143 +146,117 @@ async function analyzeWeatherRisk() {
     return;
   }
 
+  if (!AIAKOS_APP) {
+    weatherRisk.innerHTML = `<p>⚠️ AIAKOS Framework 尚未初始化完成，請稍候再試。</p>`;
+    climateAlert.innerHTML = `Framework 尚未就緒`;
+    return;
+  }
+
   weatherRisk.innerHTML = `<p>⏳ 正在尋找最近農業氣象站並讀取真實氣象資料...</p>`;
   climateAlert.innerHTML = `資料讀取中...`;
 
-  
- const position = getCountyPosition(county);
+  const position = getCountyPosition(county);
 
-const response = await Promise.race([
-  AIAKOS_APP.analyzeFarmDecision({
-    cropName: crop,
-    stage: "",
-    county,
-    township,
-    lat: position.lat,
-    lng: position.lng
-  }),
+  const response = await Promise.race([
+    AIAKOS_APP.analyzeFarmDecision({
+      cropName: crop,
+      stage: "",
+      county,
+      township,
+      lat: position.lat,
+      lng: position.lng
+    }),
 
-  new Promise(resolve => {
-    setTimeout(() => {
-      resolve({
-        success: false,
-        error: "農業氣象 API 讀取逾時，請稍後再試。"
-      });
-    }, 12000);
-  })
-]);
+    new Promise(resolve => {
+      setTimeout(() => {
+        resolve({
+          success: false,
+          error: "農業氣象 API 讀取逾時，請稍後再試。"
+        });
+      }, 12000);
+    })
+  ]);
 
-if (!response.success || !response.result || response.result.success !== true) {
+  if (!response.success || !response.result || response.result.success !== true) {
+    weatherRisk.innerHTML = `
+      <p>⚠️ AIAKOS Framework 分析失敗。</p>
+      <p>${response.error || response.result?.message || "請確認 WeatherEngine、WeatherFusionEngine、StationService 是否正常載入。"}</p>
+    `;
+
+    climateAlert.innerHTML = `
+      <div class="alert-box">
+        <h4>Framework 驗證提醒</h4>
+        <p>目前無法完成 AIAKOS 氣象分析，請查看 Console 錯誤訊息。</p>
+      </div>
+    `;
+    return;
+  }
+
+  const result = response.result;
+  const weather = result.weather || {};
+  latestWeatherData = weather;
+
+  document.getElementById("v3Location").textContent = `${county}${township}`;
+  document.getElementById("v3Crop").textContent = crop;
+  document.getElementById("v3Confidence").textContent =
+    `${result.fusion?.quality?.confidence || "--"}%`;
+
+  updateWeatherDashboard(weather);
+
   weatherRisk.innerHTML = `
-    <p>⚠️ AIAKOS Framework 分析失敗。</p>
-    <p>${response.error || response.result?.message || "請確認 WeatherEngine、WeatherFusionEngine、StationService 是否正常載入。"}</p>
+    <p><strong>作物：</strong>${crop}</p>
+    <p><strong>產地：</strong>${county}${township}</p>
+    <p><strong>AIAKOS Framework：</strong>已成功接入</p>
+    <p><strong>融合測站數：</strong>${result.fusion?.stationCount || "--"} 站</p>
+    <p><strong>AI可信度：</strong>${result.fusion?.quality?.confidence || "--"}%</p>
+
+    <p style="margin-top:16px;">
+      <strong>融合氣象資料：</strong><br>
+      氣溫：${showValue(weather.temp)} ℃｜
+      相對濕度：${showValue(weather.humidity)} %｜
+      實測雨量：${showValue(weather.rainMm)} mm｜
+      風速：${showValue(weather.windSpeed)} m/s｜
+      日照：${showValue(weather.sunshine)} hr
+    </p>
+
+    <p style="margin-top:16px;">
+      <strong>AI決策摘要：</strong><br>
+      ${result.decision?.summary || "尚無決策摘要"}
+    </p>
   `;
 
   climateAlert.innerHTML = `
     <div class="alert-box">
-      <h4>Framework 驗證提醒</h4>
-      <p>目前無法完成 AIAKOS 氣象分析，請查看 Console 錯誤訊息。</p>
+      <h4>🚨 AIAKOS 氣象決策狀態</h4>
+      <p>Decision Confidence：${result.decision?.decisionConfidence || "--"}</p>
+      <p>可信度分數：${result.decision?.confidenceScore || "--"}%</p>
+      <p>${result.diseaseRisk?.summary || "病害風險資料已由 DiseaseEngine 分析。"}</p>
     </div>
   `;
-  return;
-}
 
-const result = response.result;
-const weather = result.weather || {};
-latestWeatherData = weather;
+  const localRisk =
+    buildAgricultureWeatherRisk(
+      crop,
+      county,
+      township,
+      weather
+    );
 
-document.getElementById("v3Location").textContent = `${county}${township}`;
-document.getElementById("v3Crop").textContent = crop;
-
-weatherRisk.innerHTML = `
-  <p><strong>作物：</strong>${crop}</p>
-  <p><strong>產地：</strong>${county}${township}</p>
-  <p><strong>AIAKOS Framework：</strong>已成功接入</p>
-  <p><strong>融合測站數：</strong>${result.fusion?.stationCount || "--"} 站</p>
-  <p><strong>AI可信度：</strong>${result.fusion?.quality?.confidence || "--"}%</p>
-
-  <p style="margin-top:16px;">
-    <strong>融合氣象資料：</strong><br>
-    氣溫：${showValue(weather.temp)} ℃｜
-    相對濕度：${showValue(weather.humidity)} %｜
-    實測雨量：${showValue(weather.rainMm)} mm｜
-    風速：${showValue(weather.windSpeed)} m/s｜
-    日照：${showValue(weather.sunshine)} hr
-  </p>
-
-  <p style="margin-top:16px;">
-    <strong>AI決策摘要：</strong><br>
-    ${result.decision?.summary || "尚無決策摘要"}
-  </p>
-`;
-
-climateAlert.innerHTML = `
-  <div class="alert-box">
-    <h4>🚨 AIAKOS 氣象決策狀態</h4>
-    <p>Decision Confidence：${result.decision?.decisionConfidence || "--"}</p>
-    <p>可信度分數：${result.decision?.confidenceScore || "--"}%</p>
-    <p>${result.diseaseRisk?.summary || "病害風險資料已由 DiseaseEngine 分析。"}</p>
-  </div>
-`;
-
-const localRisk =
-  buildAgricultureWeatherRisk(
+  updateSmartDecisionSections(
     crop,
-    county,
-    township,
-    weather
+    weather,
+    localRisk
   );
 
-updateSmartDecisionSections(
-  crop,
-  weather,
-  localRisk
-);
-
-renderFusionStations(result.fusion);
-
-}
-
-
-async function fetchWeatherData(stationId) {
-  try {
-    const url =
-      WEATHER_API_URL +
-      "?location=" + encodeURIComponent(stationId);
-
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      throw new Error("GAS API 回應失敗");
-    }
-
-    return await response.json();
-
-  } catch (error) {
-    console.error("農業氣象資料讀取失敗：", error);
-    return null;
-  }
+  renderFusionStations(result.fusion);
+  renderAIConfidence(result.fusion);
+  renderDecisionConfidence(result.decision);
+  renderDecisionMatrix(localRisk);
+  updateAIPromptV4(crop, county, township, weather, localRisk, result);
 }
 
 function getCountyPosition(county) {
   return COUNTY_COORDS[county] || { lat: 23.6978, lng: 120.9605 };
-}
-
-function findNearestStation(lat, lng) {
-  let best = null;
-
-  AGRI_STATIONS.forEach(station => {
-    const distanceKm = getDistanceKm(lat, lng, station.lat, station.lng);
-
-    if (!best || distanceKm < best.distanceKm) {
-      best = {
-        ...station,
-        distanceKm
-      };
-    }
-  });
-
-  return best;
 }
 
 function getDistanceKm(lat1, lng1, lat2, lng2) {
@@ -397,56 +361,6 @@ function getRiskClass(level) {
   return "risk-low";
 }
 
-function buildClimateAlertHtml(risk, weather) {
-  const highCount = [
-    risk.heatRisk,
-    risk.rainRisk,
-    risk.transportRisk,
-    risk.qualityRisk
-  ].filter(item => item === "高").length;
-
-  const alertLevel = highCount >= 2 ? "高" : highCount === 1 ? "中" : "低";
-
-  return `
-    <div class="alert-box">
-      <h4>🚨 AI重大氣候警示：${alertLevel}</h4>
-
-      <p>
-        目前氣象條件顯示：
-        氣溫 ${showValue(weather.temp)} ℃、
-        濕度 ${showValue(weather.humidity)} %、
-        雨量 ${showValue(weather.rainMm)} mm、
-        風速 ${showValue(weather.windSpeed)} m/s。
-      </p>
-
-      <p>
-        若近期有颱風、豪雨、高溫或寒流警報，
-        可能影響採收、運輸、品質保存與市場價格波動。
-      </p>
-
-      <p>
-        建議在出貨前確認中央氣象署最新預報與颱風消息。
-      </p>
-
-      <div class="button-group" style="margin-top:14px;">
-        <a
-          class="link-btn"
-          href="https://www.cwa.gov.tw/V8/C/W/week.html"
-          target="_blank">
-          🌦️ 查看中央氣象署1週預報
-        </a>
-
-        <a
-          class="link-btn typhoon-link"
-          href="https://www.cwa.gov.tw/V8/C/P/Typhoon/TY_NEWS.html"
-          target="_blank">
-          🌀 查看最新颱風資訊
-        </a>
-      </div>
-    </div>
-  `;
-}
-
 function showValue(value) {
   if (
     value === null ||
@@ -458,59 +372,6 @@ function showValue(value) {
   }
 
   return value;
-}
-
-function updateAIPrompt(crop, county, township, station, weather, risk) {
-  const promptBox = document.getElementById("aiPromptOutput");
-  if (!promptBox) return;
-
-  promptBox.value = `你是「AI農業氣象教練、作物栽培顧問與智慧農業決策教練」。
-
-請根據以下農業情境，協助學生進行氣象判讀與農事決策推演。
-
-【作物】
-${crop}
-
-【產地】
-${county}${township}
-
-【最近農業氣象站】
-${station.name}（${station.id}，距離約 ${station.distanceKm.toFixed(1)} 公里）
-
-【目前農業氣象資料】
-觀測時間：${weather.obsTime || "--"}
-氣溫：${showValue(weather.temp)} ℃
-相對濕度：${showValue(weather.humidity)} %
-實測雨量：${showValue(weather.rainMm)} mm
-風速：${showValue(weather.windSpeed)} m/s
-日照時數：${showValue(weather.sunshine)} hr
-
-【目前初步風險判斷】
-高溫風險：${risk.heatRisk}
-降雨風險：${risk.rainRisk}
-採收運輸風險：${risk.transportRisk}
-品質保存風險：${risk.qualityRisk}
-
-請輸出：
-1. 氣象資料判讀
-2. 對作物可能造成的影響
-3. 採收、運輸與品質保存風險
-4. 病蟲害或災害風險
-5. 今日農事建議
-6. 未來三天注意事項
-7. 適合高中職學生理解的教學說明
-
-請用條列式、清楚、實用、適合農業教育平台呈現的方式回答。`;
-}
-
-function copyAIPrompt() {
-  const promptBox = document.getElementById("aiPromptOutput");
-  if (!promptBox) return;
-
-  promptBox.select();
-  document.execCommand("copy");
-
-  alert("已複製 AI 氣象決策指令，可以貼到 AI農業氣象教練 GPT 進一步分析！");
 }
 
 function updateWeatherDashboard(weather) {
@@ -530,80 +391,47 @@ function updateWeatherDashboard(weather) {
     `${showValue(weather.sunshine)} hr`;
 }
 
-function clearAIPrompt() {
-
-  const promptBox =
-    document.getElementById("aiPromptOutput");
-
-  if (!promptBox) return;
-
-  if(confirm("確定要清除目前 AI 指令嗎？")){
-
-      promptBox.value = "";
-
-  }
-}
-
-function renderDiseaseRisk(crop, weather){
-
+function renderDiseaseRisk(crop, weather) {
   const container =
     document.getElementById("diseaseRiskLights");
 
-  if(!container) return;
+  if (!container) return;
 
   const humidity = Number(weather.humidity || 0);
   const rain = Number(weather.rainMm || 0);
 
   let diseases = [];
 
-  if(crop.includes("芒果")){
+  if (crop.includes("芒果")) {
     diseases = [
-      {
-        name:"炭疽病",
-        risk: humidity > 80 ? "高" : "中"
-      },
-      {
-        name:"白粉病",
-        risk: humidity > 70 ? "中" : "低"
-      }
+      { name: "炭疽病", risk: humidity > 80 ? "高" : "中" },
+      { name: "白粉病", risk: humidity > 70 ? "中" : "低" }
     ];
-  }
-  else if(crop.includes("香蕉")){
+  } else if (crop.includes("香蕉")) {
     diseases = [
-      {
-        name:"黃葉病",
-        risk: humidity > 75 ? "中" : "低"
-      },
-      {
-        name:"葉斑病",
-        risk: rain > 5 ? "高" : "中"
-      }
+      { name: "黃葉病", risk: humidity > 75 ? "中" : "低" },
+      { name: "葉斑病", risk: rain > 5 ? "高" : "中" }
     ];
-  }
-  else{
+  } else {
     diseases = [
-      {
-        name:"葉部病害",
-        risk: humidity > 80 ? "高" : "中"
-      }
+      { name: "葉部病害", risk: humidity > 80 ? "高" : "中" }
     ];
   }
 
-  container.innerHTML = diseases.map(d=>{
-
+  container.innerHTML = diseases.map(d => {
     const cls =
-      d.risk==="高"
-      ? "risk-high-box"
-      : d.risk==="中"
-      ? "risk-mid-box"
-      : "risk-low-box";
+      d.risk === "高"
+        ? "risk-high-box"
+        : d.risk === "中"
+        ? "risk-mid-box"
+        : "risk-low-box";
 
     const dot =
-      d.risk==="高"
-      ? "🔴"
-      : d.risk==="中"
-      ? "🟡"
-      : "🟢";
+      d.risk === "高"
+        ? "🔴"
+        : d.risk === "中"
+        ? "🟡"
+        : "🟢";
 
     return `
       <div class="disease-light ${cls}">
@@ -617,45 +445,44 @@ function renderDiseaseRisk(crop, weather){
   }).join("");
 }
 
-function renderFarmAdvice(risk){
-
+function renderFarmAdvice(risk) {
   const box =
     document.getElementById("farmAdviceCards");
 
-  if(!box) return;
+  if (!box) return;
 
   const cards = [];
 
   cards.push({
-    icon:"🌱",
-    title:"巡田觀察",
-    text:"每日檢查葉片與病斑狀況"
+    icon: "🌱",
+    title: "巡田觀察",
+    text: "每日檢查葉片與病斑狀況"
   });
 
-  if(risk.rainRisk==="高"){
+  if (risk.rainRisk === "高") {
     cards.push({
-      icon:"🌧️",
-      title:"排水管理",
-      text:"注意田區積水與根系缺氧"
+      icon: "🌧️",
+      title: "排水管理",
+      text: "注意田區積水與根系缺氧"
     });
   }
 
-  if(risk.heatRisk==="高"){
+  if (risk.heatRisk === "高") {
     cards.push({
-      icon:"☀️",
-      title:"高溫防護",
-      text:"避開中午作業並加強灌溉"
+      icon: "☀️",
+      title: "高溫防護",
+      text: "避開中午作業並加強灌溉"
     });
   }
 
   cards.push({
-    icon:"🚚",
-    title:"採收規劃",
-    text:"依氣象條件調整出貨時機"
+    icon: "🚚",
+    title: "採收規劃",
+    text: "依氣象條件調整出貨時機"
   });
 
   box.innerHTML =
-    cards.map(card=>`
+    cards.map(card => `
       <div class="farm-advice-card">
         <div class="advice-icon">${card.icon}</div>
         <h4>${card.title}</h4>
@@ -664,13 +491,17 @@ function renderFarmAdvice(risk){
     `).join("");
 }
 
+/* =========================
+   V3.2 專業版：歷史氣象趨勢
+   氣溫/濕度/風速：折線圖
+   雨量：柱狀圖
+========================= */
 
-function renderSixHourWeatherHistory(history){
-
+function renderSixHourWeatherHistory(history) {
   const area = document.getElementById("historyChartArea");
-  if(!area) return;
+  if (!area) return;
 
-  if(!Array.isArray(history) || history.length === 0){
+  if (!Array.isArray(history) || history.length === 0) {
     area.innerHTML = `
       <div class="empty-state">
         尚無最近6小時氣象資料。請先完成氣象分析。
@@ -680,17 +511,17 @@ function renderSixHourWeatherHistory(history){
   }
 
   const cleanHistorySource = history
-          .filter(h => h)
-          .slice(-6);
+    .filter(h => h)
+    .slice(-6);
 
   const labels = buildRecentHourLabels(cleanHistorySource.length);
 
   const cleanHistory = cleanHistorySource.map((h, index) => ({
-        time: labels[index],
-        temp: Number(h.temp || 0),
-        humidity: Number(h.humidity || 0),
-        rain: Number(h.rainMm || 0),
-       wind: Number(h.windSpeed || 0)
+    time: labels[index],
+    temp: Number(h.temp || 0),
+    humidity: Number(h.humidity || 0),
+    rain: Number(h.rainMm || 0),
+    wind: Number(h.windSpeed || 0)
   }));
 
   area.innerHTML = `
@@ -719,23 +550,122 @@ function renderSixHourWeatherHistory(history){
       </table>
     </div>
 
-    <div class="chart-stack">
-      ${buildSixHourAxisChart("氣溫變化", "℃", cleanHistory.map(h => h.temp), cleanHistory.map(h => h.time))}
-      ${buildSixHourAxisChart("濕度變化", "%", cleanHistory.map(h => h.humidity), cleanHistory.map(h => h.time))}
-      ${buildSixHourAxisChart("雨量變化", "mm", cleanHistory.map(h => h.rain), cleanHistory.map(h => h.time))}
-      ${buildSixHourAxisChart("風速變化", "m/s", cleanHistory.map(h => h.wind), cleanHistory.map(h => h.time))}
+    <div class="chart-stack v32-chart-stack">
+      ${buildSixHourLineChart("🌡️ 氣溫趨勢", "℃", cleanHistory.map(h => h.temp), cleanHistory.map(h => h.time), "temp")}
+      ${buildSixHourLineChart("💧 濕度趨勢", "%", cleanHistory.map(h => h.humidity), cleanHistory.map(h => h.time), "humidity")}
+      ${buildSixHourBarChart("🌧️ 雨量變化", "mm", cleanHistory.map(h => h.rain), cleanHistory.map(h => h.time), "rain")}
+      ${buildSixHourLineChart("💨 風速趨勢", "m/s", cleanHistory.map(h => h.wind), cleanHistory.map(h => h.time), "wind")}
     </div>
   `;
 }
 
-function buildSixHourAxisChart(title, unit, data, labels){
+function buildSixHourLineChart(title, unit, data, labels, type = "default") {
+  const values = data.map(v => Number(v || 0));
+  const minValue = Math.min(...values);
+  const maxValue = Math.max(...values);
 
-  const max = Math.max(...data, 1);
-  const yMax = unit === "%" ? 100 : Math.ceil(max / 10) * 10 || 10;
+  let yMin = 0;
+  let yMax = 10;
+
+  if (unit === "%") {
+    yMin = 0;
+    yMax = 100;
+  } else if (unit === "℃") {
+    yMin = Math.max(0, Math.floor(minValue - 3));
+    yMax = Math.ceil(maxValue + 3);
+  } else {
+    yMin = 0;
+    yMax = Math.max(5, Math.ceil(maxValue + 2));
+  }
+
+  const range = Math.max(yMax - yMin, 1);
+
+  const points = values.map((v, i) => {
+    const x = values.length === 1
+      ? 50
+      : (i / (values.length - 1)) * 100;
+
+    const y = 100 - ((v - yMin) / range) * 100;
+
+    return {
+      x,
+      y: Math.min(96, Math.max(4, y)),
+      value: v,
+      label: labels[i]
+    };
+  });
+
+  const polyline = points
+    .map(p => `${p.x},${p.y}`)
+    .join(" ");
 
   return `
-    <div class="axis-chart">
-      <h4>${title}</h4>
+    <div class="axis-chart v32-line-chart ${type}">
+      <div class="v32-chart-head">
+        <h4>${title}</h4>
+        <span>最近6小時</span>
+      </div>
+
+      <div class="v32-chart-body">
+        <div class="y-axis">
+          <span>${yMax}${unit}</span>
+          <span>${Math.round((yMax + yMin) / 2)}${unit}</span>
+          <span>${yMin}${unit}</span>
+        </div>
+
+        <div class="v32-plot-area">
+          <div class="grid-line top"></div>
+          <div class="grid-line mid"></div>
+          <div class="grid-line bottom"></div>
+
+          <svg class="v32-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <polyline
+              class="v32-line"
+              points="${polyline}"
+              fill="none"
+              stroke-width="3"
+              vector-effect="non-scaling-stroke"
+            />
+          </svg>
+
+          <div class="v32-point-layer">
+            ${points.map(p => `
+              <div
+                class="v32-point"
+                style="left:${p.x}%; top:${p.y}%;">
+                <span>${p.value}</span>
+              </div>
+            `).join("")}
+          </div>
+
+          <div class="v32-x-labels">
+            ${points.map(p => `
+              <span style="left:${p.x}%">${p.label}</span>
+            `).join("")}
+          </div>
+        </div>
+      </div>
+
+      <div class="x-axis-title">
+        X軸：最近6小時｜Y軸：${title.replace(/[🌡️💧💨]/g, "").trim()}（${unit}）
+      </div>
+    </div>
+  `;
+}
+
+function buildSixHourBarChart(title, unit, data, labels, type = "rain") {
+  const values = data.map(v => Number(v || 0));
+  const max = Math.max(...values, 1);
+  const yMax = unit === "mm"
+    ? Math.max(10, Math.ceil(max / 5) * 5)
+    : Math.ceil(max / 10) * 10 || 10;
+
+  return `
+    <div class="axis-chart v32-bar-chart ${type}">
+      <div class="v32-chart-head">
+        <h4>${title}</h4>
+        <span>逐時累積</span>
+      </div>
 
       <div class="axis-chart-body">
         <div class="y-axis">
@@ -750,11 +680,11 @@ function buildSixHourAxisChart(title, unit, data, labels){
           <div class="grid-line bottom"></div>
 
           <div class="bar-area">
-            ${data.map((v, i) => `
+            ${values.map((v, i) => `
               <div class="axis-bar-wrap">
                 <div class="axis-bar-value">${v}</div>
-                <div 
-                  class="axis-bar"
+                <div
+                  class="axis-bar v32-rain-bar"
                   style="height:${Math.max((v / yMax) * 100, 3)}%">
                 </div>
                 <div class="x-label">${labels[i]}</div>
@@ -764,7 +694,7 @@ function buildSixHourAxisChart(title, unit, data, labels){
         </div>
       </div>
 
-      <div class="x-axis-title">X軸：最近6小時｜Y軸：${title}（${unit}）</div>
+      <div class="x-axis-title">X軸：最近6小時｜Y軸：雨量變化（${unit}）</div>
     </div>
   `;
 }
@@ -781,32 +711,37 @@ function buildRecentHourLabels(count = 6) {
   });
 }
 
-
-function formatHistoryHour(obsTime){
-  if(!obsTime) return "--";
-
-  const date = new Date(obsTime);
-  if(isNaN(date.getTime())){
-    return String(obsTime).substring(11,16);
+/* 舊函式保留，避免其他地方呼叫時出錯 */
+function buildSixHourAxisChart(title, unit, data, labels) {
+  if (title.includes("雨量")) {
+    return buildSixHourBarChart(title, unit, data, labels, "rain");
   }
 
-  return `${String(date.getHours()).padStart(2,"0")}:00`;
+  return buildSixHourLineChart(title, unit, data, labels, "default");
 }
 
+function formatHistoryHour(obsTime) {
+  if (!obsTime) return "--";
 
+  const date = new Date(obsTime);
+  if (isNaN(date.getTime())) {
+    return String(obsTime).substring(11, 16);
+  }
 
+  return `${String(date.getHours()).padStart(2, "0")}:00`;
+}
 
+/* =========================
+   情境推演
+========================= */
 
 let currentScenario = null;
 
-function buildScenario(crop,risk){
-
+function buildScenario(crop, risk) {
   const box =
-    document.getElementById(
-      "scenarioQuestion"
-    );
+    document.getElementById("scenarioQuestion");
 
-  if(!box) return;
+  if (!box) return;
 
   currentScenario = risk;
 
@@ -817,27 +752,25 @@ function buildScenario(crop,risk){
     <br><br>
 
     若未來三天持續
-    ${risk.rainRisk==="高"
-      ?"豪雨"
-      :"高溫"}
-
+    ${risk.rainRisk === "高"
+      ? "豪雨"
+      : risk.heatRisk === "高"
+      ? "高溫"
+      : "目前氣象條件"}
     ，您會如何決策？
   `;
 }
 
-function answerScenario(answer){
-
+function answerScenario(answer) {
   const box =
-    document.getElementById(
-      "scenarioFeedback"
-    );
+    document.getElementById("scenarioFeedback");
 
-  if(!box) return;
+  if (!box) return;
 
   const messages = {
-    A:"✅ 積極預防，可降低損失。",
-    B:"⚠️ 需持續觀察氣象變化。",
-    C:"🟡 保守策略，但可能影響產量。"
+    A: "✅ 積極預防，可降低損失。",
+    B: "⚠️ 需持續觀察氣象變化。",
+    C: "🟡 保守策略，但可能影響產量。"
   };
 
   box.innerHTML =
@@ -866,6 +799,9 @@ function clearWeatherHistory() {
   }
 }
 
+/* =========================
+   三站融合分析
+========================= */
 
 function renderFusionStations(fusion) {
   const box = document.getElementById("fusionStationPanel");
@@ -881,12 +817,17 @@ function renderFusionStations(fusion) {
     return;
   }
 
+  const fused = fusion.fused || {};
+  const stationCount = fusion.stationCount || fusion.stations.length;
+  const confidence = fusion.quality?.confidence || "--";
+
   box.innerHTML = `
     <div class="fusion-station-grid">
-      ${fusion.stations.map(station => `
+      ${fusion.stations.map((station, index) => `
         <div class="fusion-station-card">
-          <h4>${station.name || "--"}</h4>
-          <p>距離：約 ${station.distanceKm ?? "--"} km</p>
+          <div class="fusion-rank">第 ${index + 1} 站</div>
+          <h4>${station.name || station.stationName || "--"}</h4>
+          <p>距離：約 ${formatKm(station.distanceKm)} km</p>
           <p>氣溫：${showValue(station.temp)} ℃</p>
           <p>濕度：${showValue(station.humidity)} %</p>
           <p>雨量：${showValue(station.rainMm)} mm</p>
@@ -897,8 +838,213 @@ function renderFusionStations(fusion) {
     </div>
 
     <div class="fusion-summary-box">
-      <strong>融合結果：</strong>
-      ${fusion.summary || "已完成融合分析。"}
+      <strong>融合後氣象結果</strong>
+      <div class="fusion-summary-grid">
+        <span>融合測站：${stationCount} 站</span>
+        <span>AI可信度：${confidence}%</span>
+        <span>氣溫：${showValue(fused.temp)} ℃</span>
+        <span>濕度：${showValue(fused.humidity)} %</span>
+        <span>雨量：${showValue(fused.rainMm)} mm</span>
+        <span>風速：${showValue(fused.windSpeed)} m/s</span>
+      </div>
     </div>
   `;
+}
+
+function formatKm(value) {
+  const n = Number(value);
+  if (Number.isNaN(n)) return "--";
+  return n.toFixed(1);
+}
+
+/* =========================
+   AI可信度、Decision Confidence、決策矩陣
+========================= */
+
+function renderAIConfidence(fusion) {
+  const box = document.getElementById("aiConfidencePanel");
+  if (!box) return;
+
+  const confidence = fusion?.quality?.confidence || "--";
+  const stationCount = fusion?.stationCount || fusion?.stations?.length || "--";
+
+  box.innerHTML = `
+    <div class="confidence-big">
+      <strong>${confidence}%</strong>
+      <span>AI可信度評分</span>
+    </div>
+
+    <div class="confidence-detail-list">
+      <div class="confidence-detail">
+        <span>資料完整度</span>
+        <strong>${fusion?.quality?.dataCompleteness || 100}%</strong>
+      </div>
+
+      <div class="confidence-detail">
+        <span>三站一致性</span>
+        <strong>${fusion?.quality?.stationConsistency || 100}%</strong>
+      </div>
+
+      <div class="confidence-detail">
+        <span>測站數量</span>
+        <strong>${stationCount} 站</strong>
+      </div>
+    </div>
+  `;
+}
+
+function renderDecisionConfidence(decision) {
+  const box = document.getElementById("decisionConfidencePanel");
+  if (!box) return;
+
+  const score = decision?.confidenceScore || 100;
+  const label = decision?.decisionConfidence || "高";
+  const summary = decision?.summary || "目前氣象資料穩定，決策可信度高。";
+
+  box.innerHTML = `
+    <div class="decision-meter">
+      <div class="decision-meter-main">
+        <div class="decision-circle" style="--score:${score}%;">
+          ${score}%
+        </div>
+
+        <div class="decision-meter-text">
+          <strong>Decision Confidence：${label}</strong>
+          <p>${summary}</p>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderDecisionMatrix(risk) {
+  const box = document.getElementById("decisionMatrixPanel");
+  if (!box) return;
+
+  const rows = [
+    ["採收風險", risk.heatRisk],
+    ["運輸風險", risk.transportRisk],
+    ["病害風險", risk.rainRisk],
+    ["品質風險", risk.qualityRisk],
+    ["田間作業風險", risk.rainRisk]
+  ];
+
+  box.innerHTML = `
+    <div class="matrix-table-wrap">
+      <table class="decision-matrix">
+        <thead>
+          <tr>
+            <th>決策項目</th>
+            <th>風險等級</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows.map(row => `
+            <tr>
+              <td>${row[0]}</td>
+              <td class="${matrixClass(row[1])}">${row[1]}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function matrixClass(level) {
+  if (level === "高") return "matrix-danger";
+  if (level === "中") return "matrix-watch";
+  return "matrix-good";
+}
+
+/* =========================
+   AI Prompt
+========================= */
+
+function updateAIPromptV4(crop, county, township, weather, risk, result) {
+  const promptBox = document.getElementById("aiPromptOutput");
+  if (!promptBox) return;
+
+  promptBox.value = `你是「AI農業氣象教練、作物栽培顧問與智慧農業決策教練」。
+
+請根據以下農業情境，協助學生進行氣象判讀與農事決策推演。
+
+【作物】
+${crop}
+
+【產地】
+${county}${township}
+
+【AIAKOS融合氣象資料】
+融合測站數：${result.fusion?.stationCount || "--"} 站
+AI可信度：${result.fusion?.quality?.confidence || "--"}%
+氣溫：${showValue(weather.temp)} ℃
+相對濕度：${showValue(weather.humidity)} %
+實測雨量：${showValue(weather.rainMm)} mm
+風速：${showValue(weather.windSpeed)} m/s
+日照時數：${showValue(weather.sunshine)} hr
+
+【目前初步風險判斷】
+高溫風險：${risk.heatRisk}
+降雨風險：${risk.rainRisk}
+採收運輸風險：${risk.transportRisk}
+品質保存風險：${risk.qualityRisk}
+
+【AIAKOS決策摘要】
+${result.decision?.summary || "尚無決策摘要"}
+
+請輸出：
+1. 氣象資料判讀
+2. 對作物可能造成的影響
+3. 採收、運輸與品質保存風險
+4. 病蟲害或災害風險
+5. 今日農事建議
+6. 未來三天注意事項
+7. 適合高中職學生理解的教學說明
+
+請用條列式、清楚、實用、適合農業教育平台呈現的方式回答。`;
+}
+
+/* 舊函式保留 */
+function updateAIPrompt(crop, county, township, station, weather, risk) {
+  const promptBox = document.getElementById("aiPromptOutput");
+  if (!promptBox) return;
+
+  promptBox.value = `你是「AI農業氣象教練、作物栽培顧問與智慧農業決策教練」。
+
+【作物】
+${crop}
+
+【產地】
+${county}${township}
+
+【目前農業氣象資料】
+氣溫：${showValue(weather.temp)} ℃
+相對濕度：${showValue(weather.humidity)} %
+實測雨量：${showValue(weather.rainMm)} mm
+風速：${showValue(weather.windSpeed)} m/s
+日照時數：${showValue(weather.sunshine)} hr
+
+請協助進行農業氣象判讀與農事建議。`;
+}
+
+function copyAIPrompt() {
+  const promptBox = document.getElementById("aiPromptOutput");
+  if (!promptBox) return;
+
+  promptBox.select();
+  document.execCommand("copy");
+
+  alert("已複製 AI 氣象決策指令，可以貼到 AI農業氣象教練 GPT 進一步分析！");
+}
+
+function clearAIPrompt() {
+  const promptBox =
+    document.getElementById("aiPromptOutput");
+
+  if (!promptBox) return;
+
+  if (confirm("確定要清除目前 AI 指令嗎？")) {
+    promptBox.value = "";
+  }
 }

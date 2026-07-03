@@ -1171,3 +1171,113 @@ footer {
     text-align: center;
   }
 }
+
+
+/* =========================
+   V3.2 專業版：氣象趨勢折線圖＋雨量柱狀圖
+========================= */
+
+.pro-chart {
+  background: #ffffff;
+  border: 1px solid rgba(0,120,80,.14);
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 8px 22px rgba(0,80,50,.04);
+}
+
+.pro-chart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.pro-chart-header h4 {
+  color: #064b35;
+  margin: 0;
+}
+
+.pro-chart-header span {
+  color: #5f7f74;
+  font-size: .9rem;
+  font-weight: 900;
+}
+
+.pro-chart-canvas {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.pro-chart svg {
+  width: 100%;
+  min-width: 680px;
+  height: 280px;
+}
+
+.pro-axis {
+  stroke: rgba(0,80,50,.35);
+  stroke-width: 2;
+}
+
+.pro-grid {
+  stroke: rgba(0,80,50,.18);
+  stroke-width: 1;
+  stroke-dasharray: 6 6;
+}
+
+.pro-line {
+  fill: none;
+  stroke: #00a86b;
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.pro-dot {
+  fill: #ffffff;
+  stroke: #00a86b;
+  stroke-width: 4;
+}
+
+.pro-y-label,
+.pro-x-label,
+.pro-value-label {
+  fill: #527268;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.pro-x-label,
+.pro-value-label {
+  text-anchor: middle;
+}
+
+.pro-value-label {
+  fill: #064b35;
+}
+
+.temp-chart .pro-line,
+.temp-chart .pro-dot {
+  stroke: #ef4444;
+}
+
+.humidity-chart .pro-line,
+.humidity-chart .pro-dot {
+  stroke: #2563eb;
+}
+
+.wind-chart .pro-line,
+.wind-chart .pro-dot {
+  stroke: #059669;
+}
+
+.rain-bar {
+  background: linear-gradient(180deg, #2563eb, #1d4ed8);
+}
+
+@media(max-width:900px){
+  .pro-chart svg {
+    min-width: 560px;
+  }
+}

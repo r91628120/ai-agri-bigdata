@@ -1048,3 +1048,49 @@ function clearAIPrompt() {
     promptBox.value = "";
   }
 }
+
+function clearWeatherForm() {
+  document.getElementById("cropInput").value = "";
+  document.getElementById("countySelect").value = "";
+  document.getElementById("townshipSelect").innerHTML =
+    `<option value="">請選擇鄉鎮</option>`;
+
+  updateWeatherDashboard({
+    temp: "--",
+    humidity: "--",
+    rainMm: "--",
+    windSpeed: "--",
+    sunshine: "--"
+  });
+
+  document.getElementById("weatherRisk").innerHTML = "尚未分析";
+  document.getElementById("climateAlert").innerHTML = "尚未分析";
+
+  document.getElementById("v3Location").textContent = "尚未選擇";
+  document.getElementById("v3Crop").textContent = "尚未輸入";
+  document.getElementById("v3Confidence").textContent = "待分析";
+
+  const resetIds = [
+    "fusionStationPanel",
+    "aiConfidencePanel",
+    "decisionConfidencePanel",
+    "decisionMatrixPanel",
+    "diseaseRiskLights",
+    "farmAdviceCards",
+    "historyChartArea",
+    "scenarioQuestion",
+    "scenarioFeedback"
+  ];
+
+  resetIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.innerHTML = `<div class="empty-state">請先完成氣象分析。</div>`;
+    }
+  });
+
+  const promptBox = document.getElementById("aiPromptOutput");
+  if (promptBox) {
+    promptBox.value = "請先完成氣象分析，系統會自動產生可複製的 AI 農業氣象決策指令。";
+  }
+}

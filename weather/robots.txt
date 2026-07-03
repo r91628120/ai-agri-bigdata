@@ -1,0 +1,7 @@
+User-agent: *
+
+Allow: /
+
+Crawl-delay: 1
+
+Sitemap: https://r91628120.github.io/ai-agri-bigdata/weather/sitemap.xml
